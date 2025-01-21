@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-router-dom": "^6.28.2",
+    "react-to-print": "^3.0.2"
+  }
+}
