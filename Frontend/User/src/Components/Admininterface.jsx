@@ -7,8 +7,10 @@ import logo from '../assets/dinein.png';
 import io from "socket.io-client";
 
 const localserver=import.meta.env.VITE_LOCALSERVER
+const socketurl=import.meta.env.NODE_ENV==='production' ? "/":"http://localhost:3001"
+const baseurl=import.meta.env.NODE_ENV==='production' ? "/ambika-admin/dashboard":"http://localhost:3001/ambika-admin/dashboard"
 
-const socket = io(`${localserver}` , {
+const socket = io(socketurl , {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });
@@ -25,7 +27,7 @@ function Admin() {
     // Fetch orders on component mount
     useEffect(() => {
         // Fetch initial orders
-        fetch(`${localserver}/ambika-admin/dashboard`)
+        fetch(baseurl)
             .then(response => response.json())
             .then(data => {
                 // Separate orders based on status
@@ -122,7 +124,7 @@ function Admin() {
     const handleDecline = async (id) => {
         try {
             // Make a DELETE request to remove the order from the backend
-            const response = await fetch(`${localserver}/ambika-admin/dashboard`, {
+            const response = await fetch(baseurl, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,7 +148,7 @@ function Admin() {
     const acceptDecline = async (id) => {
         try {
             // Make a DELETE request to remove the order from the backend
-            const response = await fetch(`${localserver}/ambika-admin/dashboard`, {
+            const response = await fetch(baseurl, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -170,7 +172,7 @@ function Admin() {
     const handleIndex = async (index) => {
         // Remove the order from the currentOrders array
         try {
-            const response = await fetch(`${localserver}/ambika-admin/dashboard`, {
+            const response = await fetch(baseurl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'accepted', id: orderId })
@@ -203,7 +205,7 @@ function Admin() {
         try {
             // Log cart data to ensure marathi field is included
 
-            const response = await fetch(`${localserver}/ambika-admin/dashboard`, {
+            const response = await fetch(baseurl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

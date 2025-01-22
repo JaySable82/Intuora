@@ -13,21 +13,18 @@ import mongoose from 'mongoose';
 import Sequence from './models/sequence.js';
 
 
+
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-const localhost=process.env.VITE_LOCALHOST
-const localmongo=process.env.MONGO_URL
-
-console.log('Localhost:', localhost);  // Should print: http://localhost:5173
-console.log('Mongo URL:', localmongo);  // Should print your MongoDB URL
-
+const localhost = process.env.VITE_LOCALHOST
+const localmongo = process.env.MONGO_URL
 
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:`${localhost}`,
+    origin: `${localhost}`,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -56,7 +53,7 @@ app.post('/user/cart', async (req, res) => {
     session.startTransaction();
 
     try {
-        const { cart, total,bottle } = req.body;
+        const { cart, total, bottle } = req.body;
 
         if (!cart || cart.length === 0) {
             return res.status(400).json({ message: 'Cart is empty or undefined' });
@@ -72,7 +69,7 @@ app.post('/user/cart', async (req, res) => {
 
         const itemsWithBottle = cart.map(item => ({
             ...item,
-            bottle: item.bottle || 0 
+            bottle: item.bottle || 0
         }));
 
         const order = new Order({
@@ -167,7 +164,7 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
 
                 const newOrder = new Order({
                     items: [], // Empty order items for admin-created order
-                    total: 0,  
+                    total: 0,
                     token: seqNum,
                     parcel: false
                 });

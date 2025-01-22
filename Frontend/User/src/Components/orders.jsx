@@ -16,7 +16,9 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [selectAll, setSelectAll] = useState(false); // State for select all checkbox
     const [kitchenClosed, setKitchenClosed] = useState(false);
     const navigate = useNavigate();
-    const localserver=import.meta.env.VITE_LOCALSERVER
+    // const localserver=import.meta.env.VITE_LOCALSERVER
+
+    const baseurl=import.meta.env.NODE_ENV==='production' ? "/user/cart" : "http://localhost:3001/user/cart"
     const handlePlaceOrder = async () => {
         
        if(disableOrder) return;
@@ -25,7 +27,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch(`${localserver}/user/cart`, {
+            const response = await fetch(baseurl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
