@@ -24,7 +24,7 @@ const localmongo = process.env.MONGO_URL
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin: `${localhost}`,
+    origin: 'http://127.0.0.1:5173',
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true

@@ -7,10 +7,10 @@ import logo from '../assets/dinein.png';
 import io from "socket.io-client";
 
 const localserver=import.meta.env.VITE_LOCALSERVER
-const socketurl=import.meta.env.NODE_ENV==='production' ? "/":"http://localhost:3001"
-const baseurl=import.meta.env.NODE_ENV==='production' ? "/ambika-admin/dashboard":"http://localhost:3001/ambika-admin/dashboard"
+const socketurl=import.meta.env.NODE_ENV==='production' ? "/":"http://127.0.0.1:5173"
+const baseurl=import.meta.env.NODE_ENV==="http://127.0.0.1:5173/ambika-admin/dashboard"
 
-const socket = io(socketurl , {
+const socket = io("http://localhost:3001" , {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });
@@ -27,7 +27,7 @@ function Admin() {
     // Fetch orders on component mount
     useEffect(() => {
         // Fetch initial orders
-        fetch(baseurl)
+        fetch("http://localhost:3001/ambika-admin/dashboard")
             .then(response => response.json())
             .then(data => {
                 // Separate orders based on status
@@ -87,7 +87,7 @@ function Admin() {
         try {
             const nextStatus = currentStatus === 'current' ? 'accepted' : 'done';
     
-            const response = await fetch(`${localserver}/ambika-admin/dashboard`, {
+            const response = await fetch("http://localhost:3001/ambika-admin/dashboard", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ function Admin() {
     const handleDecline = async (id) => {
         try {
             // Make a DELETE request to remove the order from the backend
-            const response = await fetch(baseurl, {
+            const response = await fetch("http://localhost:3001/ambika-admin/dashboard", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ function Admin() {
     const acceptDecline = async (id) => {
         try {
             // Make a DELETE request to remove the order from the backend
-            const response = await fetch(baseurl, {
+            const response = await fetch("http://localhost:3001/ambika-admin/dashboard", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -172,10 +172,10 @@ function Admin() {
     const handleIndex = async (index) => {
         // Remove the order from the currentOrders array
         try {
-            const response = await fetch(baseurl, {
+            const response = await fetch("http://localhost:3001/ambika-admin/dashboard", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'accepted', id: orderId })
+                body: JSON.stringify({ status: 'accepted' })
             });
 
             if (response.ok) {
@@ -205,7 +205,7 @@ function Admin() {
         try {
             // Log cart data to ensure marathi field is included
 
-            const response = await fetch(baseurl, {
+            const response = await fetch("http://localhost:3001/ambika-admin/dashboard", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -219,7 +219,6 @@ function Admin() {
 
             const result = await response.json();
             console.log('Order placed successfully:', result);
-            setToken(result.token);
         } catch (error) {
             console.error('Error placing order:', error);
         }
