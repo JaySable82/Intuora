@@ -20,11 +20,12 @@ const io = new SocketIOServer(server);
 
 const localhost = process.env.VITE_LOCALHOST
 const localmongo = process.env.MONGO_URL
+const awsurl=process.env.AWS_MAIN
 
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin: 'http://127.0.0.1:5173',
+    origin:`${awsurl}`,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true

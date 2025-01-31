@@ -4,7 +4,6 @@ import vegIcon from '../assets/food.jpg';
 import nonVegIcon from '../assets/food.jpg';
 import "../Components/Kart.css";
 import ClipLoader from 'react-spinners/ClipLoader';
-import Warning from './warning';
 
 const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [orderPlaced, setOrderPlaced] = useState(false);
@@ -12,13 +11,11 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [bottle, setBottle] = useState(0);
     const [loading, setLoading] = useState(false); // State for preloader
     const [selectedItems, setSelectedItems] = useState(cart.map(item => item.parcel || false)); // State for selected items
-    const [disablePlaceOrder, setDisablePlaceOrder] = useState(false);
-    const [selectAll, setSelectAll] = useState(false); // State for select all checkbox
     const [kitchenClosed, setKitchenClosed] = useState(false);
     const navigate = useNavigate();
-    // const localserver=import.meta.env.VITE_LOCALSERVER
 
-    const baseurl=import.meta.env.NODE_ENV==='production' ? "/user/cart" : "http://localhost:3001/user/cart"
+    const localurl=import.meta.env.VITE_LOCALSERVER
+    const awsurl=import.meta.env.VITE_AWS
     const handlePlaceOrder = async () => {
         
        if(disableOrder) return;
@@ -27,7 +24,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch(baseurl, {
+            const response = await fetch(`${awsurl}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
