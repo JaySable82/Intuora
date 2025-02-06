@@ -1,16 +1,17 @@
-import React, { useState, useEffect,useMemo} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import '../Components/admin.css';
 import Warning from "./warning";
 import Navwarning from "./navwarning";
 import AdminCard from "./admincard";
 import logo from '../assets/dinein.png';
 import io from "socket.io-client";
+import axios from "axios";
 
-const localserver=import.meta.env.VITE_LOCAL
-const socketurl=import.meta.env.NODE_ENV==='production' ? "/":"http://127.0.0.1:5173"
-const awsurl=import.meta.env.VITE_AWS_MAIN
+const localserver = import.meta.env.VITE_LOCAL;
+const socketurl = import.meta.env.NODE_ENV === 'production' ? "/" : "http://127.0.0.1:5173";
+const awsurl = import.meta.env.VITE_AWS_MAIN;
 
-const socket = io(awsurl , {
+const socket = io(awsurl, {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });
@@ -23,31 +24,26 @@ function Admin() {
     const [currentOrders, setCurrentOrders] = useState([]);
     const [acceptedOrders, setAcceptedOrders] = useState([]);
     const [doneOrders, setDoneOrders] = useState([]);
-    const[showWarning,setshowWarning]=useState(false);
-    // Fetch orders on component mount
+    const [showWarning, setShowWarning] = useState(false);
+
     useEffect(() => {
-        // Fetch initial orders
-        fetch(`${awsurl}/ambika-admin/dashboard`)
-            .then(response => response.json())
-            .then(data => {
-                // Separate orders based on status
-                const currentOrders = data.filter(order => order.status === 'current');
-                setCurrentOrders(currentOrders);
-                console.log("current orders:", currentOrders);
-    
-                const acceptedOrders = data.filter(order => order.status === 'accepted');
-                setAcceptedOrders(acceptedOrders);
-                console.log("accepted orders:", acceptedOrders);
-    
-                const doneOrders = data.filter(order => order.status === 'done');
-                setDoneOrders(doneOrders);
-                console.log("done orders:", doneOrders);
-            })
-            .catch(error => {
+        const fetchOrders = async () => {
+            try {
+                const response = await axios.get(`${awsurl}/ambika-admin/dashboard`);
+                console.log(response.data);
+                const data = response.data;
+
+                setCurrentOrders(data.filter(order => order.status === 'current'));
+                setAcceptedOrders(data.filter(order => order.status === 'accepted'));
+                setDoneOrders(data.filter(order => order.status === 'done'));
+            } catch (error) {
                 console.error('Error fetching data:', error);
-            });
+            }
+        };
+
+        fetchOrders();
     }, []);
-    
+
     useEffect(() => {
         socket.on('orderUpdate', (updatedOrder) => {
             if (updatedOrder.status === 'current') {
@@ -67,78 +63,55 @@ function Admin() {
                 ]);
             }
         });
-    
+
         return () => {
             socket.off('orderUpdate');
         };
     }, []);
-    
-    
 
     const handleHideWarning = () => {
-
-        setshowWarning(false); // Function to hide the warning
+        setShowWarning(false);
     };
-    const handleLogout= () =>{
-        setshowWarning(true);
-    } 
+
+    const handleLogout = () => {
+        setShowWarning(true);
+    };
 
     const handleDone = async (Id, currentStatus) => {
         try {
             const nextStatus = currentStatus === 'current' ? 'accepted' : 'done';
-    
-            const response = await fetch(`${awsurl}/ambika-admin/dashboard`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    status: nextStatus,
-                    id: Id,
-                }),
+            const response = await axios.post(`${awsurl}/ambika-admin/dashboard`, {
+                status: nextStatus,
+                id: Id,
             });
-    
-            const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.error || 'Failed to update order status');
-            }
-    
+
+            const result = response.data;
+
             if (nextStatus === 'accepted') {
-                setCurrentOrders(prevOrders => prevOrders.filter(order => order._id !== Id));
-                setAcceptedOrders(prevOrders => {
-                    const exists = prevOrders.some(order => order._id === result.acceptedOrder._id);
-                    return exists ? prevOrders : [...prevOrders, result.acceptedOrder];
+                setCurrentOrders(prev => prev.filter(order => order._id !== Id));
+                setAcceptedOrders(prev => {
+                    const exists = prev.some(order => order._id === result.acceptedOrder._id);
+                    return exists ? prev : [...prev, result.acceptedOrder];
                 });
             } else if (nextStatus === 'done') {
-                setAcceptedOrders(prevOrders => prevOrders.filter(order => order._id !== Id));
-                setDoneOrders(prevOrders => {
-                    const exists = prevOrders.some(order => order._id === result.doneOrder._id);
-                    return exists ? prevOrders : [...prevOrders, result.doneOrder];
+                setAcceptedOrders(prev => prev.filter(order => order._id !== Id));
+                setDoneOrders(prev => {
+                    const exists = prev.some(order => order._id === result.doneOrder._id);
+                    return exists ? prev : [...prev, result.doneOrder];
                 });
             }
         } catch (error) {
             console.error('Error updating order status:', error.message);
         }
-    };  
+    };
 
     const handleDecline = async (id) => {
         try {
-            // Make a DELETE request to remove the order from the backend
-            const response = await fetch(`${awsurl}/ambika-admin/dashboard`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: id }),
+            await axios.delete(`${awsurl}/ambika-admin/dashboard`, {
+                data: { id }
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to delete order');
-            }
-
-            // Remove the order from the frontend state
-            setCurrentOrders(prevOrders => prevOrders.filter(order => order._id !== id));
-
+            setCurrentOrders(prev => prev.filter(order => order._id !== id));
             console.log('Order declined:', id);
         } catch (error) {
             console.error('Error deleting order:', error.message);
@@ -147,22 +120,11 @@ function Admin() {
 
     const acceptDecline = async (id) => {
         try {
-            // Make a DELETE request to remove the order from the backend
-            const response = await fetch(`${awsurl}/ambika-admin/dashboard`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: id }),
+            await axios.delete(`${awsurl}/ambika-admin/dashboard`, {
+                data: { id }
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to delete order');
-            }
-
-            // Remove the order from the frontend state
-            setAcceptedOrders(prevOrders => prevOrders.filter(order => order._id !== id));
-
+            setAcceptedOrders(prev => prev.filter(order => order._id !== id));
             console.log('Order declined:', id);
         } catch (error) {
             console.error('Error deleting order:', error.message);
@@ -170,87 +132,47 @@ function Admin() {
     };
 
     const handleIndex = async (index) => {
-        // Remove the order from the currentOrders array
         try {
-            const response = await fetch(`${awsurl}/ambika-admin/dashboard`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'accepted' })
-            });
+            await axios.post(`${awsurl}/ambika-admin/dashboard`, { status: 'accepted' });
 
-            if (response.ok) {
-                // refreshOrders();
-                const data = currentOrders.filter((_, i) => i !== index);
-                setCurrentOrders(data);
+            const data = currentOrders.filter((_, i) => i !== index);
+            setCurrentOrders(data);
 
-                // Find the order that should be moved to acceptedOrders
-                const acceptedData = currentOrders.find((_, i) => i === index);
-
-                // Add the found order to the acceptedOrders array
-                setAcceptedOrders((prev) => [...prev, acceptedData]);
-
-                console.log("Current Orders:", data);
-                console.log("Accepted Order:", acceptedData);
-            } else {
-                console.error('Failed to move order to acceptedOrders');
-            }
+            const acceptedData = currentOrders.find((_, i) => i === index);
+            setAcceptedOrders(prev => [...prev, acceptedData]);
         } catch (error) {
             console.error('Error:', error);
         }
-
-
     };
 
     const handleNewOrder = async () => {
         try {
-            // Log cart data to ensure marathi field is included
-
-            const response = await fetch(`${awsurl}/ambika-admin/dashboard`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ createNewOrder: true }),
+            const response = await axios.post(`${awsurl}/ambika-admin/dashboard`, {
+                createNewOrder: true
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to place order');
-            }
-
-            const result = await response.json();
-            console.log('Order placed successfully:', result);
+            console.log('Order placed successfully:', response.data);
         } catch (error) {
             console.error('Error placing order:', error);
         }
     };
 
-    //total sandwiches count
     const totalItems = useMemo(() => {
-        return currentOrders.reduce((total, order) => {
-            return total + (order.quantity);
-        }, 0);
+        return currentOrders.reduce((total, order) => total + order.quantity, 0);
     }, [currentOrders]);
-
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 30, position: 'relative' }}>
-            
             {showWarning && <Warning rightnow={handleHideWarning} />}
-            
-            {/* Navbar */}
             <div className="Navbar" style={{ width: '100%', height: 80, left: 0, top: 0, position: 'relative', background: '#0D0F11' }}>
-            {showWarning && <Navwarning/>}
-                <div className="ViewOrders" style={{ left:'46%', top: 24, position: 'absolute', textAlign: 'center', color: 'white', fontSize: 26, fontFamily: 'Inter', fontWeight: '600', wordWrap: 'break-word' }}>View Orders</div>
-                <button style={{right: 30, top: 24, position: 'absolute', textAlign: 'right', color: 'white', fontSize: 26, fontFamily: 'Inter', fontWeight: '400', wordWrap: 'break-word',backgroundColor:'black',border:'none'}} onClick={handleLogout}>Log Out</button>
+                {showWarning && <Navwarning />}
+                <div className="ViewOrders" style={{ left: '46%', top: 24, position: 'absolute', textAlign: 'center', color: 'white', fontSize: 26, fontFamily: 'Inter', fontWeight: '600' }}>View Orders</div>
+                <button style={{ right: 30, top: 24, position: 'absolute', color: 'white', fontSize: 26, backgroundColor: 'black', border: 'none' }} onClick={handleLogout}>Log Out</button>
                 <img src={logo} alt="DineIn" style={{ marginTop: 10, marginLeft: 10, height: 50, width: 110 }} />
             </div>
-            
 
-            {/* Current Orders */}
-            <div className="Current_order"
-                
-            >
-                <div className="grey_box"/>
+            <div className="Current_order">
+                <div className="grey_box" />
                 <div className="Accepted0">Current Orders</div>
                 {currentOrders.map((order, index) => (
                     <AdminCard
@@ -259,7 +181,6 @@ function Admin() {
                         id={order._id}
                         onIndex={handleIndex}
                         index={index}
-
                         items={order.items}
                         onDone={() => handleDone(order._id, 'current')}
                         onDecline={() => handleDecline(order._id)}
@@ -267,13 +188,11 @@ function Admin() {
                         showDeclineButton={true}
                     />
                 ))}
-                
             </div>
 
-            {/* Accepted Orders */}
             <div className="Accepted" style={{ width: 400, height: 'calc(100vh - 110px)', top: 104, position: 'absolute', background: '#EDECE9', borderRadius: 30, overflowY: 'auto', paddingBottom: 20 }}>
                 <div className="grey box" style={{ width: '100%', height: 70, position: 'absolute', background: '#DDDBD3', borderTopLeftRadius: 30, borderTopRightRadius: 30 }} />
-                <div className="Accepted0" style={{ left: 120, top: 20, position: 'absolute', textAlign: 'center', color: '#0D0F11', fontSize: 30, fontFamily: 'Inter', fontWeight: 'bolder', wordWrap: 'break-word' }}>Accepted</div>
+                <div className="Accepted0" style={{ left: 120, top: 20, position: 'absolute', color: '#0D0F11', fontSize: 30, fontWeight: 'bolder' }}>Accepted</div>
                 {acceptedOrders.map((order, index) => (
                     <AdminCard
                         key={index}
@@ -290,32 +209,27 @@ function Admin() {
                 ))}
             </div>
 
-            {/* Done Orders */}
             <div className="Done" style={{ width: 400, height: 'calc(100vh - 110px)', right: 30, top: 104, position: 'absolute', background: '#EDECE9', borderRadius: 30, overflowY: 'auto', paddingBottom: 20 }}>
                 <div className="grey box" style={{ width: '100%', height: 70, position: 'absolute', background: '#DDDBD3', borderTopLeftRadius: 30, borderTopRightRadius: 30 }} />
-                <div className="Accepted0" style={{ left: 170, top: 20, position: 'absolute', textAlign: 'center', color: '#0D0F11', fontSize: 30, fontFamily: 'Inter', fontWeight: 'bolder', wordWrap: 'break-word' }}>Done</div>
+                <div className="Accepted0" style={{ left: 170, top: 20, position: 'absolute', color: '#0D0F11', fontSize: 30, fontWeight: 'bolder' }}>Done</div>
                 {doneOrders.map((order, index) => (
                     <AdminCard
-
                         key={index}
                         token={order.token}
                         id={order._id}
                         onIndex={handleIndex}
                         index={index}
                         items={order.items}
-                        onDone={handleDone}
-                        onDecline={handleDecline}
                         showDoneButton={false}
                         showDeclineButton={false}
                     />
                 ))}
             </div>
 
-            {/* Offline Orders */}
             <div className="NewOrder">
-            <button onClick={handleNewOrder}>
-                <span>+ New Order</span>
-            </button>
+                <button onClick={handleNewOrder}>
+                    <span>+ New Order</span>
+                </button>
             </div>
         </div>
     );
