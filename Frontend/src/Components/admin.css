@@ -134,7 +134,7 @@ html, body {
     width: 400px;
     height: calc(100vh - 110px);
     left: 30px;
-    top: 104px;
+    top: 20px;
     position: absolute;
     background: #EDECE9;
     border-radius: 30px;

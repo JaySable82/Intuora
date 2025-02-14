@@ -11,6 +11,7 @@ import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
 import Sequence from './models/sequence.js';
+import KitchenStatusModel from './models/kitchenStatus.js';
 
 
 
@@ -225,6 +226,46 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
         return res.status(500).json({ error: 'Error updating order status', details: error.message });
     }
 });
+
+app.get('/kitchen-status', async (req, res) => {
+    try {
+        const document = await KitchenStatusModel.findOne({});
+        if (document) {
+            console.log("Kitchen Status fetched!");
+            res.json(document); // Send a single object instead of an array
+        } else {
+            console.log("No kitchen status found.");
+            res.json({ kitchenActive: false }); // Default value
+        }
+    } catch (err) {
+        console.error("Error fetching the kitchen status", err);
+        res.status(500).json({ error: "Error fetching kitchen status" });
+    }
+});
+
+app.post('/kitchen-status/update', async (req, res) => {
+    const { kitchenActive } = req.body;
+    try {
+        const updatedStatus = await KitchenStatusModel.findOneAndUpdate(
+            {},
+            { kitchenActive: kitchenActive },
+            { new: true }
+        );
+
+        if (updatedStatus) {
+            console.log("Kitchen Status updated:", kitchenActive);
+            res.json({ message: "Updated kitchen status", kitchenActive });
+        } else {
+            console.log("No matching document, creating a new one.");
+            const newStatus = await KitchenStatusModel.create({ kitchenActive });
+            res.json({ message: "Created new kitchen status", kitchenActive: newStatus.kitchenActive });
+        }
+    } catch (err) {
+        console.error("Error in updating kitchen status", err);
+        res.status(500).json({ error: "Error updating kitchen status" });
+    }
+});
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

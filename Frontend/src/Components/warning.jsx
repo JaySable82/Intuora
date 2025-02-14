@@ -1,13 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ControlContext } from "./ControlContext";
 
-const Warning = ({ rightnow, doit }) => {
-    // Check if doit is a function
-    console.log("doit:", doit);
-
-    if (typeof doit !== 'function') {
-        console.error('doit is not a function');
-    }
-
+const Warning = ({ offWarning }) => {
+    const { kitchenActive, setKitchenActive } = useContext(ControlContext);
     return (
         <div
             style={{
@@ -46,7 +41,7 @@ const Warning = ({ rightnow, doit }) => {
                         fontWeight: "400",
                     }}
                 >
-                    Stop Accepting Orders
+                    {kitchenActive? <p>Stop Accepting Orders</p>:<p>Open the kitchen</p>}
                 </div>
                 <div
                     style={{
@@ -57,7 +52,8 @@ const Warning = ({ rightnow, doit }) => {
                         margin: "20px 0",
                     }}
                 >
-                    Are You Sure?<br />You will not be able to see and accept new orders
+                    {kitchenActive? <p>Are You Sure?<br />You will not be able to see and accept new orders</p>:<p>Are You Sure?<br />You will start receiving the orders</p>}
+                    
                 </div>
                 <div style={{ display: "flex", gap: 30, marginTop: 20 }}>
                     <button
@@ -73,7 +69,11 @@ const Warning = ({ rightnow, doit }) => {
                             border: "none",
                             cursor: "pointer",
                         }}
-                        onClick={doit}  // Trigger doit when "YES" is clicked
+                        onClick={() => {
+                            setKitchenActive(!kitchenActive);
+                            offWarning();
+                            // console.log("from warining", kitchenActive);
+                        }}
                     >
                         YES
                     </button>
@@ -90,7 +90,7 @@ const Warning = ({ rightnow, doit }) => {
                             border: "none",
                             cursor: "pointer",
                         }}
-                        onClick={rightnow}  // Trigger rightnow when "NO" is clicked
+                        onClick={offWarning}
                     >
                         NO
                     </button>
