@@ -11,6 +11,8 @@ import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
 import Sequence from './models/sequence.js';
+import KitchenStatusModel from './models/kitchenStatus.js';
+import purchaseOrderModel from './models/purchaseOrder.js';
 
 
 
@@ -26,7 +28,7 @@ const awsurl=process.env.AWS_MAIN
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
     origin:`${awsurl}`,
-    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
+    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
@@ -225,6 +227,93 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
         return res.status(500).json({ error: 'Error updating order status', details: error.message });
     }
 });
+
+app.get('/kitchen-status', async (req, res) => {
+    try {
+        const document = await KitchenStatusModel.findOne({});
+        if (document) {
+            console.log("Kitchen Status fetched!");
+            res.json(document); // Send a single object instead of an array
+        } else {
+            console.log("No kitchen status found.");
+            res.json({ kitchenActive: false }); // Default value
+        }
+    } catch (err) {
+        console.error("Error fetching the kitchen status", err);
+        res.status(500).json({ error: "Error fetching kitchen status" });
+    }
+});
+
+app.post('/kitchen-status/update', async (req, res) => {
+    const { kitchenActive } = req.body;
+    try {
+        const updatedStatus = await KitchenStatusModel.findOneAndUpdate(
+            {},
+            { kitchenActive: kitchenActive },
+            { new: true }
+        );
+
+        if (updatedStatus) {
+            console.log("Kitchen Status updated:", kitchenActive);
+            res.json({ message: "Updated kitchen status", kitchenActive });
+        } else {
+            console.log("No matching document, creating a new one.");
+            const newStatus = await KitchenStatusModel.create({ kitchenActive });
+            res.json({ message: "Created new kitchen status", kitchenActive: newStatus.kitchenActive });
+        }
+    } catch (err) {
+        console.error("Error in updating kitchen status", err);
+        res.status(500).json({ error: "Error updating kitchen status" });
+    }
+});
+
+app.post("/purchase-orders/upload", async (req, res) => {
+    try {
+        const {temporary} = req.body;  // No need to destructure { temporary }
+        console.log("Temporary: ", temporary);
+
+        const sanitizedTemporary = {
+            item: temporary.item || "",
+            vendor: temporary.vendor || "",
+            invoice_no: temporary.invoice_no || "",
+            quantity: temporary.quantity ? Number(temporary.quantity) : 0,
+            unit_price: temporary.unit_price ? Number(temporary.unit_price) : 0,
+            total_price: temporary.total_price ? Number(temporary.total_price) : 0,
+        };
+
+        await purchaseOrderModel.create(sanitizedTemporary);
+        res.json({ message: "Added into the backend" });
+    } catch (err) {
+        console.log("Error in adding the temporary data to the database", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+app.get("/purchase-orders",async (req,res)=>{
+    try{
+        const response=await purchaseOrderModel.find({});
+        res.json(response);
+    }catch(err){
+        console.log("Error in fetching the purchase orders");
+    }
+});
+
+app.put("/purchase-orders/update", async (req, res) => {
+    try {
+      const updatedOrders = req.body.purchaseOrdersList;
+    //   console.log(updatedOrders);
+      
+      for (let order of updatedOrders) {
+        await purchaseOrderModel.findByIdAndUpdate(order._id, order, { new: true });
+      }
+  
+      res.json({ message: "Purchase orders updated successfully!" });
+    } catch (err) {
+      res.status(500).json({ error: "Error updating purchase orders" });
+    }
+  });
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
