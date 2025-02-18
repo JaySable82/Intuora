@@ -39,7 +39,7 @@ function PurchaseOrders() {
   }, []);
 
   async function handleSave() {
-        console.log("temporary: ", temporary);
+        // console.log("temporary: ", temporary);
         setPurchaseOrdersList(prevList => [...prevList, temporary]);
 
         try {
@@ -78,6 +78,7 @@ function PurchaseOrders() {
 
   return (
     <>
+      <div style={{backgroundColor:"rgb(245,245,245)",height:"80vh"}}>
       <div
         className="control-panel"
         style={{
@@ -137,7 +138,7 @@ function PurchaseOrders() {
       </div>
 
       <div className="container" style={{ paddingBottom: "10rem" }}>
-        <table border="0" style={{ width: "100%", textAlign: "center" }}>
+        <table border="0" style={{ width: "100%", textAlign: "center" ,backgroundColor:"white"}}>
           <thead>
             <tr>
               <th>Item</th>
@@ -306,6 +307,8 @@ function PurchaseOrders() {
           </div>
         )}
       </div>
+      </div>
+      
     </>
   );
 }

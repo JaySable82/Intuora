@@ -23,31 +23,31 @@ function Login() {
     };
 
     return (
-        <div className='outer-container'>
-            <div className='inner-container'>
-                <div className='Welcome'>Welcome!</div>
-                {/* <div className='textmsg'>We will send you an <span className='otp'>One Time Password </span> 
-                    on this mobile number
-                </div> */}
-                <div className='mobile'>Enter your mobile number</div>
-                <div className="input-container">
-                    <span>+91 |</span>
-                    <input
-                        type="text"
-                        value={mobileNumber}
-                        onChange={handleChange}
-                        minLength={10}
-                        maxLength={10}
-                        placeholder="Enter mobile number"
-                    />
-                </div>
-                <div className='otpbutton'>
-                    <Link to ="/ambika/user">
-                    <button>Login</button>
-                    </Link>
+        <div className="outer-container">
+            <div className="inner-container">
+            <div className="Welcome">Welcome!</div>
+                <div className="main-card">
+                    
+                    <div className="mobile">Enter your mobile number</div>
+                    <div className="input-container">
+                        <span>+91 |</span>
+                        <input
+                            type="text"
+                            value={mobileNumber}
+                            onChange={handleChange}
+                            maxLength={10}
+                            placeholder="Enter mobile number"
+                        />
+                    </div>
+                    <div className="otpbutton">
+                        <Link to="/ambika/user">
+                            <button>Login</button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
+
     );
 }
 

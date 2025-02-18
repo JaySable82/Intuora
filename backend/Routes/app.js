@@ -13,6 +13,7 @@ import mongoose from 'mongoose';
 import Sequence from './models/sequence.js';
 import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
+import rawMaterialModel from './models/rawMaterial.js';
 
 
 
@@ -269,22 +270,22 @@ app.post('/kitchen-status/update', async (req, res) => {
 
 app.post("/purchase-orders/upload", async (req, res) => {
     try {
-        const {temporary} = req.body;  // No need to destructure { temporary }
-        console.log("Temporary: ", temporary);
+        const {newItem} = req.body;  // No need to destructure { newItem }
+        console.log("newItem: ", newItem);
 
-        const sanitizedTemporary = {
-            item: temporary.item || "",
-            vendor: temporary.vendor || "",
-            invoice_no: temporary.invoice_no || "",
-            quantity: temporary.quantity ? Number(temporary.quantity) : 0,
-            unit_price: temporary.unit_price ? Number(temporary.unit_price) : 0,
-            total_price: temporary.total_price ? Number(temporary.total_price) : 0,
+        const sanitizednewItem = {
+            item: newItem.item || "",
+            vendor: newItem.vendor || "",
+            invoice_no: newItem.invoice_no || "",
+            quantity: newItem.quantity ? Number(newItem.quantity) : 0,
+            unit_price: newItem.unit_price ? Number(newItem.unit_price) : 0,
+            total_price: newItem.total_price ? Number(newItem.total_price) : 0,
         };
 
-        await purchaseOrderModel.create(sanitizedTemporary);
+        await purchaseOrderModel.create(sanitizednewItem);
         res.json({ message: "Added into the backend" });
     } catch (err) {
-        console.log("Error in adding the temporary data to the database", err);
+        console.log("Error in adding the newItem data to the database", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
@@ -314,6 +315,49 @@ app.put("/purchase-orders/update", async (req, res) => {
     }
   });
 
+app.post("/raw-material/upload", async (req, res) => {
+    try {
+        const {newItem} = req.body;  // No need to destructure { newItem }
+        console.log("newItem: ", newItem);
+
+        const sanitizednewItem = {
+            name: newItem.name || "",
+            unit: newItem.unit || "",
+            quantity: newItem.quantity ? Number(newItem.quantity) : 0,
+            threshold: newItem.threshold ? Number(newItem.threshold) : 0
+        };
+
+        await rawMaterialModel.create(sanitizednewItem);
+        res.json({ message: "Added into the backend" });
+    } catch (err) {
+        console.log("Error in adding the newItem data to the database", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get("/raw-material",async (req,res)=>{
+    try{
+        const response=await rawMaterialModel.find({});
+        res.json(response);
+    }catch(err){
+        console.log("Error in fetching the purchase orders");
+    }
+});
+
+app.put("/raw-material/update", async (req, res) => {
+    try {
+      const updatedOrders = req.body.items;
+    //   console.log(updatedOrders);
+      
+      for (let order of updatedOrders) {
+        await rawMaterialModel.findByIdAndUpdate(order._id, order, { new: true });
+      }
+  
+      res.json({ message: "Purchase orders updated successfully!" });
+    } catch (err) {
+      res.status(500).json({ error: "Error updating purchase orders" });
+    }
+});
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
