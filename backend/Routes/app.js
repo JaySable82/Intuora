@@ -10,7 +10,10 @@ import cors from 'cors';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
+import escpos from 'escpos';
+import EscposUSB from 'escpos-usb';
 import Sequence from './models/sequence.js';
+
 
 
 
@@ -18,18 +21,19 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-const localhost = process.env.VITE_LOCALHOST
-const localmongo = process.env.MONGO_URL
-const awsurl=process.env.AWS_MAIN
-
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:`${awsurl}`,
+    origin:process.env.FE_L,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
+
+//USB Printer
+// escpos.USB=EscposUSB;
+// const device =new escpos.USB(0x04b8,0x0202);
+// const printer =new escpos.Printer(device);
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -38,7 +42,7 @@ io.on('connection', (socket) => {
     });
 });
 
-mongoose.connect(`${localmongo}`)
+mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log("DB Connected"))
     .catch(err => console.log('MongoDB Connection Error:', err));
 
@@ -198,6 +202,18 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
             const acceptedOrder = new AcceptedOrder(order.toObject());
             await acceptedOrder.save();
             await Order.findByIdAndDelete(_id);
+
+            // device.open(()=>{
+            //     printer
+            //     .text("Order No: "+acceptedOrder.token)
+            //     .text("-----------------------")
+            //     .text("Items")
+            //     .text("-----------------------")
+            //     .cut()
+            //     .close();
+
+            // res.status(200).send({message:'printed'});
+            // });
 
             io.emit('orderUpdate', { ...acceptedOrder.toObject(), status: 'accepted' });
 
