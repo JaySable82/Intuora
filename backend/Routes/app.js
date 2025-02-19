@@ -13,7 +13,9 @@ import mongoose from 'mongoose';
 import escpos from 'escpos';
 import EscposUSB from 'escpos-usb';
 import Sequence from './models/sequence.js';
-
+import KitchenStatusModel from './models/kitchenStatus.js';
+import purchaseOrderModel from './models/purchaseOrder.js';
+import rawMaterialModel from './models/rawMaterial.js';
 
 
 
@@ -24,8 +26,8 @@ const io = new SocketIOServer(server);
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:process.env.FE_L,
-    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
+    origin:process.env.FE_A,
+    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
@@ -42,7 +44,7 @@ io.on('connection', (socket) => {
     });
 });
 
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL,)
     .then(() => console.log("DB Connected"))
     .catch(err => console.log('MongoDB Connection Error:', err));
 
@@ -239,6 +241,136 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({ error: 'Error updating order status', details: error.message });
+    }
+});
+
+app.get('/kitchen-status', async (req, res) => {
+    try {
+        const document = await KitchenStatusModel.findOne({});
+        if (document) {
+            console.log("Kitchen Status fetched!");
+            res.json(document); // Send a single object instead of an array
+        } else {
+            console.log("No kitchen status found.");
+            res.json({ kitchenActive: false }); // Default value
+        }
+    } catch (err) {
+        console.error("Error fetching the kitchen status", err);
+        res.status(500).json({ error: "Error fetching kitchen status" });
+    }
+});
+
+app.post('/kitchen-status/update', async (req, res) => {
+    const { kitchenActive } = req.body;
+    try {
+        const updatedStatus = await KitchenStatusModel.findOneAndUpdate(
+            {},
+            { kitchenActive: kitchenActive },
+            { new: true }
+        );
+
+        if (updatedStatus) {
+            console.log("Kitchen Status updated:", kitchenActive);
+            res.json({ message: "Updated kitchen status", kitchenActive });
+        } else {
+            console.log("No matching document, creating a new one.");
+            const newStatus = await KitchenStatusModel.create({ kitchenActive });
+            res.json({ message: "Created new kitchen status", kitchenActive: newStatus.kitchenActive });
+        }
+    } catch (err) {
+        console.error("Error in updating kitchen status", err);
+        res.status(500).json({ error: "Error updating kitchen status" });
+    }
+});
+
+app.post("/purchase-orders/upload", async (req, res) => {
+    try {
+        const {newItem} = req.body;  // No need to destructure { newItem }
+        console.log("newItem: ", newItem);
+
+        const sanitizednewItem = {
+            item: newItem.item || "",
+            vendor: newItem.vendor || "",
+            invoice_no: newItem.invoice_no || "",
+            quantity: newItem.quantity ? Number(newItem.quantity) : 0,
+            unit_price: newItem.unit_price ? Number(newItem.unit_price) : 0,
+            total_price: newItem.total_price ? Number(newItem.total_price) : 0,
+        };
+
+        await purchaseOrderModel.create(sanitizednewItem);
+        res.json({ message: "Added into the backend" });
+    } catch (err) {
+        console.log("Error in adding the newItem data to the database", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+app.get("/purchase-orders",async (req,res)=>{
+    try{
+        const response=await purchaseOrderModel.find({});
+        res.json(response);
+    }catch(err){
+        console.log("Error in fetching the purchase orders");
+    }
+});
+
+app.put("/purchase-orders/update", async (req, res) => {
+    try {
+      const updatedOrders = req.body.purchaseOrdersList;
+    //   console.log(updatedOrders);
+      
+      for (let order of updatedOrders) {
+        await purchaseOrderModel.findByIdAndUpdate(order._id, order, { new: true });
+      }
+  
+      res.json({ message: "Purchase orders updated successfully!" });
+    } catch (err) {
+      res.status(500).json({ error: "Error updating purchase orders" });
+    }
+  });
+
+app.post("/raw-material/upload", async (req, res) => {
+    try {
+        const {newItem} = req.body;  // No need to destructure { newItem }
+        console.log("newItem: ", newItem);
+
+        const sanitizednewItem = {
+            name: newItem.name || "",
+            unit: newItem.unit || "",
+            quantity: newItem.quantity ? Number(newItem.quantity) : 0,
+            threshold: newItem.threshold ? Number(newItem.threshold) : 0
+        };
+
+        await rawMaterialModel.create(sanitizednewItem);
+        res.json({ message: "Added into the backend" });
+    } catch (err) {
+        console.log("Error in adding the newItem data to the database", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get("/raw-material",async (req,res)=>{
+    try{
+        const response=await rawMaterialModel.find({});
+        res.json(response);
+    }catch(err){
+        console.log("Error in fetching the purchase orders");
+    }
+});
+
+app.put("/raw-material/update", async (req, res) => {
+    try {
+      const updatedOrders = req.body.items;
+    //   console.log(updatedOrders);
+      
+      for (let order of updatedOrders) {
+        await rawMaterialModel.findByIdAndUpdate(order._id, order, { new: true });
+      }
+  
+      res.json({ message: "Purchase orders updated successfully!" });
+    } catch (err) {
+      res.status(500).json({ error: "Error updating purchase orders" });
     }
 });
 

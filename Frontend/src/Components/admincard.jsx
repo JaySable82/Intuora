@@ -23,8 +23,8 @@ function AdminCard({ token, id, onIndex, index, items, onDone, onDecline, showDo
         console.log("index is:", index);
     };
 
-    const contentRef = useRef();
-    const reactToPrintFn = useReactToPrint({ contentRef });
+    // const contentRef = useRef();
+    // const reactToPrintFn = useReactToPrint({ contentRef });
 
     return (
         // <div ref={contentRef}>
@@ -85,7 +85,7 @@ function AdminCard({ token, id, onIndex, index, items, onDone, onDecline, showDo
                     )}
                     {showDoneButton && (
                         <button 
-                            onClick={() => { handleDoneClick(index); }} 
+                            onClick={() => { handleDoneClick(index); reactToPrintFn(); }} 
                             className="print-hide" 
                             style={{ height: 60, width: 186, backgroundColor: '#31B475', fontSize: 23, fontFamily: 'Inter', color: 'white', padding: '5px 10px', borderRadius: 5, border: '1px solid #31B475' }}>
                             Done
