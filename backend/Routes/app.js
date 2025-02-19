@@ -28,7 +28,7 @@ const awsurl=process.env.AWS_MAIN
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:`${awsurl}`,
+    origin:process.env.FE_A,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
     });
 });
 
-mongoose.connect(`${localmongo}`)
+mongoose.connect(process.env.MONGO_URL,)
     .then(() => console.log("DB Connected"))
     .catch(err => console.log('MongoDB Connection Error:', err));
 
