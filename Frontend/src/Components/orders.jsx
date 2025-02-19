@@ -14,7 +14,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [kitchenClosed, setKitchenClosed] = useState(false);
     const navigate = useNavigate();
 
-    const localurl=import.meta.env.VITE_LOCALSERVER
+    const local=import.meta.env.VITE_LOCAL
     const awsurl=import.meta.env.VITE_AWS
     const handlePlaceOrder = async () => {
         
@@ -24,7 +24,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch(`${awsurl}`, {
+            const response = await fetch(`${local}/user/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

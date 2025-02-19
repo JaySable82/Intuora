@@ -49,7 +49,7 @@ function AdminCard({ token, id, onIndex, index, items, onDone, onDecline, showDo
                     {safeItems.map((item, index) => (
                         <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
                             <div style={{ flex: 2, fontSize: 20 }}>
-                                {item.name} {item.parcel && <span style={{ color: 'green', fontWeight: 'bold' }}>Parcel</span>}
+                                {item.marathi} {item.parcel && <span style={{ color: 'green', fontWeight: 'bold' }}>Parcel</span>}
                             </div>
                             <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
                                 <span style={{ flex: 1, textAlign: 'center' }}>{item.quantity}</span>
