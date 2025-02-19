@@ -8,9 +8,9 @@ function Menu({ handleClick,cart,sectionRefs }) {
     const filterItems = (minId, maxId) => 
         list.filter(item => item.id >= minId && item.id <= maxId);
 
-    const grilledItems = filterItems(1, 23);
-    const nonGrilledItems = filterItems(24, 27);
-    const chocolateItems = filterItems(28, 32);
+    const grilledItems = filterItems(1,9);
+    const nonGrilledItems = filterItems(10, 25);
+    const chocolateItems = filterItems(26, 29);
 
     // const Grilled = useRef(null);
     // const NonGrilled = useRef(null);
@@ -31,7 +31,7 @@ function Menu({ handleClick,cart,sectionRefs }) {
             <div className="Vector2" style={{ width: 108.5, height: 1, right: 10, top:883, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
 
                 <div style={{ textAlign: 'center', marginBottom: '20px', color: '#6D6D6D', position: 'relative', top: 108, fontWeight: 'bold' }}>
-                    Delicious Pizza
+                    Non-Grilled Sandwich
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
                     {grilledItems.map((item) => (
@@ -44,7 +44,7 @@ function Menu({ handleClick,cart,sectionRefs }) {
             <div className="Vector2" style={{ width: 125, height: 1, left: 10, top: 4516, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
             <div className="Vector2" style={{ width: 125, height: 1, right: 10, top: 4516, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
                 <div style={{ textAlign: 'center', color: '#6D6D6D', marginTop: '20px', position: 'relative', top: 80, marginBottom: '20px', fontWeight: 'bold' }}>
-                    Garlic Bread
+                    Grilled Sandwich
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
                     {nonGrilledItems.map((item) => (
@@ -57,7 +57,7 @@ function Menu({ handleClick,cart,sectionRefs }) {
                 <div className="Vector2" style={{ width: 125, height: 1, left: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
                 <div className="Vector2" style={{ width: 125, height: 1, right: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
                 <div style={{ textAlign: 'center', marginBottom: '20px', color: '#6D6D6D', position: 'relative', top: 80, fontWeight: 'bold' }}>
-                    French Fries
+                    Chocolate Sandwich
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', paddingBottom: '400px' }}>
                     {chocolateItems.map((item) => (
