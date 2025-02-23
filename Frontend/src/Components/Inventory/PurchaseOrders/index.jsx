@@ -8,7 +8,7 @@ function PurchaseOrders() {
   const [purchaseOrdersListCopy,setPurchaseOrdersListCopy]=useState([]);
   const [addItems, setAddItems] = useState(false);
   const [updateItems,setUpdateItems]=useState(false);
-  const url = import.meta.env.VITE_AWS_MAIN;
+  const url = import.meta.env.VITE_AWS;
   const hasFetchedRef=useRef(false);
   const [temporary, setTemporary] = useState({
     item: "",

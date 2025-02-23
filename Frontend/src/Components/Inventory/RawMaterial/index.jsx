@@ -6,7 +6,7 @@ function RawMaterial() {
     const [isUpdating, setIsUpdating] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [items, setItems] = useState([]);
-    const url = import.meta.env.VITE_AWS_MAIN;
+    const url = import.meta.env.VITE_AWS;
     const [newItem, setNewItem] = useState({ name: "", unit: "", quantity: 0, threshold: 0 });
     const hasFetchedRef=useRef(false);
 

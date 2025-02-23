@@ -23,7 +23,7 @@ const io = new SocketIOServer(server);
 
 const localhost = process.env.VITE_LOCALHOST
 const localmongo = process.env.MONGO_URL
-const awsurl=process.env.AWS_MAIN
+const awsurl=process.env.FE_L
 
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
@@ -270,7 +270,7 @@ app.post('/kitchen-status/update', async (req, res) => {
 
 app.post("/purchase-orders/upload", async (req, res) => {
     try {
-        const {newItem} = req.body;  // No need to destructure { newItem }
+        const newItem = req.body.temporary;  // No need to destructure { newItem }
         console.log("newItem: ", newItem);
 
         const sanitizednewItem = {
