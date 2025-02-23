@@ -26,7 +26,7 @@ const io = new SocketIOServer(server);
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:process.env.FE_A,
+    origin:process.env.FE_L,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -285,7 +285,7 @@ app.post('/kitchen-status/update', async (req, res) => {
 
 app.post("/purchase-orders/upload", async (req, res) => {
     try {
-        const {newItem} = req.body;  // No need to destructure { newItem }
+        const newItem = req.body.temporary;  // No need to destructure { newItem }
         console.log("newItem: ", newItem);
 
         const sanitizednewItem = {
