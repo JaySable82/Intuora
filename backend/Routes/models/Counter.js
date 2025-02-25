@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+// const mongoose = require('mongoose');
 
 const counterSchema = new mongoose.Schema({
     _id: { type: String },

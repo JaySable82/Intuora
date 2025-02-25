@@ -1,9 +1,13 @@
-import React, { useState,useEffect} from 'react';
+import React, { useState,useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import vegIcon from '../assets/food.jpg';
 import nonVegIcon from '../assets/food.jpg';
 import "../Components/Kart.css";
 import ClipLoader from 'react-spinners/ClipLoader';
+import Warning from './warning';
+import { ControlContext } from './ControlContext';
+
+const AWS_URl=import.meta.env.VITE_AWS;
 
 const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [orderPlaced, setOrderPlaced] = useState(false);
@@ -11,20 +15,33 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [bottle, setBottle] = useState(0);
     const [loading, setLoading] = useState(false); // State for preloader
     const [selectedItems, setSelectedItems] = useState(cart.map(item => item.parcel || false)); // State for selected items
-    const [kitchenClosed, setKitchenClosed] = useState(false);
+    const [disablePlaceOrder, setDisablePlaceOrder] = useState(false);
+    const [selectAll, setSelectAll] = useState(false); // State for select all checkbox
     const navigate = useNavigate();
+    const {kitchenActive}=useContext(ControlContext);
 
-    const localurl=import.meta.env.VITE_LOCALSERVER
-    const awsurl=import.meta.env.VITE_AWS
+    // useEffect(() => {
+    //     console.log('kitchenActive:', kitchenActive);
+    // }, [kitchenActive]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log(`Kitchen is ${kitchenActive ? "open" : "closed"}`);
+        }, 1000); // Log every second
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(interval);
+    }, [kitchenActive]);
+    
     const handlePlaceOrder = async () => {
         
-       if(disableOrder) return;
+       if(disableOrder || !kitchenActive) return;
         setLoading(true);
         try {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch(`${awsurl}`, {
+            const response = await fetch(`${AWS_URl}/user/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,7 +64,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             const result = await response.json();
             console.log('Order placed successfully:', result);
             setToken(result.token);
-            navigate('/user/cart/placedorder', { state: { token: result.token, cart: cart, bottle: bottle } });
+            navigate('/ambika/user/cart/placedorder', { state: { token: result.token, cart: cart, bottle: bottle } });
         } catch (error) {
             console.error('Error placing order:', error);
         } finally {
@@ -100,21 +117,21 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     }, [disableOrder]);
 
     // Conditional rendering of the Place Order button based on disableOrder state
-    placeOrder = (
-        <div className="place-order">
-            <button
-                className="place-order-button"
-                onClick={disableOrder ? null : handlePlaceOrder} // Only handlePlaceOrder if not disabled
-                disabled={disableOrder} // Disable the button if disableOrder is true
-                style={{
-                    backgroundColor: disableOrder ? '#d3d3d3' : '#4CAF50', // Change color when disabled
-                    cursor: disableOrder ? 'not-allowed' : 'pointer',
-                }}
-            >
-                <p style={{ color: disableOrder ? 'black' : 'white' }}>Place Order</p>
-            </button>
-        </div>
-    );
+    // placeOrder = (
+    //     <div className="place-order">
+    //         <button
+    //             className="place-order-button"
+    //             onClick={disableOrder ? null : handlePlaceOrder} // Only handlePlaceOrder if not disabled
+    //             disabled={disableOrder} // Disable the button if disableOrder is true
+    //             style={{
+    //                 backgroundColor: disableOrder ? '#d3d3d3' : '#4CAF50', // Change color when disabled
+    //                 cursor: disableOrder ? 'not-allowed' : 'pointer',
+    //             }}
+    //         >
+    //             <p style={{ color: disableOrder ? 'black' : 'white' }}>Place Order</p>
+    //         </button>
+    //     </div>
+    // );
 
     const checkKitchenStatus = () => {
         const currentTime = new Date();
@@ -129,7 +146,6 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             (currentHours === 1) || 
             (currentHours === 2 && currentMinutes === 0); // Until exactly 2:00 AM
     
-        setKitchenClosed(!isOpen); // Set kitchenClosed to true if it's outside this window
     };
     
     
@@ -141,8 +157,6 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             return () => clearInterval(interval); // Clean up the interval
         }, []);
 
-        const placeOrderButtonText = kitchenClosed ? "Kitchen is Closed" : "Place Order";
-        const isPlaceOrderDisabled = disableOrder || kitchenClosed;
     
 
     return (
@@ -154,7 +168,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             ) : (
                 <>
                     <div className="header">
-                        <button onClick={() => navigate('/user')} className="back-button">←</button>
+                        <button onClick={() => navigate('/ambika/user')} className="back-button">←</button>
                         <div className="title" style={{ position: 'relative', left: 0 }}>Cart</div>
                     </div>
 
@@ -207,20 +221,20 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
                         {/* {placeOrder} */}
 
                         <div className="place-order">
-                        <button
-                            className="place-order-button"
-                            onClick={isPlaceOrderDisabled ? null : handlePlaceOrder}
-                            disabled={isPlaceOrderDisabled}
-                            style={{
-                                backgroundColor: isPlaceOrderDisabled ? '#d3d3d3' : '#4CAF50',
-                                cursor: isPlaceOrderDisabled ? 'not-allowed' : 'pointer',
-                            }}
-                        >
-                            <p style={{ color: isPlaceOrderDisabled ? 'black' : 'white' }}>{placeOrderButtonText}</p>
-                        </button>
-                    </div>
-                        
-
+                            <button
+                                className="place-order-button"
+                                onClick={handlePlaceOrder} // Only handlePlaceOrder if kitchenActive is false
+                                disabled={!kitchenActive} // Disable the button if kitchenActive is false
+                                style={{
+                                    backgroundColor: !kitchenActive ? '#d3d3d3' : '#4CAF50', // Change color when kitchenActive is false
+                                    cursor: !kitchenActive ? 'not-allowed' : 'pointer',
+                                }}
+                            >
+                                <p style={{ color: !kitchenActive ? 'black' : 'white' }}>
+                                    {!kitchenActive ? 'Kitchen is closed' : 'Place Order'}
+                                </p>
+                            </button>
+                        </div>
 
                 </>
             )}

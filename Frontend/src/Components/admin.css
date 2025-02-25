@@ -134,7 +134,7 @@ html, body {
     width: 400px;
     height: calc(100vh - 110px);
     left: 30px;
-    top: 104px;
+    top: 20px;
     position: absolute;
     background: #EDECE9;
     border-radius: 30px;
@@ -168,20 +168,12 @@ html, body {
     word-wrap: break-word;
 }
 
-.NewOrder {
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    top: 800px;
-    right: 90px;
-}
-  
 .NewOrder button {
-    cursor: pointer;
     position: fixed;
-    top: 18.5em;
-    height: 80px;
-    width: 230px;
+    bottom: 20px;       /* Distance from the bottom of the viewport */
+    right: 20px;        /* Distance from the right side of the viewport */
+    height: 4rem;
+    width: 15rem;
     background: #31B475;
     border-radius: 20px;
     font-family: 'Inter', sans-serif;
@@ -189,8 +181,7 @@ html, body {
     font-weight: bolder;
     border: none;
     color: white;
-    overflow: hidden;
-    right: calc(100% - 45em);
+    cursor: pointer;
 }
   
 .NewOrder button span {
@@ -200,7 +191,7 @@ html, body {
 }
 
 /* Media Queries */
-@media (max-width: 768px) {
+@media (max-width: 1366px) {
     .rectangle105, .rectangle106 {
         width: 90%;
     }
@@ -211,5 +202,27 @@ html, body {
 
     .otp-button button {
         height: 50px;
+    }
+
+    .NewOrder button {
+        position: fixed;
+        bottom: 10rem;       /* Distance from the bottom of the viewport */
+        right: 3rem;        /* Distance from the right side of the viewport */
+        height: 4rem;
+        width: 15rem;
+        background: #31B475;
+        border-radius: 20px;
+        font-family: 'Inter', sans-serif;
+        font-size: 30px;
+        font-weight: bolder;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+      
+    .NewOrder button span {
+        margin-right: 10px;
+        font-size: 1.5rem;
+        color: white;
     }
 }

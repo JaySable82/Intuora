@@ -26,16 +26,16 @@ const YourComponent = ({ cart, updateCart }) => {
     const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const Bestseller = [
-        { id: 8, name: 'Paneer Makhani', price: 129, img:peshwai },
-        { id: 7, name: 'Supreme Veggie', price: 129, img:sadashiv },
-        { id: 2, name: 'Veggie Delight', price:89, img:bombay }
+        { id: 19, name: 'Pashwaii',marathi:"पेशवाई", price: 100, img:peshwai },
+        { id: 22, name: 'Sadashiv Grill',marathi:"सदाशिव ग्रिल", price: 100, img:sadashiv },
+        { id: 3, name: 'Puneri Veg',marathi:"पुणेरी व्हेज", price:90, img:bombay }
     ];
 
-    const NewArrivals=[
-        { id: 17, name: "Window's Farm", price: 139, img:peshwai },
-        { id: 18, name: ' Jalapeno & Paprika', price: 129, img:sadashiv },
-        { id: 19, name: 'Blazing Onion & Paprika', price:119, img:bombay }
-    ];
+    // const NewArrivals=[
+    //     { id: 17, name: "Window's Farm", price: 139, img:peshwai },
+    //     { id: 18, name: ' Jalapeno & Paprika', price: 129, img:sadashiv },
+    //     { id: 19, name: 'Blazing Onion & Paprika', price:119, img:bombay }
+    // ];
 
     const sectionRefs = {
         Grilled: useRef(null),
@@ -49,7 +49,7 @@ const YourComponent = ({ cart, updateCart }) => {
             <div style={{ marginBottom: 110 }}>
                 <Categories sectionRefs={sectionRefs}/>
             </div>
-            <Bestsellers title={"New Arrivals"} onBestsellerClick={handleNewarrivalClick} cart={cart} updateCart={updateCart} Bestseller={NewArrivals}/>
+            {/* <Bestsellers title={"New Arrivals"} onBestsellerClick={handleNewarrivalClick} cart={cart} updateCart={updateCart} Bestseller={NewArrivals}/> */}
             <div style={{ marginTop: 20 }}>
             <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} />
             </div>
