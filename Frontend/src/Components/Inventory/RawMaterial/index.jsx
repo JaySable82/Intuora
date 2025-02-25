@@ -90,7 +90,7 @@ function RawMaterial() {
                             style={{ border: "none", backgroundColor: "rgb(49,180,117)", borderRadius: "1rem", height: "3rem", width: "9rem", color: "white", fontWeight: "600" }}
                             onClick={() => setIsUpdating(!isUpdating)}
                             disabled={isAdding}>
-                            {isUpdating ? "Cancel" : "Update"}
+                            {isUpdating ? "Save" : "Update"}
                         </button>
                     </div>
                 </div>
