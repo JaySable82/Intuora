@@ -270,7 +270,7 @@ app.post('/kitchen-status/update', async (req, res) => {
 
 app.post("/purchase-orders/upload", async (req, res) => {
     try {
-        const newItem = req.body.temporary;  // No need to destructure { newItem }
+        const newItem = req.body.newOrder;  // No need to destructure { newItem }
         console.log("newItem: ", newItem);
 
         const sanitizednewItem = {
@@ -279,7 +279,7 @@ app.post("/purchase-orders/upload", async (req, res) => {
             invoice_no: newItem.invoice_no || "",
             quantity: newItem.quantity ? Number(newItem.quantity) : 0,
             unit_price: newItem.unit_price ? Number(newItem.unit_price) : 0,
-            total_price: newItem.total_price ? Number(newItem.total_price) : 0,
+            total_price: newItem.total_price,
         };
 
         await purchaseOrderModel.create(sanitizednewItem);

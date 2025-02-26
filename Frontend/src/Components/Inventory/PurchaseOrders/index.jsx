@@ -39,27 +39,34 @@ function PurchaseOrders() {
   }, []);
 
   async function handleSave() {
-        // console.log("temporary: ", temporary);
-        setPurchaseOrdersList(prevList => [...prevList, temporary]);
+      const finalTotalPrice = temporary.total_price || (temporary.quantity * temporary.unit_price);
+      
+      const newOrder = {
+          ...temporary,
+          total_price: finalTotalPrice
+      };
 
-        try {
-        const response = await axios.post(`${url}/purchase-orders/upload`, { temporary });  // Wrap in an object
-        console.log("Data sent successfully: ", response);
-        } catch (err) {
-        console.log("Error in sending the temporary row", err);
-        }
+      setPurchaseOrdersList(prevList => [...prevList, newOrder]);
 
-        setTemporary({
-        item: "",
-        quantity: 0,
-        unit_price: 0,   
-        total_price: 0,
-        vendor: "",
-        invoice_no: "",
-        });
+      try {
+          const response = await axios.post(`${url}/purchase-orders/upload`, { newOrder });  
+          console.log("Data sent successfully: ", response);
+      } catch (err) {
+          console.log("Error in sending the temporary row", err);
+      }
 
-        setAddItems(false);
-    }
+      setTemporary({
+          item: "",
+          quantity: 0,
+          unit_price: 0,   
+          total_price: 0,
+          vendor: "",
+          invoice_no: "",
+      });
+
+      setAddItems(false);
+  }
+
 
   
 
@@ -249,14 +256,15 @@ function PurchaseOrders() {
                 <td>
                 <input
                     type="number"
-                    value={temporary.total_price===0?"":temporary.total_price}
+                    value={temporary.total_price === 0 ? "" : temporary.total_price}
                     style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }}
                     placeholder={temporary.quantity && temporary.unit_price ? temporary.quantity * temporary.unit_price : ""}
                     onChange={(e) => {
-                    const value = e.target.value === "" ? 0 : Number(e.target.value);
-                    setTemporary({ ...temporary, total_price: value });
+                        let value = e.target.value.trim() === "" ? temporary.quantity * temporary.unit_price : Number(e.target.value);
+                        setTemporary({ ...temporary, total_price: value });
                     }}
                 />
+
                 </td>
 
               </tr>
