@@ -16,6 +16,7 @@ import Sequence from './models/sequence.js';
 import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
 import rawMaterialModel from './models/rawMaterial.js';
+import AdminModel from './models/adminmodel.js';
 
 
 
@@ -50,6 +51,72 @@ mongoose.connect(process.env.MONGO_URL,)
 
 app.options('*', cors());
 app.use(express.json());
+
+let admin=null;
+
+//signup route
+app.post('/signup', async (req, res) => {
+    const { username, password } = req.body;
+    try{
+        let admin=await AdminModel.findOne({username});
+        if(!admin){
+            admin=await AdminModel.create({username,password});
+            return res.status(200).json({message:'Admin created successfully'});
+        }
+        else{
+            return res.status(400).json({message:'Admin already exists'});
+        }
+    } catch(error){
+        console.error('Error creating admin:',error);
+        return res.status(500).json({message:'Error creating admin',error:error.message});
+    }
+});
+
+//login route
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try{
+        admin=await AdminModel.findOne({username,password});
+        if(!admin){
+            return res.status(400).json({message:'Invalid credentials'});
+        }
+        else{
+        res.status(200).json({message:'Login successful',adminuser:admin.username});
+        }
+    }catch(error){
+        console.error('Error logging in:',error);
+        return res.status(500).json({message:'Error logging in',error:error.message});
+    }
+});
+
+//redirection of admins
+app.get('/login', async (req, res) => {
+    
+    try{
+        const username=req.query.username;
+        
+
+        if(!username){
+            return res.status(400).json({message:'Admin not found'});
+        }
+
+        admin=await AdminModel.findOne({username});
+
+        if(admin.username=="ambika"){
+            return res.status(200).json({message:'Admin is ambika'});
+        }
+        if(admin.username=="jaysable"){
+            return res.status(200).json({message:'Admin is jay'});
+        }
+        else{
+            return res.status(400).json({message:'Admin is not ambika'});
+        }
+        
+    }catch(error){
+        console.error('Error logging in:',error);
+        return res.status(500).json({message:'Error logging in',error:error.message});
+    }
+});
 
 // Route for placing orders from users
 app.post('/user/cart', async (req, res) => {
