@@ -21,7 +21,7 @@ const Cart = ({ size, total }) => {
                 <div>{size} Items</div>
                 <div>₹{total}</div>
             </div>
-            <Link to="/user/cart" style={{ 
+            <Link to="/ambika/user/cart" style={{ 
                 color: 'white', 
                 textDecoration: 'none', 
                 marginRight: '20px' 

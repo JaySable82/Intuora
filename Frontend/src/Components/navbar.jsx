@@ -8,7 +8,7 @@ function Nav({ size }) {
         <nav className="nav-container">
             <div className="nav-sec">
                 <span className="cart-icon">
-                    <Link to="/user/cart">
+                    <Link to="/ambika/user/cart">
                         <img src={CartIcon} alt="Cart" />
                     </Link>
                     {size > 0 && <span className="cart-badge">{size}</span>}
