@@ -7,6 +7,8 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import Warning from './warning';
 import { ControlContext } from './ControlContext';
 
+const AWS_URl=import.meta.env.VITE_AWS;
+
 const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [orderPlaced, setOrderPlaced] = useState(false);
     const [token, setToken] = useState(null);
@@ -39,7 +41,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch('http://localhost:3001/user/cart', {
+            const response = await fetch(`${AWS_URl}/user/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
