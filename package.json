@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "vite": "^6.1.0"
+    "node": "^23.9.0"
   }
 }

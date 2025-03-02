@@ -12,7 +12,7 @@ import { ControlContextProvider } from "./Components/ControlContext";
 import MenuManagement from "./Components/MenuManagement/MenuMangement";
 import NavBar from "./Components/MenuManagement/Navbar";
 import Inventory from "./Components/Inventory/Inventory";
-
+import Home from "./Components/pages/Home";
 
 function App() {
     const [cart, setCart] = useState([]);
@@ -46,7 +46,7 @@ function App() {
                     <Route path="/ambika/user" element={<YourComponent cart={cart} updateCart={updateCart} />} />
                     <Route path="/ambika/user/cart" element={<Kart cart={cart} updateCart={updateCart} />} />
                     <Route path="/menu" element={<Menu cart={cart} updateCart={updateCart} />} />
-                    <Route path="/ambika-admin/dashboard" element={<Admin />} />
+                    <Route path="/ambika-admin/dashboard" element={<Home />} />
                     <Route path="/ambika-admin" element={<Adminlogin />} />
                     <Route path="/ambika/user/cart/placedorder" element={<Finalorder />} />
                     <Route path="/ambika-admin/menu" element={<MenuManagement />} />
@@ -56,6 +56,7 @@ function App() {
             </ControlContextProvider>
         </BrowserRouter>
     );
+    return <Home />;
 }
 
 export default App;

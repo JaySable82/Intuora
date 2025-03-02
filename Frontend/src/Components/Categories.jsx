@@ -15,20 +15,20 @@ function Categories({ sectionRefs }) {
 
     return (
         <div>
-            <div
-                className="categories"
-                style={{
-                    left: 24,
-                    position: "relative",
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    fontSize: 30,
-                    fontFamily: "Inter",
-                    fontWeight: "400",
-                }}
-            >
-                Categories
-            </div>
+                <h2
+                    className="categories"
+                    style={{
+                        left: 24,
+                        position: "relative",
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        fontSize:19.2,
+                        fontFamily: "Arial, sans-serif",
+                        // fontWeight: "200",
+                    }}
+                >
+                    Categories
+                </h2>
             <div
                 className="button"
                 style={{
@@ -41,46 +41,64 @@ function Categories({ sectionRefs }) {
                 <button
                     onClick={() => scrollHandler("Grilled")}
                     style={{
-                        width: 90,
-                        height: 90,
+                        width: 70,
+                        height: 70,
                         borderRadius: "100%",
                         background: "white",
                         border: "0px solid darkgrey",
                     }}
                 >
-                    <img src={Grill} alt="grilled" style={{ height: 90, width: 90 }} />
-                    <h3 style={{ fontWeight: "normal", fontFamily: "Inter" }}>
-                        Non-Grilled 
+                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
+                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
+                        Non-Grilled
                     </h3>
                 </button>
+                
                 <button
-                    onClick={() => scrollHandler("NonGrilled")}
+                    onClick={() => scrollHandler("Grilled")}
                     style={{
-                        width: 90,
-                        height: 90,
+                        width: 70,
+                        height: 70,
                         borderRadius: "100%",
                         background: "white",
-                        border: "1px solid darkgrey",
+                        border: "0px solid darkgrey",
                     }}
                 >
-                    <img src={NonGrill} alt="non-grilled" style={{ height: 90, width: 90 }} />
-                    <h3 style={{ fontWeight: "normal", fontFamily: "Inter" }}>
-                        Grilled
+                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
+                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
+                        Non-Grilled
                     </h3>
                 </button>
+
                 <button
-                    onClick={() => scrollHandler("Chocolate")}
+                    onClick={() => scrollHandler("Grilled")}
                     style={{
-                        width: 90,
-                        height: 90,
+                        width: 70,
+                        height: 70,
                         borderRadius: "100%",
                         background: "white",
-                        border: "1px solid darkgrey",
+                        border: "0px solid darkgrey",
                     }}
                 >
-                    <img src={Choco} alt="chocolate" style={{ height: 90, width: 90 }} />
-                    <h3 style={{ fontWeight: "normal", fontFamily: "Inter" }}>
-                        Chocolate
+                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
+                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
+                        Non-Grilled
+                    </h3>
+                </button>
+
+                                <button
+                    onClick={() => scrollHandler("Grilled")}
+                    style={{
+                        width: 70,
+                        height: 70,
+                        borderRadius: "100%",
+                        background: "white",
+                        border: "0px solid darkgrey",
+                    }}
+                >
+                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
+                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
+                        Non-Grilled
                     </h3>
                 </button>
             </div>

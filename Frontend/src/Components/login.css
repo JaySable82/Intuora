@@ -21,7 +21,6 @@ body {
     border-top-right-radius: 32px;
     background: #ffffff;
     position: relative;
-<<<<<<< HEAD
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
@@ -48,23 +47,6 @@ body {
     font-size: 14px;
     font-weight: 400;
     margin-right: 2px;
-=======
-    
-    display: flex; /* Enable flexbox */
-    flex-direction: column; /* Stack children vertically */
-    align-items: center; /* Center horizontally */
-    justify-content: center; /* Center vertically */
-}
-
-/* Center the main-card */
-.main-card {
-    width: 90%; /* Adjust width as needed */
-    max-width: 400px; /* Prevent it from being too wide */
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
->>>>>>> 829fb14ccb09f5f6f995610a0d6f7c2308f27d48
     text-align: center;
 }
 
@@ -78,7 +60,6 @@ body {
     border-radius: 8px;
     padding-left: 10px;
     font-family: 'Poppins', sans-serif;
-<<<<<<< HEAD
     text-align: left;
 }
 
@@ -155,36 +136,3 @@ body {
     }
 }
 
-=======
-    margin: 20px auto; /* Centers it */
-}
-
-.input-container input {
-    flex-grow: 1; /* Allows input to take up remaining space */
-    text-align: left;
-}
-
-/* Centering the button */
-.otpbutton {
-    width: 100%;
-    margin-top: 20px;
-}
-
-.otpbutton button {
-    width: 100%;
-    height: 50px;
-    border-radius: 8px;
-    background: black;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.Welcome{
-
-    color: #000000;
-    font-family:'Poppins',sans-serif;
-    font-weight:bolder;
-    font-size: x-large;
-}
->>>>>>> 829fb14ccb09f5f6f995610a0d6f7c2308f27d48

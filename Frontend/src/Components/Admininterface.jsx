@@ -8,8 +8,10 @@ import io from "socket.io-client";
 import NavBar from "./MenuManagement/Navbar";
 import { ControlContext } from "./ControlContext";
 
-const AWS_URl=import.meta.env.VITE_AWS;
-const socket = io(import.meta.env.VITE_AWS, {
+
+const AWS_URL=import.meta.env.VITE_AWS;
+const local=import.meta.env.VITE_LOCAL;
+const socket = io(import.meta.env.VITE_LOCAL, {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });
@@ -41,7 +43,7 @@ function Admin() {
     // Fetch orders on component mount
     useEffect(() => {
         // Fetch initial orders
-        fetch(`${AWS_URl}/ambika-admin/dashboard`)
+        fetch(`${local}/ambika-admin/dashboard`)
             .then(response => response.json())
             .then(data => {
                 // Separate orders based on status
@@ -101,7 +103,7 @@ function Admin() {
         try {
             const nextStatus = currentStatus === 'current' ? 'accepted' : 'done';
     
-            const response = await fetch(`${AWS_URl}/ambika-admin/dashboard`, {
+            const response = await fetch(`${local}/ambika-admin/dashboard`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +160,7 @@ function Admin() {
     const handleDecline = async (id) => {
         try {
             // Make a DELETE request to remove the order from the backend
-            const response = await fetch(`${AWS_URl}/ambika-admin/dashboard`, {
+            const response = await fetch(`${local}/ambika-admin/dashboard`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +184,7 @@ function Admin() {
     const acceptDecline = async (id) => {
         try {
             // Make a DELETE request to remove the order from the backend
-            const response = await fetch(`${AWS_URl}/ambika-admin/dashboard`, {
+            const response = await fetch(`${local}/ambika-admin/dashboard`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -206,7 +208,7 @@ function Admin() {
     const handleIndex = async (index) => {
         // Remove the order from the currentOrders array
         try {
-            const response = await fetch(`${AWS_URl}/ambika-admin/dashboard`, {
+            const response = await fetch(`${local}/ambika-admin/dashboard`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'accepted', id: orderId })
@@ -239,7 +241,7 @@ function Admin() {
         try {
             // Log cart data to ensure marathi field is included
 
-            const response = await fetch(`${AWS_URl}/ambika-admin/dashboard`, {
+            const response = await fetch(`${local}/ambika-admin/dashboard`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -273,9 +275,10 @@ function Admin() {
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 30, position: 'relative' }}>
                 
                 {showWarning && <Warning rightnow={handleHideWarning} />}
+                
 
                 {/* Current Orders */}
-                <div className="Current_order">
+                {/* <div className="Current_order">
                     <div className="grey_box"/>
                     <div className="Accepted0">Current Orders</div>
                     {currentOrders.map((order, index) => (
@@ -294,7 +297,6 @@ function Admin() {
                         />
                     ))}
 
-                    {/* dummy cards */}
 
                     <AdminCard
                             key={1}
@@ -323,10 +325,10 @@ function Admin() {
                             showDeclineButton={true}
                     />
                     
-                </div>
+                </div> */}
 
                 {/* Accepted Orders */}
-                <div className="Accepted" style={{ width: 400, height: 'calc(100vh - 110px)', top: 20, position: 'absolute', background: '#EDECE9', borderRadius: 30, overflowY: 'auto', paddingBottom: 20 }}>
+                {/* <div className="Accepted" style={{ width: 400, height: 'calc(100vh - 110px)', top: 20, position: 'absolute', background: '#EDECE9', borderRadius: 30, overflowY: 'auto', paddingBottom: 20 }}>
                     <div className="grey box" style={{ width: '100%', height: 70, position: 'absolute', background: '#DDDBD3', borderTopLeftRadius: 30, borderTopRightRadius: 30 }} />
                     <div className="Accepted0" style={{ left: 120, top: 20, position: 'absolute', textAlign: 'center', color: '#0D0F11', fontSize: 30, fontFamily: 'Inter', fontWeight: 'bolder', wordWrap: 'break-word' }}>Accepted</div>
                     {acceptedOrders.map((order, index) => (
@@ -343,10 +345,10 @@ function Admin() {
                             showDeclineButton={true}
                         />
                     ))}
-                </div>
+                </div> */}
 
                 {/* Done Orders */}
-                <div className="Done" style={{ width: 400, height: 'calc(100vh - 110px)', right: 30, top: 20, position: 'absolute', background: '#EDECE9', borderRadius: 30, overflowY: 'auto', paddingBottom: 20 }}>
+                {/* <div className="Done" style={{ width: 400, height: 'calc(100vh - 110px)', right: 30, top: 20, position: 'absolute', background: '#EDECE9', borderRadius: 30, overflowY: 'auto', paddingBottom: 20 }}>
                     <div className="grey box" style={{ width: '100%', height: 70, position: 'absolute', background: '#DDDBD3', borderTopLeftRadius: 30, borderTopRightRadius: 30 }} />
                     <div className="Accepted0" style={{ left: 170, top: 20, position: 'absolute', textAlign: 'center', color: '#0D0F11', fontSize: 30, fontFamily: 'Inter', fontWeight: 'bolder', wordWrap: 'break-word' }}>Done</div>
                     {doneOrders.map((order, index) => (
@@ -364,14 +366,14 @@ function Admin() {
                             showDeclineButton={false}
                         />
                     ))}
-                </div>
+                </div> */}
 
                 {/* Offline Orders */}
-                <div className="NewOrder">
+                {/* <div className="NewOrder">
                 <button onClick={handleNewOrder}>
                     <span>+ New Order</span>
                 </button>
-                </div>
+                </div> */}
             </div>
         </>
         
