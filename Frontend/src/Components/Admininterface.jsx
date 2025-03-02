@@ -18,7 +18,6 @@ socket.on('connect', () => {
     console.log('Connected to Socket.IO server');
 });
 
-console.log("API Base URL:", local);
 
 
 function Admin() {

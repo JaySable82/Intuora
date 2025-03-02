@@ -190,17 +190,17 @@ function PurchaseOrders() {
                                         setPurchaseOrdersList(newOrdersList);
                                         }} /></td>
                 <td style={{ padding: "0.5rem", textAlign: "center", verticalAlign: "middle" }}>
-                <input type="number" value={row.quantity} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
+                <input className="no-spinner" type="number" value={row.quantity} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto", appearance: "textfield",MozAppearance: "textfield", WebkitAppearance: "textfield"}} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
                                         newOrdersList[index]={...newOrdersList[index],quantity:e.target.value};
                                         setPurchaseOrdersList(newOrdersList);
                                         }} /></td>
                 <td style={{ padding: "0.5rem", textAlign: "center", verticalAlign: "middle" }}> 
-                <input type="number" value={row.unit_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
+                <input className="no-spinner" type="number" value={row.unit_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto",appearance:"checkbox" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
                                         newOrdersList[index]={...newOrdersList[index],unit_price:e.target.value};
                                         setPurchaseOrdersList(newOrdersList);
                                         }} /></td>
                 <td style={{ padding: "0.5rem", textAlign: "center", verticalAlign: "middle" }}>
-                <input type="number" value={row.total_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
+                <input className="no-spinner" type="number" value={row.total_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto", appearance:"none" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
                                     newOrdersList[index]={...newOrdersList[index],total_price:e.target.value};
                                     setPurchaseOrdersList(newOrdersList);
                                     }} /></td>
