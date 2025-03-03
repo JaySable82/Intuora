@@ -1,35 +1,62 @@
-import React from 'react';
-import Bestsellers from '../../Bestseller';
-import Categories from '../../Categories';
-// import Menu from '../../menu';
+import{React,useRef}  from 'react';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Bestsellers from './Bestseller';
+import Menu from './menu';
+import Cart from './kartpopup';
+import Nav from './navbar';
+import Categories from './Categories';
+import peshwai from '../../../assets/pizza.png' 
+import sadashiv from '../../../assets/pizza.png'
+import bombay from '../../../assets/pizza.png'
 
-import peshwai from "../../../assets/pizza.png";
-import sadashiv from "../../../assets/pizza.png";
-import bombay from "../../../assets/pizza.png";
+const YourComponent = ({ cart, updateCart }) => {
+    const handleBestsellerClick = (item, quantity) => {
+        updateCart(item, quantity);
+    };
+    const handleNewarrivalClick = (item, quantity) => {
+        updateCart(item, quantity);
+    };
 
-const AdminOrdering = ({ cart, updateCart }) => {
-  const handleBestsellerClick = (item, quantity) => {
-    updateCart(item, quantity);
-  };
+    const handleMenuClick = (item, quantity) => {
+        updateCart(item, quantity);
+    };
 
-  const Bestseller = [
-    { id: 19, name: 'Peshwaii', marathi: "पेशवाई", price: 100, img: peshwai },
-    { id: 22, name: 'Sadashiv Grill', marathi: "सदाशिव ग्रिल", price: 100, img: sadashiv },
-    { id: 3, name: 'Puneri Veg', marathi: "पुणेरी व्हेज", price: 90, img: bombay },
-  ];
+    const cartSize = cart.reduce((acc, item) => acc + item.quantity, 0);
+    const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  return (
-    <div style={{ width: '50%', height: '100vh', background: '#FCFCF9', padding: '10px' }}>
-      <Categories />
-      <Bestsellers
-        title="Bestseller"
-        onBestsellerClick={handleBestsellerClick}
-        cart={cart}
-        Bestseller={Bestseller}
-      />
-      {/* <Menu handleClick={handleMenuClick} cart={cart} />  */}
-    </div>
-  );
+    const Bestseller = [
+        { id: 19, name: 'Pashwaii',marathi:"पेशवाई", price: 100, img:peshwai },
+        { id: 22, name: 'Sadashiv Grill',marathi:"सदाशिव ग्रिल", price: 100, img:sadashiv },
+        { id: 3, name: 'Puneri Veg',marathi:"पुणेरी व्हेज", price:90, img:bombay }
+    ];
+
+    // const NewArrivals=[
+    //     { id: 17, name: "Window's Farm", price: 139, img:peshwai },
+    //     { id: 18, name: ' Jalapeno & Paprika', price: 129, img:sadashiv },
+    //     { id: 19, name: 'Blazing Onion & Paprika', price:119, img:bombay }
+    // ];
+
+    const sectionRefs = {
+        Grilled: useRef(null),
+        NonGrilled: useRef(null),
+        Chocolate: useRef(null),
+    };
+
+    return (
+        <div style={{ width: '50%',overflow:'hidden',display:'flex',flexDirection:'column', position: 'relative', background: '#FCFCF9' }}>
+            <Nav size={cartSize} />
+            <div style={{ marginBottom: 110 }}>
+                <Categories sectionRefs={sectionRefs}/>
+            </div>
+            {/* <Bestsellers title={"New Arrivals"} onBestsellerClick={handleNewarrivalClick} cart={cart} updateCart={updateCart} Bestseller={NewArrivals}/> */}
+            <div style={{ marginTop: 20 }}>
+            <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} />
+            </div>
+            <Menu handleClick={handleMenuClick} cart={cart} sectionRefs={sectionRefs} />
+            <Cart size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} />
+        </div>
+    );
 };
 
-export default AdminOrdering;
+export default YourComponent;

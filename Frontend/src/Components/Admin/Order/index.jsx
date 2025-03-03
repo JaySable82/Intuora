@@ -1,6 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const Orders = ({ orders }) => {
+const url = import.meta.env.VITE_LOCAL;
+
+const Orders = () => {
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        const response = await axios.get(`${url}/admin/orders`);
+        setOrders(response.data);
+        console.log("Fetched Orders: ", response.data);
+      } catch (err) {
+        console.log("Error in fetching the orders.", err);
+      }
+    }
+
+    fetchOrders();
+  }, []);
+
   return (
     <div
       style={{
@@ -36,7 +55,6 @@ const Orders = ({ orders }) => {
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
             }}
           >
-            {/* Order Header: ID on the left, Table no. on the right */}
             <div
               style={{
                 display: 'flex',
@@ -48,11 +66,11 @@ const Orders = ({ orders }) => {
               <h3
                 style={{
                   margin: 0,
-                  color: '#31B254', // Green
+                  color: '#31B254',
                   fontWeight: 'bold',
                 }}
               >
-                #{order.id}
+                #{order.orders.token}
               </h3>
               <h3
                 style={{
@@ -61,22 +79,16 @@ const Orders = ({ orders }) => {
                   fontWeight: 'normal',
                 }}
               >
-                Table no. {order.table}
-                {order.block}
+                Table no. {order.tableNo} {order.blockNo}
               </h3>
             </div>
 
-            {/* Order Items */}
             <p style={{ margin: '5px 0', color: '#555' }}>
-              {order.items
-                .map((item) => `${item.quantity} x ${item.name}`)
-                .join(', ')}
+              {order.orders.items.map((item) => `${item.quantity} x ${item.name}`).join(', ')}
             </p>
 
-            {/* Separator */}
             <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
 
-            {/* Total Row: "Total" on the left, amount on the right */}
             <div
               style={{
                 display: 'flex',
@@ -85,9 +97,7 @@ const Orders = ({ orders }) => {
               }}
             >
               <span style={{ fontWeight: 'bold', color: '#333' }}>Total</span>
-              <span style={{ fontWeight: 'bold', color: '#333' }}>
-                {order.total}
-              </span>
+              <span style={{ fontWeight: 'bold', color: '#333' }}>₹{order.orders.total}</span>
             </div>
           </div>
         ))
