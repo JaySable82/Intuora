@@ -2,8 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import { Order, sequence } from './models/Order_model.js';
-import { AcceptedOrder, DoneOrder } from './models/Order_model.js';
+import { Order, sequence, AcceptedOrder, DoneOrder } from './models/Order_model.js';
 import Counter from './models/Counter.js';
 import cors from 'cors';
 import http from 'http';
@@ -12,48 +11,33 @@ import mongoose from 'mongoose';
 import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
 import rawMaterialModel from './models/rawMaterial.js';
-import escpos from 'escpos';
-import SerialPort from 'escpos-serialport';
+import { printer as ThermalPrinter } from 'node-thermal-printer';
+
 
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-escpos.Serial = SerialPort;
-
-const address = 'COM3'; // Replace this with your Bluetooth Printer COM Port
-const device = new escpos.Serial(address);
-const printer = new escpos.Printer(device);
-
 app.use(express.json());
-
-// Create a Socket.IO server instance with CORS options
 app.use(cors({
-    // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:process.env.FE_L,
-    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
+    origin: process.env.FE_L, 
+    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
 
-//USB Printer
-// escpos.USB=EscposUSB;
-// const device =new escpos.USB(0x04b8,0x0202);
-// const printer =new escpos.Printer(device);
-
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('A user connected');
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('User disconnected');
     });
 });
 
-mongoose.connect(process.env.MONGO_URL,)
+mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log("DB Connected"))
     .catch(err => console.log('MongoDB Connection Error:', err));
 
 app.options('*', cors());
-app.use(express.json());
 
 // Route for placing orders from users
 app.post('/user/cart', async (req, res) => {
@@ -381,38 +365,46 @@ app.put("/raw-material/update", async (req, res) => {
 app.post('/print', async (req, res) => {
     const { items, total, token } = req.body;
 
-    device.open((err) => {
-        if (err) {
-            console.error('Printer Connection Error:', err);
-            return res.status(500).json({ message: 'Printer connection failed' });
-        }
+    let printer = new ThermalPrinter({
+        type: 'epson',
+        interface: `serial://COM3`, // Replace with your Bluetooth/Serial Port
+        characterSet: 'SLOVENIA',
+        removeSpecialCharacters: false,
+        lineCharacter: '-'
+    });
 
-        printer
-            .align('ct')
-            .style('b')
-            .text(`Token No. ${token}`)
-            .newLine()
-            .text('-------------------------------')
-            .align('lt')
-            .text('Item         Qty     Price')
-            .text('-------------------------------');
+    const isConnected = await printer.isPrinterConnected();
+    if (!isConnected) {
+        console.error('Printer Not Connected');
+        return res.status(500).json({ message: 'Printer connection failed' });
+    }
+
+    try {
+        printer.alignCenter();
+        printer.bold(true);
+        printer.println(`Token No. ${token}`);
+        printer.bold(false);
+        printer.drawLine();
+
+        printer.alignLeft();
+        printer.println('Item         Qty     Price');
+        printer.drawLine();
 
         items.forEach((item) => {
-            const itemName = item.name.padEnd(10);
-            const qty = String(item.quantity).padStart(3);
-            const price = String(item.price).padStart(5);
-            printer.text(`${itemName} ${qty} ${price}`);
+            printer.println(`${item.name.padEnd(10)} ${String(item.quantity).padStart(3)} ${String(item.price).padStart(5)}`);
         });
 
-        printer
-            .text('-------------------------------')
-            .text(`Total: ${total}`)
-            .cut()
-            .close(() => {
-                console.log('KOT Printed Successfully');
-                res.status(200).json({ message: 'KOT printed successfully' });
-            });
-    });
+        printer.drawLine();
+        printer.println(`Total: ${total}`);
+        printer.cut();
+
+        await printer.execute();
+        console.log('KOT Printed Successfully');
+        res.status(200).json({ message: 'KOT printed successfully' });
+    } catch (error) {
+        console.error('Print Error:', error);
+        res.status(500).json({ message: 'Printer Error' });
+    }
 });
 
 
