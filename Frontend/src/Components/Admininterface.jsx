@@ -296,7 +296,7 @@ function Admin() {
 
                     {/* dummy cards */}
 
-                    <AdminCard
+                    {/* <AdminCard
                             key={1}
                             token={1001}
                             id={"123"}
@@ -321,7 +321,7 @@ function Admin() {
                             onDecline={() => handleDecline("123")}
                             showDoneButton={true}
                             showDeclineButton={true}
-                    />
+                    /> */}
                     
                 </div>
 

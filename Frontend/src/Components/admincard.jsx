@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRef} from 'react';
+import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import '../Components/admincard.css'
 import Card from 'react-bootstrap/Card';
@@ -7,95 +7,127 @@ import Card from 'react-bootstrap/Card';
 function AdminCard({ token, id, onIndex, index, items, onDone, onDecline, showDoneButton, showDeclineButton }) {
     const safeItems = Array.isArray(items) ? items : [];
     
-    // Assuming each bottle costs 20
-    const bottleCost = (safeItems[0]?.bottle || 0) * 20;
-    const total = safeItems.reduce((acc, item) => acc + item.quantity * item.price, 0) + bottleCost;
+    // Calculate bottle count - note that bottles are now included per item in the API response
+    const totalBottles = safeItems.reduce((acc, item) => acc + (item.bottle || 0), 0);
+    const bottleCost = totalBottles * 20; // Assuming each bottle costs 20
+    
+    // Calculate total price from items
+    const itemsTotal = safeItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+    const total = itemsTotal + bottleCost;
+    
     const totalQuantity = safeItems.reduce((acc, item) => acc + item.quantity, 0);
-    const totalBottles = safeItems[0]?.bottle || 0;
 
     const defaultHeight = 341; // Default height for the card
     const itemHeight = 20; // Height for each item (approx)
     const calculatedHeight = defaultHeight + (safeItems.length * itemHeight);
 
-    const handleDoneClick = (index) => {
+    const contentRef = useRef();
+    
+    const handleDoneClick = async (index) => {
+        // First send data to print route
+        try {
+            // Create order data matching the structure from the API response
+            const orderData = {
+                _id: id,
+                items: safeItems,
+                total: total,
+                token: token,
+                parcel: safeItems.some(item => item.parcel),
+                status: "current" // Will be changed to "accepted" or "done" by the existing handleDone function
+            };
+            
+            const AWS_URl = import.meta.env.VITE_AWS;
+            const printResponse = await fetch(`${AWS_URl}/print`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+            
+            if (!printResponse.ok) {
+                console.error('Failed to send print data:', await printResponse.text());
+            } else {
+                console.log('Print data sent successfully');
+            }
+        } catch (error) {
+            console.error('Error sending print data:', error);
+        }
+        
+        // Then proceed with the original done functionality
         onDone(id);
         onIndex(index);
         console.log("index is:", index);
     };
 
-    // const contentRef = useRef();
-    // const reactToPrintFn = useReactToPrint({ contentRef });
-
     return (
-        // <div ref={contentRef}>
-        <div>
-        <Card className="admin-card" style={{ width: 366, height: calculatedHeight, background: 'white', borderRadius: 16, position: 'relative', top: 100, left: 20, marginBottom: 10 }}>
-            <Card.Body style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 30 }}>
-                    <Card.Title style={{ fontWeight: 'bolder', fontSize: 20 }}>Token No.{token}</Card.Title>
-                    <Card.Title style={{ fontWeight: 'bolder', fontSize: 20 }}>Total: {totalQuantity}</Card.Title>
-                </div>
-    
-                <Card.Subtitle>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                        <span style={{ flex: 2 }}>Item</span>
-                        <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ flex: 1, textAlign: 'center' }}>Qty</span>
-                            <span style={{ flex: 1, textAlign: 'center' }}>Price</span>
-                        </div>
+        <div ref={contentRef}>
+            <Card className="admin-card" style={{ width: 366, height: calculatedHeight, background: 'white', borderRadius: 16, position: 'relative', top: 100, left: 20, marginBottom: 10 }}>
+                <Card.Body style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 30 }}>
+                        <Card.Title style={{ fontWeight: 'bolder', fontSize: 20 }}>Token No.{token}</Card.Title>
+                        <Card.Title style={{ fontWeight: 'bolder', fontSize: 20 }}>Total: {totalQuantity}</Card.Title>
                     </div>
-                </Card.Subtitle>
-                <div className="admin-card-items" style={{ marginTop: 10 }}>
-                    {safeItems.map((item, index) => (
-                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                            <div style={{ flex: 2, fontSize: 20 }}>
-                                {item.marathi} {item.parcel && <span style={{ color: 'green', fontWeight: 'bold' }}>Parcel</span>}
+        
+                    <Card.Subtitle>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                            <span style={{ flex: 2 }}>Item</span>
+                            <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ flex: 1, textAlign: 'center' }}>Qty</span>
+                                <span style={{ flex: 1, textAlign: 'center' }}>Price</span>
                             </div>
+                        </div>
+                    </Card.Subtitle>
+                    <div className="admin-card-items" style={{ marginTop: 10 }}>
+                        {safeItems.map((item, idx) => (
+                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                                <div style={{ flex: 2, fontSize: 20 }}>
+                                    {item.marathi} {item.parcel && <span style={{ color: 'green', fontWeight: 'bold' }}>Parcel</span>}
+                                </div>
+                                <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
+                                    <span style={{ flex: 1, textAlign: 'center' }}>{item.quantity}</span>
+                                    <span style={{ flex: 1, textAlign: 'center' }}>{item.price}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+        
+                    {totalBottles > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                            <div style={{ flex: 2, fontSize: 20, fontWeight: 'bold' }}>Water Bottle</div>
                             <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
-                                <span style={{ flex: 1, textAlign: 'center' }}>{item.quantity}</span>
-                                <span style={{ flex: 1, textAlign: 'center' }}>{item.price}</span>
+                                <span style={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }}>{totalBottles}</span>
+                                <span style={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }}>{bottleCost}</span>
                             </div>
                         </div>
-                    ))}
-                </div>
-    
-                {totalBottles > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                        <div style={{ flex: 2, fontSize: 20, fontWeight: 'bold' }}>Water Bottle</div>
-                        <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
-                            <span style={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }}>{totalBottles}</span>
-                            <span style={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }}>{bottleCost}</span>
-                        </div>
+                    )}
+        
+                    <hr style={{ margin: '10px 0' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'center' }}>
+                        <span style={{ fontWeight: 'bold' }}>Total:</span>
+                        <span style={{ fontWeight: 'bold', marginRight: 10 }}>{total}</span>
                     </div>
-                )}
-    
-                <hr style={{ margin: '10px 0' }} />
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'center' }}>
-                    <span style={{ fontWeight: 'bold' }}>Total:</span>
-                    <span style={{ fontWeight: 'bold', marginRight: 10 }}>{total}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 60 }}>
-                    {showDeclineButton && (
-                        <button 
-                            onClick={onDecline} 
-                            className="print-hide" 
-                            style={{ height: 60, width: 186, backgroundColor: 'white', fontSize: 23, fontFamily: 'Inter', color: 'black', padding: '5px 10px', borderRadius: 5, marginRight: 5, border: '1px solid black' }}>
-                            Decline
-                        </button>
-                    )}
-                    {showDoneButton && (
-                        <button 
-                            onClick={() => { handleDoneClick(index); reactToPrintFn(); }} 
-                            className="print-hide" 
-                            style={{ height: 60, width: 186, backgroundColor: '#31B475', fontSize: 23, fontFamily: 'Inter', color: 'white', padding: '5px 10px', borderRadius: 5, border: '1px solid #31B475' }}>
-                            Done
-                        </button>
-                    )}
-                </div>
-            </Card.Body>
-        </Card>
-    </div>
-    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 60 }}>
+                        {showDeclineButton && (
+                            <button 
+                                onClick={onDecline} 
+                                className="print-hide" 
+                                style={{ height: 60, width: 186, backgroundColor: 'white', fontSize: 23, fontFamily: 'Inter', color: 'black', padding: '5px 10px', borderRadius: 5, marginRight: 5, border: '1px solid black' }}>
+                                Decline
+                            </button>
+                        )}
+                        {showDoneButton && (
+                            <button 
+                                onClick={() => { handleDoneClick(index)}} 
+                                className="print-hide" 
+                                style={{ height: 60, width: 186, backgroundColor: '#31B475', fontSize: 23, fontFamily: 'Inter', color: 'white', padding: '5px 10px', borderRadius: 5, border: '1px solid #31B475' }}>
+                                Done
+                            </button>
+                        )}
+                    </div>
+                </Card.Body>
+            </Card>
+        </div>
     );
 }
 

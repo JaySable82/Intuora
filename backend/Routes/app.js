@@ -3,25 +3,29 @@ dotenv.config();
 
 import express from 'express';
 import { Order, sequence } from './models/Order_model.js';
-import { AcceptedOrder } from './models/Order_model.js';
-import { DoneOrder } from './models/Order_model.js';
+import { AcceptedOrder, DoneOrder } from './models/Order_model.js';
 import Counter from './models/Counter.js';
 import cors from 'cors';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
-import escpos from 'escpos';
-import EscposUSB from 'escpos-usb';
-import Sequence from './models/sequence.js';
 import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
 import rawMaterialModel from './models/rawMaterial.js';
-
-
+import escpos from 'escpos';
+import SerialPort from 'escpos-serialport';
 
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
+
+escpos.Serial = SerialPort;
+
+const address = 'COM3'; // Replace this with your Bluetooth Printer COM Port
+const device = new escpos.Serial(address);
+const printer = new escpos.Printer(device);
+
+app.use(express.json());
 
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
@@ -373,6 +377,44 @@ app.put("/raw-material/update", async (req, res) => {
       res.status(500).json({ error: "Error updating purchase orders" });
     }
 });
+
+app.post('/print', async (req, res) => {
+    const { items, total, token } = req.body;
+
+    device.open((err) => {
+        if (err) {
+            console.error('Printer Connection Error:', err);
+            return res.status(500).json({ message: 'Printer connection failed' });
+        }
+
+        printer
+            .align('ct')
+            .style('b')
+            .text(`Token No. ${token}`)
+            .newLine()
+            .text('-------------------------------')
+            .align('lt')
+            .text('Item         Qty     Price')
+            .text('-------------------------------');
+
+        items.forEach((item) => {
+            const itemName = item.name.padEnd(10);
+            const qty = String(item.quantity).padStart(3);
+            const price = String(item.price).padStart(5);
+            printer.text(`${itemName} ${qty} ${price}`);
+        });
+
+        printer
+            .text('-------------------------------')
+            .text(`Total: ${total}`)
+            .cut()
+            .close(() => {
+                console.log('KOT Printed Successfully');
+                res.status(200).json({ message: 'KOT printed successfully' });
+            });
+    });
+});
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
