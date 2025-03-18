@@ -38,11 +38,11 @@ const Orders = () => {
           color: '#333',
         }}
       >
-        Orders
+        
       </h2>
 
       {orders.length === 0 ? (
-        <p style={{ color: '#666' }}>No orders placed yet.</p>
+        <p style={{ color: '#666' }}></p>
       ) : (
         orders.map((order, index) => (
           <div

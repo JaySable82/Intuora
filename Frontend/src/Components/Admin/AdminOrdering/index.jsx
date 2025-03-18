@@ -45,8 +45,8 @@ const YourComponent = ({ cart, updateCart }) => {
 
     return (
         <div style={{ width: '50%',overflow:'hidden',display:'flex',flexDirection:'column', position: 'relative', background: '#FCFCF9' }}>
-            <Nav size={cartSize} />
-            <div style={{ marginBottom: 110 }}>
+            {/* <Nav size={cartSize} /> */}
+            <div style={{ marginBottom: 10 }}>
                 <Categories sectionRefs={sectionRefs}/>
             </div>
             {/* <Bestsellers title={"New Arrivals"} onBestsellerClick={handleNewarrivalClick} cart={cart} updateCart={updateCart} Bestseller={NewArrivals}/> */}
@@ -54,7 +54,7 @@ const YourComponent = ({ cart, updateCart }) => {
             <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} />
             </div>
             <Menu handleClick={handleMenuClick} cart={cart} sectionRefs={sectionRefs} />
-            <Cart size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} />
+            {/* <Cartx size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} /> */}
         </div>
     );
 };

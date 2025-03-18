@@ -1,48 +1,85 @@
-import React, { useState, useEffect } from 'react';
-
-function Cards({ item, handleClick, cart = [] }) {
-  const { name, price, img, id } = item;
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const cartItem = cart.find(cartItem => cartItem.id === id);
-    if (cartItem) {
-      setCount(cartItem.quantity);
-    } else {
-      setCount(0);
-    }
-  }, [cart, id]);
-
-  const handleAddClick = () => {
-    handleClick(item, 1);
-  };
-
-  const handleRemoveClick = () => {
-    if (count > 0) {
-      handleClick(item, -1);
-    }
-  };
+function Cards({ item, handleClick, cart }) {
+  const cartItem = cart.find((cartItem) => cartItem.id === item.id);
+  const quantity = cartItem ? cartItem.quantity : 0;
 
   return (
-    <div className="cards" style={{ height: 280, width: 170, top: 100, borderRadius: 8, position: 'relative', alignContent: 'center' }}>
-      <div className="img_box">
-        <img src={img} alt={name} style={{ width: 130, height: 100, borderRadius: 10, alignItems: 'center', display: 'block', marginLeft: 20 }} />
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 8,
+        padding: 15,
+        display: "flex",
+        flexDirection: "column",
+        minWidth: "200px",
+        width: "100%",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div style={{ textAlign: "left" }}> {/* Changed from center to left */}
+        <div style={{ fontSize: 18, color: "black" }}>{item.name}</div>
+        <div style={{ fontSize: 18, color: "black", marginTop: 10 }}>
+          {item.marathi}
+        </div>
       </div>
-      <div className="details">
-        <p style={{ fontWeight: 'bolder', marginBottom: 0, marginTop: 15, textAlign: 'center' }}>{name}</p>
-        <p style={{ fontWeight: '300', color: 'dark-grey', marginTop: 6, textAlign: 'center' }}>Price- ₹{price}</p>
-        <button onClick={handleAddClick} style={{ height: 40, width: 100, marginLeft: 30, marginBottom: 10, marginTop: 15, borderRadius: 8, fontWeight: 'bold', backgroundColor: 'white', border: '1px solid lightgrey' }}>Add to Cart</button>
-        {count > 0 && (
-          <div style={{ marginLeft: 40, marginBottom: 10 }}>
-            <button onClick={handleRemoveClick} style={{ height:30,width:30,borderRadius: 8, fontWeight: 'bold', backgroundColor: 'white', border: '2px solid lightgrey' }}>
-              <p style={{bottom:1,position:"relative"}}>-</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: 20,
+        }}
+      >
+        <div style={{ fontSize: 16, color: "black" }}>₹{item.price}</div>
+        <div>
+          {quantity > 0 ? (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <button
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
+                  backgroundColor: "#ffffff",
+                  border: "2px solid lightgrey",
+                  cursor: "pointer",
+                  marginRight: 5,
+                }}
+                onClick={() => handleClick(item, -1)}
+              >
+                -
               </button>
-            <span style={{ margin: '0 10px' }}>{count}</span>
-            <button onClick={handleAddClick} style={{ height:30,width:30, borderRadius: 8, fontWeight: 'bold', backgroundColor: 'white', border: '2px solid lightgrey' }}>
-              <p style={{bottom:1,position:"relative"}}>+</p>
+              <span style={{ margin: "0 10px" }}>{quantity}</span>
+              <button
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
+                  backgroundColor: "#ffffff",
+                  border: "2px solid lightgrey",
+                  cursor: "pointer",
+                  marginLeft: 5,
+                }}
+                onClick={() => handleClick(item, 1)}
+              >
+                +
               </button>
-          </div>
-        )}
+            </div>
+          ) : (
+            <button
+              style={{
+                width: 70,
+                height: 35,
+                borderRadius: 8,
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+              }}
+              onClick={() => handleClick(item, 1)}
+            >
+              Add
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

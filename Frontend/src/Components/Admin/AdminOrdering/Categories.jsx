@@ -1,109 +1,61 @@
+// Categories.jsx
 import React from "react";
-import Grill from '../../../assets/pizza.png';
-import NonGrill from "../../../assets/garlic_Bread.png";
-import Choco from "../../../assets/fries.png";
-import './CommonFonts.css';
+import "./CommonFonts.css";
 
 function Categories({ sectionRefs }) {
-    const scrollHandler = (refKey) => {
-        if (sectionRefs[refKey]?.current) {
-            sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth" });
-        } else {
-            console.error(`Ref for ${refKey} is not defined.`);
-        }
-    };
+  const scrollHandler = (refKey) => {
+    if (sectionRefs[refKey]?.current) {
+      sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.error(`Ref for ${refKey} is not defined.`);
+    }
+  };
 
-    return (
-        <div>
-                <h2
-                    className="categories"
-                    style={{
-                        left: 24,
-                        position: "relative",
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        fontSize:19.2,
-                        fontFamily: "Arial, sans-serif",
-                        // fontWeight: "200",
-                    }}
-                >
-                    Categories
-                </h2>
-            <div
-                className="button"
-                style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    position: "relative",
-                    top: 25,
-                }}
-            >
-                <button
-                    onClick={() => scrollHandler("Grilled")}
-                    style={{
-                        width: 70,
-                        height: 70,
-                        borderRadius: "100%",
-                        background: "white",
-                        border: "0px solid darkgrey",
-                    }}
-                >
-                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
-                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
-                        Non-Grilled
-                    </h3>
-                </button>
-                
-                <button
-                    onClick={() => scrollHandler("Grilled")}
-                    style={{
-                        width: 70,
-                        height: 70,
-                        borderRadius: "100%",
-                        background: "white",
-                        border: "0px solid darkgrey",
-                    }}
-                >
-                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
-                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
-                        Non-Grilled
-                    </h3>
-                </button>
+  const categories = ["Non Grilled", "Grilled", "Chocolate"];
 
-                <button
-                    onClick={() => scrollHandler("Grilled")}
-                    style={{
-                        width: 70,
-                        height: 70,
-                        borderRadius: "100%",
-                        background: "white",
-                        border: "0px solid darkgrey",
-                    }}
-                >
-                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
-                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
-                        Non-Grilled
-                    </h3>
-                </button>
-
-                                <button
-                    onClick={() => scrollHandler("Grilled")}
-                    style={{
-                        width: 70,
-                        height: 70,
-                        borderRadius: "100%",
-                        background: "white",
-                        border: "0px solid darkgrey",
-                    }}
-                >
-                    <img src={Grill} alt="grilled" style={{position:'relative', height: 60, width:60,right:60 }} />
-                    <h3 style={{position:'relative',right:60,fontSize:15, fontWeight:"lighter", fontFamily: "Arial, sans-serif" }}>
-                        Non-Grilled
-                    </h3>
-                </button>
-            </div>
-        </div>
-    );
+  return (
+    <div style={{ marginTop: 20 }}>
+      <h2
+        className="categories"
+        style={{
+          marginLeft: 24,
+          fontSize: 24,
+          fontFamily: "Arial, sans-serif",
+          fontWeight: "bold",
+        }}
+      >
+        Categories
+      </h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          gap: 15,
+          margin: "15px 24px",
+        }}
+      >
+        {categories.map((category, index) => (
+          <button
+            key={index}
+            onClick={() =>
+              scrollHandler(category.toLowerCase().replace(" ", ""))
+            }
+            style={{
+              padding: "8px 20px",
+              borderRadius: 8,
+              backgroundColor: "#ffffff",
+              border: "1px solid lightgrey",
+              cursor: "pointer",
+              fontSize: 16,
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Categories;
