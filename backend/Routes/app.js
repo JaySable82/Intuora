@@ -524,7 +524,7 @@ app.put("/raw-material/update", async (req, res) => {
     }
 });
 
-app.delete('/admin/bill', async (req, res) => {
+app.delete('/bedekar/bill', async (req, res) => {
     const { tableNo, blockNo } = req.query;
 
     try {
@@ -552,6 +552,119 @@ app.get('/admin/orders',async (req,res)=>{
         console.error("Error in fetching the orders",err);
     }
 })
+
+
+
+//Bedekar Routes
+app.post('/bedekar/cart', async (req, res) => {
+    console.log("Cart: ", req.body);
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { cart, total, tableNo, blockNo } = req.body;
+
+        if (!cart || cart.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty or undefined' });
+        }
+
+        // Get the token number from Counter
+        const counter = await Counter.findByIdAndUpdate(
+            'orderCounter',
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true, session }
+        );
+
+        const tokenNum = counter.seq;
+
+        // Map cart items to match schema
+        const items = cart.map((item) => ({
+            id: item.id,
+            marathi: item.marathi,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            parcel: item.parcel || false,
+            bottle: item.bottle || 0
+        }));
+
+        // Create new order
+        const order = new AdminDashboardOrdersModel({
+            tableNo,
+            blockNo,
+            orders: {
+                items,
+                total,
+                token: tokenNum
+            }
+        });
+
+        await order.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        io.emit('orderUpdate', {
+            ...order.toObject(),
+            status: 'current'
+        });
+
+        res.status(200).json({
+            message: 'Order placed successfully',
+            token: tokenNum
+        });
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error('Error placing order:', error);
+        res.status(500).json({ message: 'Error placing order', error: error.message });
+    }
+});
+
+app.get('/bedekar/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
+
+    try {
+        const orders = await AdminDashboardOrdersModel.find({ tableNo: tableNo, blockNo: blockNo });
+        console.log(orders);
+        res.json({ orders });
+    } catch (err) {
+        console.error("Error in finding the order", err);
+        res.status(500).send("Error in finding the order");
+    }
+});
+
+app.delete('/bedekar/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
+
+    try {
+        const result = await AdminDashboardOrdersModel.deleteMany({ tableNo: tableNo, blockNo: blockNo });
+
+        if (result.deletedCount > 0) {
+            console.log(`Orders for Table: ${tableNo}, Block: ${blockNo} deleted successfully`);
+            res.status(200).json({ message: "Order deleted successfully" });
+        } else {
+            console.log("No matching orders found");
+            res.status(404).json({ message: "No matching orders found" });
+        }
+    } catch (err) {
+        console.error("Error in deleting the order", err);
+        res.status(500).send("Error in deleting the order");
+    }
+});
+
+app.get('/bedekar/orders',async (req,res)=>{
+    try{
+        const response=await AdminDashboardOrdersModel.find();
+        res.json(response);
+        console.log("Orders fetched successfully");
+    }catch(err){
+        console.error("Error in fetching the orders",err);
+    }
+})
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { OrderContext } from "../OrdersContext";
 
 const sideSectionStyle = {
   position: "fixed",
@@ -71,6 +72,9 @@ function SideSection({
   blockStatus,
   currentSelectedBlock,
 }) {
+  const {tableNo_c}=useContext(OrderContext);
+  const {blockNo_c}=useContext(OrderContext);
+
   const calculateCurrentOccupancy = () => {
     if (!selectedTable || !blockStatus) return 0;
     
@@ -129,8 +133,11 @@ function SideSection({
   };
 
   const handleBlockClick = (block) => {
-    if (!onBlockSelect || !isBlockAvailable(block)) return;
+    //if (!onBlockSelect || !isBlockAvailable(block)) return;
     onBlockSelect(block);
+
+    // console.log("Table No: ",tableNo_c);
+    // console.log("Block No: ",blockNo_c);
   };
 
   const getButtonStyle = (blockLetter, height, width) => {

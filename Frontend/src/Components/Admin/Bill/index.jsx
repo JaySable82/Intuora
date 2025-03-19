@@ -12,16 +12,46 @@ const Bill = ({ cart, billData, billTotal, tableNo, blockNo, fetchBillData }) =>
     }
   };
 
-  // Function to handle print action (previously handlePrint)
-  const handlePrint = async () => {
+  // Function to handle place order (replacing handlePrint)
+  const handlePlaceOrder = async () => {
     try {
-      await axios.delete(`${url}/admin/bill`, {
-        params: { tableNo, blockNo },
-      });
-      console.log("Order deleted successfully");
-      fetchBillData(); // Refresh bill data after deleting
+      // First check if cart has items
+      if (cart.length === 0) {
+        alert("Please add items to the cart before placing an order");
+        return;
+      }
+
+      // Prepare the order data
+      const orderData = {
+        cart: cart.map(item => ({
+          ...item,
+          marathi: item.marathi || '',
+          parcel: item.parcel || false
+        })),
+        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        tableNo: tableNo,
+        blockNo: blockNo
+      };
+
+      // Send the order request
+      const response = await axios.post(`${url}/admin/cart`, orderData);
+      
+      if (response.data) {
+        console.log("Order placed successfully:", response.data);
+        
+        // Clear the local cart after successful order placement
+        // Note: This would need to be implemented in the parent component
+        // You might want to add a callback prop for this
+        
+        // Refresh bill data after placing order
+        //fetchBillData();
+        
+        // You could also add notification here
+        alert("Order placed successfully!");
+      }
     } catch (err) {
-      console.log("Error in deleting the orders.", err);
+      console.error("Error in placing the order:", err);
+      alert("Failed to place order. Please try again.");
     }
   };
 
@@ -30,7 +60,7 @@ const Bill = ({ cart, billData, billTotal, tableNo, blockNo, fetchBillData }) =>
     try {
       // Clear cart items - this will be implemented in parent component
       if (window.confirm("Are you sure you want to clear all items?")) {
-        axios.delete(`${url}/admin/bill`, {
+        axios.delete(`${url}/bedekar/bill`, {
           params: { tableNo, blockNo },
         }).then(() => {
           console.log("Orders cleared successfully");
@@ -38,7 +68,7 @@ const Bill = ({ cart, billData, billTotal, tableNo, blockNo, fetchBillData }) =>
         });
       }
     } catch (err) {
-      console.log("Error in clearing the orders.", err);
+      console.log("Error in clearing the orders:", err);
     }
   };
 
@@ -164,7 +194,7 @@ const Bill = ({ cart, billData, billTotal, tableNo, blockNo, fetchBillData }) =>
             </button>
             
             <button
-              onClick={handlePrint}
+              onClick={handlePlaceOrder}
               style={{
                 padding: '10px 15px',
                 background: '#31B254',
@@ -173,10 +203,9 @@ const Bill = ({ cart, billData, billTotal, tableNo, blockNo, fetchBillData }) =>
                 cursor: 'pointer',
                 borderRadius: '5px',
                 flex: '1',
-
               }}
             >
-              Print
+              Place Order
             </button>
           </div>
         </>

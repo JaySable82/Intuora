@@ -9,7 +9,7 @@ const Orders = () => {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const response = await axios.get(`${url}/admin/orders`);
+        const response = await axios.get(`${url}/bedekar/orders`);
         setOrders(response.data);
         console.log("Fetched Orders: ", response.data);
       } catch (err) {

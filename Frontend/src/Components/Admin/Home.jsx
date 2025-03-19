@@ -94,6 +94,7 @@ const Home = () => {
   };
   
   const updateCart = (item, change) => {
+    console.log("Update kart called!");
     setCart((prevCart) => {
       const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
@@ -117,8 +118,10 @@ const Home = () => {
           updateQuantity: (newQty) => updateCartItemQuantity(item.id, newQty)
         }];
       }
+      
       return prevCart;
     });
+    //  console.log("Current Cart Items: ",cart);
   };
 
   // Function to directly update cart item quantity
@@ -170,6 +173,7 @@ const Home = () => {
 
   //TABLE SELECTION CALLBACK
   const handleTableSelect = (tableNo) => {
+    //console.log("Handle table select called ",tableNo);
     setSelectedTable(tableNo);
     setTableNo_c(tableNo);
     setSelectedBlock(null);
@@ -179,6 +183,7 @@ const Home = () => {
 
   //BLOCK SELECTION CALLBACK
   const handleBlockSelect = (block) => {
+    //console.log("Handle block select called ",block);
     setSelectedBlock(block);
     setBlockNo_c(block);
     clearOtherSelections(selectedTable, block);
