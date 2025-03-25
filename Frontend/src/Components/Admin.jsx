@@ -13,7 +13,7 @@ function Adminlogin() {
 
     return (
         <div className="outercontainer">
-            <div className="Rectangle104" style={{ width: '100%', height: '100vh', left: 720, top: 0, position: 'absolute', background: '#FCFCF9' }} />
+            <div className="Rectangle104" style={{ width: '100%', height: '100vh', left: 720, top: 0, position: 'absolute', background: 'white' }} />
             <div className="Logo" style={{ left: 302, top: 500, position: 'absolute', textAlign: 'center', color: 'white', fontSize: 36, fontFamily: 'Inter', fontWeight: '400', wordWrap: 'break-word' }}>Logo</div>
             <div className="WeWillSendYouAnOneTimePasswordOnThisMobileNumber" style={{ left: 878, top: 362, position: 'absolute', textAlign: 'center', marginTop: 80 }}>
                 <span style={{ color: '#827B7B', fontSize: 35, fontFamily: 'Poppins', fontWeight: '400', wordWrap: 'break-word' }}>We will send you an </span>

@@ -29,7 +29,7 @@ function NavBar() {
     return (
         <>
             <nav className="navbar">
-                <div className="navbar-div" style={{ display: "flex", justifyContent: "space-between",width:"100%",paddingRight:"2rem"}}>
+                <div className="navbar-div" style={{ display: "flex", justifyContent: "space-between",width:"100%"}}>
                     <div className="logo-div" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="more-logo" style={{ height: "2rem", width: "2rem", backgroundColor: "black", marginTop: "0rem", marginLeft: "1rem" }} onClick={handleOpen}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />

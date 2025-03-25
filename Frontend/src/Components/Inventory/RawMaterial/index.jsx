@@ -6,7 +6,7 @@ function RawMaterial() {
     const [isUpdating, setIsUpdating] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [items, setItems] = useState([]);
-    const url = import.meta.env.VITE_AWS;
+    const url = import.meta.env.VITE_LOCAL;
     const [newItem, setNewItem] = useState({ name: "", unit: "", quantity: 0, threshold: 0 });
     const hasFetchedRef=useRef(false);
 
@@ -90,7 +90,7 @@ function RawMaterial() {
                             style={{ border: "none", backgroundColor: "rgb(49,180,117)", borderRadius: "1rem", height: "3rem", width: "9rem", color: "white", fontWeight: "600" }}
                             onClick={() => setIsUpdating(!isUpdating)}
                             disabled={isAdding}>
-                            {isUpdating ? "Cancel" : "Update"}
+                            {isUpdating ? "Save" : "Update"}
                         </button>
                     </div>
                 </div>

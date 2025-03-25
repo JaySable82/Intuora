@@ -10,12 +10,15 @@ import cors from 'cors';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
-import escpos from 'escpos';
-import EscposUSB from 'escpos-usb';
-import Sequence from './models/sequence.js';
+// import escpos from 'escpos';
+// import EscposUSB from 'escpos-usb';
+// import Sequence from './models/sequence.js';
 import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
 import rawMaterialModel from './models/rawMaterial.js';
+import AdminModel from './models/adminmodel.js';
+import AdminDashboardOrdersModel from './models/AdminDashboard.js';
+import AllOrdersModel from './models/allorders.js';
 
 
 
@@ -26,7 +29,7 @@ const io = new SocketIOServer(server);
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:process.env.FE_A,
+    origin:process.env.FE_L,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -50,6 +53,72 @@ mongoose.connect(process.env.MONGO_URL,)
 
 app.options('*', cors());
 app.use(express.json());
+
+let admin=null;
+
+//signup route
+app.post('/signup', async (req, res) => {
+    const { username, password } = req.body;
+    try{
+        let admin=await AdminModel.findOne({username});
+        if(!admin){
+            admin=await AdminModel.create({username,password});
+            return res.status(200).json({message:'Admin created successfully'});
+        }
+        else{
+            return res.status(400).json({message:'Admin already exists'});
+        }
+    } catch(error){
+        console.error('Error creating admin:',error);
+        return res.status(500).json({message:'Error creating admin',error:error.message});
+    }
+});
+
+//login route
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try{
+        admin=await AdminModel.findOne({username,password});
+        if(!admin){
+            return res.status(400).json({message:'Invalid credentials'});
+        }
+        else{
+        res.status(200).json({message:'Login successful',adminuser:admin.username});
+        }
+    }catch(error){
+        console.error('Error logging in:',error);
+        return res.status(500).json({message:'Error logging in',error:error.message});
+    }
+});
+
+//redirection of admins
+app.get('/login', async (req, res) => {
+    
+    try{
+        const username=req.query.username;
+        
+
+        if(!username){
+            return res.status(400).json({message:'Admin not found'});
+        }
+
+        admin=await AdminModel.findOne({username});
+
+        if(admin.username=="ambika"){
+            return res.status(200).json({message:'Admin is ambika'});
+        }
+        if(admin.username=="jaysable"){
+            return res.status(200).json({message:'Admin is jay'});
+        }
+        else{
+            return res.status(400).json({message:'Admin is not ambika'});
+        }
+        
+    }catch(error){
+        console.error('Error logging in:',error);
+        return res.status(500).json({message:'Error logging in',error:error.message});
+    }
+});
 
 // Route for placing orders from users
 app.post('/user/cart', async (req, res) => {
@@ -110,6 +179,88 @@ app.post('/user/cart', async (req, res) => {
         res.status(500).json({ message: 'Error placing order', error: error.message });
     }
 });
+
+// Route for placing orders from users
+app.post('/admin/cart', async (req, res) => {
+    console.log("Cart: ", req.body);
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { cart, total, tableNo, blockNo } = req.body;
+
+        if (!cart || cart.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty or undefined' });
+        }
+
+        // Get the token number from Counter
+        const counter = await Counter.findByIdAndUpdate(
+            'orderCounter',
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true, session }
+        );
+
+        const tokenNum = counter.seq;
+
+        // Map cart items to match schema
+        const items = cart.map((item) => ({
+            id: item.id,
+            marathi: item.marathi,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            parcel: item.parcel || false,
+            bottle: item.bottle || 0
+        }));
+
+        // Create new order
+        const order = new AdminDashboardOrdersModel({
+            tableNo,
+            blockNo,
+            orders: {
+                items,
+                total,
+                token: tokenNum
+            }
+        });
+
+        await order.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        io.emit('orderUpdate', {
+            ...order.toObject(),
+            status: 'current'
+        });
+
+        res.status(200).json({
+            message: 'Order placed successfully',
+            token: tokenNum
+        });
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error('Error placing order:', error);
+        res.status(500).json({ message: 'Error placing order', error: error.message });
+    }
+});
+
+app.get('/admin/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
+
+    try {
+        const orders = await AdminDashboardOrdersModel.find({ tableNo: tableNo, blockNo: blockNo });
+        console.log(orders);
+        res.json({ orders });
+    } catch (err) {
+        console.error("Error in finding the order", err);
+        res.status(500).send("Error in finding the order");
+    }
+});
+
 
 // Fetch orders for the admin dashboard
 app.get('/ambika-admin/dashboard', async (req, res) => {
@@ -373,6 +524,180 @@ app.put("/raw-material/update", async (req, res) => {
       res.status(500).json({ error: "Error updating purchase orders" });
     }
 });
+
+app.delete('/bedekar/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
+    const { itemId } = req.query;
+
+    try {
+        const result = await AdminDashboardOrdersModel.deleteMany({ tableNo: tableNo, blockNo: blockNo,itemId:itemId });
+
+        if (result.deletedCount > 0) {
+            console.log(`Orders for Table: ${tableNo}, Block: ${blockNo} deleted successfully`);
+            res.status(200).json({ message: "Order deleted successfully" });
+        } else {
+            console.log("No matching orders found");
+            res.status(404).json({ message: "No matching orders found" });
+        }
+    } catch (err) {
+        console.error("Error in deleting the order", err);
+        res.status(500).send("Error in deleting the order");
+    }
+});
+
+app.get('/admin/orders',async (req,res)=>{
+    try{
+        const response=await AdminDashboardOrdersModel.find();
+        res.json(response);
+        console.log("Orders fetched successfully");
+    }catch(err){
+        console.error("Error in fetching the orders",err);
+    }
+})
+
+
+
+//Bedekar Routes
+app.post('/bedekar/cart', async (req, res) => {
+    console.log("Cart: ", req.body);
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const { cart, total, tableNo, blockNo } = req.body;
+
+        if (!cart || cart.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty or undefined' });
+        }
+
+        // Get the token number from Counter
+        const counter = await Counter.findByIdAndUpdate(
+            'orderCounter',
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true, session }
+        );
+
+        const tokenNum = counter.seq;
+
+        // Map cart items to match schema
+        const items = cart.map((item) => ({
+            id: item.id,
+            marathi: item.marathi,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            parcel: item.parcel || false,
+            bottle: item.bottle || 0
+        }));
+
+        // Create new order
+        const order = new AdminDashboardOrdersModel({
+            tableNo,
+            blockNo,
+            orders: {
+                items,
+                total,
+                token: tokenNum
+            }
+        });
+
+        await order.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        io.emit('orderUpdate', {
+            ...order.toObject(),
+            status: 'current'
+        });
+
+        res.status(200).json({
+            message: 'Order placed successfully',
+            token: tokenNum
+        });
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error('Error placing order:', error);
+        res.status(500).json({ message: 'Error placing order', error: error.message });
+    }
+});
+
+app.get('/bedekar/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
+
+    try {
+        const orders = await AdminDashboardOrdersModel.find({ tableNo: tableNo, blockNo: blockNo });
+        console.log(orders);
+        res.json({ orders });
+    } catch (err) {
+        console.error("Error in finding the order", err);
+        res.status(500).send("Error in finding the order");
+    }
+});
+
+app.delete('/bedekar/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
+    const { itemId } = req.query;
+
+    try {
+        const result = await AdminDashboardOrdersModel.deleteMany({ tableNo: tableNo, blockNo: blockNo,itemId: itemId });
+
+        if (result.deletedCount > 0) {
+            console.log(`Orders for Table: ${tableNo}, Block: ${blockNo} deleted successfully`);
+            res.status(200).json({ message: "Order deleted successfully" });
+        } else {
+            console.log("No matching orders found");
+            res.status(404).json({ message: "No matching orders found" });
+        }
+    } catch (err) {
+        console.error("Error in deleting the order", err);
+        res.status(500).send("Error in deleting the order");
+    }
+});
+
+// app.get('/bedekar/dashboard',async (req,res)=>{
+//     try{
+//         const response=await AdminDashboardOrdersModel.find();
+//         res.json(response);
+//         console.log("Orders fetched successfully");
+//     }catch(err){
+//         console.error("Error in fetching the orders",err);
+//     }
+// })
+
+app.post('/bedekar/dashboard', async (req, res) => {
+    const { tableNo, blockNo } = req.body;
+  
+    try {
+      // 1) Find the existing orders in AdminDashboard
+      const existingOrders = await AdminDashboardOrdersModel.find({ tableNo, blockNo });
+      if (!existingOrders.length) {
+        return res.status(404).json({ message: "No orders found to clear" });
+      }
+  
+      // 2) For each found order, store them in AllOrders
+      for (const order of existingOrders) {
+        await AllOrdersModel.create({
+          tableNo: order.tableNo,
+          blockNo: order.blockNo,
+          orders: order.orders,
+          clearedAt: new Date()
+        });
+      }
+  
+      // 3) Delete them from AdminDashboard
+      await AdminDashboardOrdersModel.deleteMany({ tableNo, blockNo });
+  
+      res.status(200).json({ message: "Orders archived & cleared from DB" });
+    } catch (err) {
+      console.error("Error clearing/archiving orders:", err);
+      res.status(500).json({ error: "Failed to clear & archive" });
+    }
+  });
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

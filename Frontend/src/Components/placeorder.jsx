@@ -12,7 +12,7 @@ function FinalOrder() {
     };
     console.log("water bottle",bottle);
     return (
-        <div style={{ width: '100%', height: '100vh', position: 'relative', background: '#FCFCF9' }}>
+        <div style={{ width: '100%', height: '100vh', position: 'relative', background: 'white' }}>
             <div className="YourPaymentIsSuccessful" style={{ left: 65, top: 277, position: 'absolute', color: 'black', fontSize: 16, fontFamily: 'Inter', fontWeight: '600', wordWrap: 'break-word' }}>
                 Your Order is placed Successfully
             </div>

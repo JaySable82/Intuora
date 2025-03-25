@@ -12,7 +12,8 @@ import { ControlContextProvider } from "./Components/ControlContext";
 import MenuManagement from "./Components/MenuManagement/MenuMangement";
 import NavBar from "./Components/MenuManagement/Navbar";
 import Inventory from "./Components/Inventory/Inventory";
-
+import Home from "./Components/Admin/Home";
+import { OrderContextProvider } from "./Components/Admin/OrdersContext";
 
 function App() {
     const [cart, setCart] = useState([]);
@@ -30,29 +31,32 @@ function App() {
                 );
             } else if (change > 0) {
                 return [...prevCart, { ...item, quantity: change, marathi: item.marathi }];
-            }
+            }x
             return prevCart;
         });
     };
 
-    
-
     return (
         <BrowserRouter>
             <ControlContextProvider>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/otp" element={<Otpform />} />
-                    <Route path="/ambika/user" element={<YourComponent cart={cart} updateCart={updateCart} />} />
-                    <Route path="/ambika/user/cart" element={<Kart cart={cart} updateCart={updateCart} />} />
-                    <Route path="/menu" element={<Menu cart={cart} updateCart={updateCart} />} />
-                    <Route path="/ambika-admin/dashboard" element={<Admin />} />
-                    <Route path="/ambika-admin" element={<Adminlogin />} />
-                    <Route path="/ambika/user/cart/placedorder" element={<Finalorder />} />
-                    <Route path="/ambika-admin/menu" element={<MenuManagement />} />
-                    <Route path="/ambika-admin/inventory" element={<Inventory />} />
-                    <Route path="/nav" element={<NavBar />} />
-                </Routes>
+                <OrderContextProvider>
+                    <Routes>
+                        <Route path="/bedekar" element={<Login />} />
+                        {/* <Route path="/otp" element={<Otpform />} />
+                        <Route path="/ambika/user" element={<YourComponent cart={cart} updateCart={updateCart} />} />
+                        <Route path="/ambika/user/cart" element={<Kart cart={cart} updateCart={updateCart} />} /> */}
+                        
+                        {/* <Route path="/admin/user/cart" element={<Kart cart={cart} updateCart={updateCart} />} /> */}
+
+                        {/* <Route path="/menu" element={<Menu cart={cart} updateCart={updateCart} />} /> */}
+                        <Route path="/bedekar/dashboard" element={<Home />} />
+                        {/* <Route path="/bedekar" element={<Adminlogin />} /> */}
+                        {/* <Route path="/ambika/user/cart/placedorder" element={<Finalorder />} />
+                        <Route path="/ambika-admin/menu" element={<MenuManagement />} />
+                        <Route path="/ambika-admin/inventory" element={<Inventory />} />
+                        <Route path="/nav" element={<NavBar />} /> */}
+                    </Routes>
+                </OrderContextProvider>
             </ControlContextProvider>
         </BrowserRouter>
     );

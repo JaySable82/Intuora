@@ -35,7 +35,7 @@ function Otplogin() {
     return (
         <div className="outercontainer">
             <div className="SurfacePro83" style={{ width: 1440, height: '100vh', position: 'relative', background: '#0D0F11' }}>
-                <div className="Rectangle104" style={{ width: '100%', height: '100vh', left: 720, top: 0, position: 'absolute', background: '#FCFCF9' }} />
+                <div className="Rectangle104" style={{ width: '100%', height: '100vh', left: 720, top: 0, position: 'absolute', background: 'white' }} />
                 <div className="Logo" style={{ left: 302, top: 500, position: 'absolute', textAlign: 'center', color: 'white', fontSize: 36, fontFamily: 'Inter', fontWeight: '400', wordWrap: 'break-word' }}>Logo</div>
                 <div className="Welcome" style={{ left: 1050, top: 284, position: 'absolute', textAlign: 'center', color: 'black', fontSize: 60, fontFamily: 'Poppins', fontWeight: '600', wordWrap: 'break-word' }}>Welcome!</div>
                 <button

@@ -6,8 +6,8 @@ const Cart = ({ size, total }) => {
         <div style={{ 
             position: 'fixed', 
             bottom: 0, 
-            left: 0, 
-            width: '100%', 
+            left: '25.5%', 
+            width: '48%', 
             background: '#0D0F11', 
             color: 'white', 
             padding: '10px', 
@@ -21,7 +21,7 @@ const Cart = ({ size, total }) => {
                 <div>{size} Items</div>
                 <div>₹{total}</div>
             </div>
-            <Link to="/ambika/user/cart" style={{ 
+            <Link to="/ambika-admin/dashboard" style={{ 
                 color: 'white', 
                 textDecoration: 'none', 
                 marginRight: '20px' 

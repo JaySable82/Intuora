@@ -44,7 +44,7 @@ const YourComponent = ({ cart, updateCart }) => {
     };
 
     return (
-        <div style={{ width: '100%', height: '100vh', position: 'relative', background: '#FCFCF9' }}>
+        <div style={{ width: '50%', height: '100vh',overflow:'hidden',display:'flex',flexDirection:'column', position: 'relative', background: 'white' }}>
             <Nav size={cartSize} />
             <div style={{ marginBottom: 110 }}>
                 <Categories sectionRefs={sectionRefs}/>
