@@ -5,7 +5,7 @@ export const ControlContext = createContext({});
 
 export function ControlContextProvider({ children }) {
     const [kitchenActive, setKitchenActive] = useState(null);
-    const url = import.meta.env.VITE_LOCAL;
+    const url = import.meta.env.VITE_AWS;
     const firstRender = useRef(true); // Prevent first update
 
     useEffect(() => {

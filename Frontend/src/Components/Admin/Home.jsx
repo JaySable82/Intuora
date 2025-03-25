@@ -11,7 +11,7 @@ import NavBar from '../MenuManagement/Navbar';
 import { OrderContext } from './OrdersContext';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_LOCAL;
+const url = import.meta.env.VITE_AWS;
 
 const Home = () => {
   const tableCount = 12;
