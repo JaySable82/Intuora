@@ -9,9 +9,9 @@ import NavBar from "./MenuManagement/Navbar";
 import { ControlContext } from "./ControlContext";
 
 
-const AWS_URL=import.meta.env.VITE_LOCAL;
-const local=import.meta.env.VITE_LOCAL;
-const socket = io(import.meta.env.VITE_LOCAL, {
+const AWS_URL=import.meta.env.VITE_AWS;
+const local=import.meta.env.VITE_AWS;
+const socket = io(import.meta.env.VITE_AWS, {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });

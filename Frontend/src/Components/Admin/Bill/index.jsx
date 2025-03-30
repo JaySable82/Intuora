@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-const url = import.meta.env.VITE_LOCAL;
+const url = import.meta.env.VITE_AWS;
 
 const Bill = ({
   cart,
