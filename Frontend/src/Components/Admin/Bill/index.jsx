@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-const url = import.meta.env.VITE_AWS;
+const url = import.meta.env.VITE_LOCAL;
 
 const Bill = ({
   cart,
@@ -11,7 +11,9 @@ const Bill = ({
   tableNo,
   blockNo,
   onClearLocalCart,
-  multiblock,
+  placedorder,
+  setPlacedOrder,
+  setOrderedTableNo
 }) => {
   // Function to update item quantity in the cart
   const updateCartItemQuantity = (item, newQuantity) => {
@@ -68,7 +70,6 @@ const Bill = ({
         tableNo,
         blockNo,
       };
-
       // 3. Send order to DB
       const response = await axios.post(`${url}/admin/cart`, orderData);
       if (response.data) {
@@ -81,12 +82,19 @@ const Bill = ({
         // fetchBillData && fetchBillData();
 
         alert("Order placed successfully!");
+        setPlacedOrder(true); // Set placed order to true
+        const tableBlock = `${tableNo}${blockNo}`;
+        setOrderedTableNo(tableBlock); // Set the ordered table number
       }
     } catch (err) {
       console.error("Error in placing the order:", err);
       alert("Failed to place order. Please try again.");
     }
   };
+
+  useEffect(() => {
+    console.log("placedorder has updated:", placedorder);
+  }, [placedorder]);
 
   // Function to clear all items LOCALLY ONLY
   const handleClear = async () => {
@@ -114,7 +122,7 @@ const Bill = ({
         onClearLocalCart && onClearLocalCart();
       } catch (err) {
         console.error("Error clearing/archiving from DB:", err);
-        alert("Failed to clear from DB. Check console for details.");
+        alert("Order is cleard successfully! Try to refresh the page.");
       }
     }
   };
@@ -165,13 +173,15 @@ const totalFromLocal = cart.reduce((sum, item) => sum + item.price * item.quanti
 const totalAmount = Math.max(totalFromDb, totalFromLocal);
   // const totalAmount =
   //   billTotal + cart.reduce((sum, item) => (sum + item.price * item.quantity), 0);
+
+  console.log
     
 
   return (
     <div
       style={{
         width: "22%",
-        top: 98,
+        top: 0,
         padding: "10px",
         background: "#F8F8FA",
         borderRadius: "10px",
@@ -334,7 +344,7 @@ const totalAmount = Math.max(totalFromDb, totalFromLocal);
                 flex: "1",
               }}
             >
-              Place Order
+              Save Order
             </button>
           </div>
         </>

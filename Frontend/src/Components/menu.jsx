@@ -8,9 +8,16 @@ function Menu({ handleClick,cart,sectionRefs }) {
     const filterItems = (minId, maxId) => 
         list.filter(item => item.id >= minId && item.id <= maxId);
 
-    const grilledItems = filterItems(1,9);
-    const nonGrilledItems = filterItems(10, 25);
-    const chocolateItems = filterItems(26, 29);
+    // const grilledItems = filterItems(1,9);
+    // const nonGrilledItems = filterItems(10, 25);
+    // const chocolateItems = filterItems(26, 29);
+
+    const misal = filterItems(1,11);
+    const extras = filterItems(12, 18);
+    const snacks = filterItems(19, 27);
+    const beverages = filterItems(28, 34);
+    const desserts = filterItems(35, 43);
+    const rte = filterItems(44, 46);
 
     // const Grilled = useRef(null);
     // const NonGrilled = useRef(null);
@@ -34,7 +41,7 @@ function Menu({ handleClick,cart,sectionRefs }) {
                     Non-Grilled Sandwich
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-                    {grilledItems.map((item) => (
+                    {misal.map((item) => (
                         <Cards item={item} key={item.id} handleClick={handleClick} cart={cart} />
                     ))}
                 </div>
@@ -47,7 +54,7 @@ function Menu({ handleClick,cart,sectionRefs }) {
                     Grilled Sandwich
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-                    {nonGrilledItems.map((item) => (
+                    {extras.map((item) => (
                         <Cards item={item} key={item.id} handleClick={handleClick} cart={cart} />
                     ))}
                 </div>
@@ -60,7 +67,43 @@ function Menu({ handleClick,cart,sectionRefs }) {
                     Chocolate Sandwich
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', paddingBottom: '400px' }}>
-                    {chocolateItems.map((item) => (
+                    {snacks.map((item) => (
+                        <Cards item={item} key={item.id} handleClick={handleClick} cart={cart} />
+                    ))}
+                </div>
+            </div>
+            <div ref={sectionRefs.Chocolate}>
+                <div className="Vector2" style={{ width: 125, height: 1, left: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
+                <div className="Vector2" style={{ width: 125, height: 1, right: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
+                <div style={{ textAlign: 'center', marginBottom: '20px', color: '#6D6D6D', position: 'relative', top: 80, fontWeight: 'bold' }}>
+                    Chocolate Sandwich
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', paddingBottom: '400px' }}>
+                    {beverages.map((item) => (
+                        <Cards item={item} key={item.id} handleClick={handleClick} cart={cart} />
+                    ))}
+                </div>
+            </div>
+            <div ref={sectionRefs.Chocolate}>
+                <div className="Vector2" style={{ width: 125, height: 1, left: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
+                <div className="Vector2" style={{ width: 125, height: 1, right: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
+                <div style={{ textAlign: 'center', marginBottom: '20px', color: '#6D6D6D', position: 'relative', top: 80, fontWeight: 'bold' }}>
+                    Chocolate Sandwich
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', paddingBottom: '400px' }}>
+                    {desserts.map((item) => (
+                        <Cards item={item} key={item.id} handleClick={handleClick} cart={cart} />
+                    ))}
+                </div>
+            </div>
+            <div ref={sectionRefs.Chocolate}>
+                <div className="Vector2" style={{ width: 125, height: 1, left: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
+                <div className="Vector2" style={{ width: 125, height: 1, right: 10, top: 5175, position: 'absolute', border: '1px #B6ADAD solid' }}></div>
+                <div style={{ textAlign: 'center', marginBottom: '20px', color: '#6D6D6D', position: 'relative', top: 80, fontWeight: 'bold' }}>
+                    Chocolate Sandwich
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', paddingBottom: '400px' }}>
+                    {rte.map((item) => (
                         <Cards item={item} key={item.id} handleClick={handleClick} cart={cart} />
                     ))}
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SideSection from "../Reservation";
 
-function TableBar({ onTableSelect, onBlockSelect, blockStatus, currentSelectedBlock,cart, updateCart }) {
+function TableBar({ onTableSelect, onBlockSelect, blockStatus, currentSelectedBlock,cart, updateCart,setIsOpen }) {
   const tableCount = 12;
   const [newselectedTable, setnewselectedTable] = useState(null);
   const [tableOccupancy, setTableOccupancy] = useState({});
@@ -27,6 +27,7 @@ function TableBar({ onTableSelect, onBlockSelect, blockStatus, currentSelectedBl
   const handleTableClick = (tableNo) => {
     setnewselectedTable(tableNo);
     if (onTableSelect) onTableSelect(tableNo);
+    if (setIsOpen) setIsOpen(true); // Open the side section when a table is selected
   };
 
   const containerStyle = {

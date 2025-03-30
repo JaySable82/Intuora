@@ -3,12 +3,12 @@ import React from "react";
 import Slider from "react-slick";
 import "./CommonFonts.css";
 
-function Bestsellers({ title, Bestseller, cart = [], onBestsellerClick,tableno,blockNo }) {
+function Bestsellers({ title, Bestseller, cart = [], onBestsellerClick,tableno,blockNo,isOpen }) {
   const sliderSettings = {
-    dots: false,
+    dots: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: isOpen ? 3 : 4,
     slidesToScroll: 1,
     responsive: [
       {
@@ -54,20 +54,31 @@ function Bestsellers({ title, Bestseller, cart = [], onBestsellerClick,tableno,b
           return (
             <div key={item.id}>
               <div
-                style={{
+                style={ isOpen ? {
                   width: "190px",
                   minWidth: "100px",
-                  height: 100, // Increased height to accommodate second name
+                  height: 100, // Adjusted height to fit content
                   background: "#FFFFFF",
                   borderRadius: 8,
-                  position: "relative",
-                  margin: "0 10px",
+                  margin: "0 10px 0", // Use margin to space cards
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                }}
+                  transition: "0.5s ease",
+                }:{                        width: "190px",
+                  minWidth: "100px",
+                  height: 100,
+                  background: "#FFFFFF",
+                  borderRadius: 8,
+                  margin: "0 10px 0 20px", // Slight different margin for closed state if needed
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "0.5s ease",}}
               >
                 <div style={{
                   position: "relative",

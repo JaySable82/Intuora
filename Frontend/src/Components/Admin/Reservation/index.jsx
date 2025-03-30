@@ -49,10 +49,32 @@ function SideSection({
   onSelectedMainChange,
   selectedMulti,
   onSelectedMultiChange,
+  isOpen,
+  setIsOpen,
+  blockNo,
+  placedorder,
+  orderedTableNo,
 
 }) {
-  const { tableNo_c } = useContext(OrderContext);
-  const { blockNo_c } = useContext(OrderContext);
+
+  // const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    onSelectedMainChange("");
+    onSelectedMultiChange({
+      AI: false,
+      BI: false,
+      AO: false,
+      BO: false,
+    });
+    onBlockSelect("");
+  }, [tableno]);
+  
+   // Define our styles
+  const placedStyle = { background: "#E5E5E9", color: "#93929C", pointerEvents: "none" };
+  const disabledStyle = { background: "#FFFFFF", color: "#DEE1E4", pointerEvents: "none" };
+
+  const toggleSideSection = () => setIsOpen((prev) => !prev);
 
   const calculateCurrentOccupancy = () => {
     if (!selectedTable || !blockStatus) return 0;
@@ -117,77 +139,6 @@ function SideSection({
     return true;
   };
 
-  console.log("tableno", tableno);
-  const handleBlockClick = (block) => {
-    //if (!onBlockSelect || !isBlockAvailable(block)) return;
-    onBlockSelect(block);
-
-    // console.log("Table No: ",tableNo_c);
-    // console.log("Block No: ",blockNo_c);
-  };
-
-  // const getButtonStyle = (blockLetter, height, width) => {
-  //   // Set the default background to very light grey for the blocks
-  //   const defaultBackground = "#f2f2f2";
-
-  //   if (!selectedTable) {
-  //     return {
-  //       height,
-  //       width,
-  //       border: "none",
-  //       backgroundColor: defaultBackground,
-  //       fontSize: blockLetter === "Full" ? 30 : 20,
-  //       fontWeight: "bold",
-  //       fontFamily: "inter",
-  //       borderRadius: 8,
-  //     };
-  //   }
-
-  //   const key = `${selectedTable}${blockLetter}`;
-  //   const status = blockStatus?.[key] || null;
-  //   const isSelected = currentSelectedBlock === blockLetter;
-  //   const isAvailable = isBlockAvailable(blockLetter);
-
-  //   let style = {
-  //     height,
-  //     width,
-  //     border: "none",
-  //     backgroundColor: defaultBackground, // Use light grey here
-  //     fontSize: blockLetter === "Full" ? 30 : 20,
-  //     fontWeight: "bold",
-  //     fontFamily: "inter",
-  //     borderRadius: 8,
-  //     cursor: isAvailable ? "pointer" : "not-allowed",
-  //   };
-
-  //   if (isSelected) {
-  //     style.backgroundColor = defaultBackground;
-  //     style.color = "#31B254";
-  //     style.border = "2px solid #31B254";
-  //   } else if (status === "ordered") {
-  //     style.backgroundColor = "#C0C0C0";
-  //     style.color = "#000";
-  //   } else if (status === "editing") {
-  //     style.backgroundColor = defaultBackground;
-  //     style.color = "#000";
-  //     style.border = "2px solid #000";
-  //   } else if (!isAvailable) {
-  //     style.backgroundColor = "#F5F5F5";
-  //     style.color = "#999";
-  //   }
-
-  //   return style;
-  // };
-  // Main group: Full, A, B (single select and toggleable)
-
-  // Multi-select group: AI, BI, AO, BO
-  // const [selectedMulti, onSelectedMultiChange] = useState({
-  //   AI: false,
-  //   BI: false,
-  //   AO: false,
-  //   BO: false,
-  // });
-
   // Occupancy state
   const [occupancy, setOccupancy] = useState(0);
 
@@ -234,27 +185,28 @@ function SideSection({
     }
     onSelectedMainChange(label);
     onBlockSelect(label);
+    setIsOpen(false); // Close the side section when a main button is selected.
   };
 
   function buildBlockString(selectedMain, selectedMulti) {
-  // Convert the selectedMulti object into an array of active keys
-  const multiKeys = Object.entries(selectedMulti)
-    .filter(([_, isActive]) => isActive)
-    .map(([key]) => key);
+    // Convert the selectedMulti object into an array of active keys
+    const multiKeys = Object.entries(selectedMulti)
+      .filter(([_, isActive]) => isActive)
+      .map(([key]) => key);
 
-  if (selectedMain && multiKeys.length > 0) {
-    // e.g. "A-AI" or "B-BO"
-    return `${selectedMain}-${multiKeys.join("-")}`;
-  } else if (selectedMain) {
-    // e.g. "A" or "Full"
-    return selectedMain;
-  } else if (multiKeys.length > 0) {
-    // e.g. "AI-AO" if no main seat is selected
-    return multiKeys.join("-");
+    if (selectedMain && multiKeys.length > 0) {
+      // e.g. "A-AI" or "B-BO"
+      return `${selectedMain}-${multiKeys.join("-")}`;
+    } else if (selectedMain) {
+      // e.g. "A" or "Full"
+      return selectedMain;
+    } else if (multiKeys.length > 0) {
+      // e.g. "AI-AO" if no main seat is selected
+      return multiKeys.join("-");
+    }
+    // If nothing is selected, return empty string
+    return "";
   }
-  // If nothing is selected, return empty string
-  return "";
-}
 
   // Handler for multi-select group (AI, BI, AO, BO)
   const handleMultiClick = (label) => {
@@ -262,7 +214,7 @@ function SideSection({
       alert("Please select a table number first!");
       return;
     }
-  
+
     // If already selected, toggle off.
     if (selectedMulti[label]) {
       onSelectedMultiChange((prev) => {
@@ -280,23 +232,23 @@ function SideSection({
       if (selectedMain === "B" && (label === "BI" || label === "BO")) {
         onSelectedMainChange("");
       }
-  
+
       // Recalculate potential occupancy
       const mainOccupancy =
         selectedMain === "A" && (label === "AI" || label === "AO")
           ? 0
           : selectedMain === "B" && (label === "BI" || label === "BO")
-          ? 0
-          : selectedMain
-          ? occupancyMappingMain[selectedMain]
-          : 0;
-  
+            ? 0
+            : selectedMain
+              ? occupancyMappingMain[selectedMain]
+              : 0;
+
       const currentMultiCount = Object.values(selectedMulti).filter(Boolean).length;
       const potential = mainOccupancy + currentMultiCount + 1;
       if (potential > 4) {
         return; // Do not allow if occupancy exceeds 4.
       }
-  
+
       onSelectedMultiChange((prev) => {
         const updated = { ...prev, [label]: true };
         // Build the new block string
@@ -306,7 +258,7 @@ function SideSection({
       });
     }
   };
-  
+
 
 
   // Helper: Determine main group button font color.
@@ -314,19 +266,17 @@ function SideSection({
   const getMainFontColor = (label) => {
     const allMultiSelected = Object.values(selectedMulti).every((val) => val === true);
     if (allMultiSelected) {
-      return "#DEE1E4";
+      return "black"; // All multi buttons selected, main group inactive.
     }
     if (selectedMain === "Full") {
-      return label === "Full" ? "#159758" : "#DEE1E4";
+      return label === "Full" ? "#159758" : "black";
     }
     if (selectedMain === "A") {
       if (label === "A") return "#159758";
-      if (label === "Full") return "#DEE1E4";
       return "black";
     }
     if (selectedMain === "B") {
       if (label === "B") return "#159758";
-      if (label === "Full") return "#DEE1E4";
       return "black";
     }
     return "black";
@@ -335,38 +285,96 @@ function SideSection({
   // Helper: Determine multi-select button font color.
   const getMultiFontColor = (label) => {
     if (selectedMain === "Full") {
-      return "#DEE1E4"; // All multi buttons inactive when Full is selected.
+      return "black"; // All multi buttons inactive when Full is selected.
     }
     if (selectedMain === "A") {
       // When A is selected, AI and AO are inactive.
-      if (label === "AI" || label === "AO") return "#DEE1E4";
+      if (label === "AI" || label === "AO") return "black";
     }
     if (selectedMain === "B") {
       // When B is selected, BI and BO are inactive.
-      if (label === "BI" || label === "BO") return "#DEE1E4";
+      if (label === "BI" || label === "BO") return "black";
     }
     return selectedMulti[label] ? "#159758" : "black";
   };
 
   // Dynamic styling for main group buttons.
-  const getMainButtonStyle = (baseStyle, label) => {
+// In SideSection.jsx (only showing modified helpers)
+const getMainButtonStyle = (baseStyle, label) => {
+  // Build the identifier for the current table in this component.
+  const currentTableBlock = tableno && blockNo ? `${tableno}-${blockNo}` : "";
+
+  // If no order is placed OR the order placed is for a different table,
+  // then use your normal styling logic.
+  if (!placedorder || (placedorder && orderedTableNo !== currentTableBlock)) {
     const isSelected = selectedMain === label;
     return {
       ...baseStyle,
       border: isSelected ? "2px solid #159758" : baseStyle.border,
-      color: getMainFontColor(label),
+      color: getMainFontColor(label)
     };
-  };
+  }
+  
+  // Otherwise, order is placed for this table so apply disabled/placed styling.
+  // Ensure we safely work with blockNo (using a fallback if needed)
+  const bn = blockNo || "";
+  // Split the combined orderedTableNo to get its parts (if you built it as "A-AI" for example)
+  const orderParts = (orderedTableNo || "").split("-");
+  
+  if (orderParts.includes(label)) {
+    return { ...baseStyle, ...placedStyle };
+  }
+  
+  if (orderedTableNo === "Full" && label !== "Full") {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  if ((orderedTableNo === "A" || orderedTableNo.startsWith("A-")) && (label === "Full" || label === "A")) {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  if ((orderedTableNo === "B" || orderedTableNo.startsWith("B-")) && (label === "Full" || label === "B")) {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  if (orderParts.length >= 3 && ["Full", "A", "B"].includes(label)) {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  return { ...baseStyle, ...disabledStyle };
+};
 
-  // Dynamic styling for multi-select buttons.
-  const getMultiButtonStyle = (baseStyle, label) => {
+const getMultiButtonStyle = (baseStyle, label) => {
+  const currentTableBlock = tableno && blockNo ? `${tableno}-${blockNo}` : "";
+  if (!placedorder || (placedorder && orderedTableNo !== currentTableBlock)) {
     const isSelected = selectedMulti[label];
     return {
       ...baseStyle,
       border: isSelected ? "2px solid #159758" : baseStyle.border,
-      color: getMultiFontColor(label),
+      color: getMultiFontColor(label)
     };
-  };
+  }
+  
+  const bn = blockNo || "";
+  const orderParts = (orderedTableNo || "").split("-");
+  if (orderParts.includes(label)) {
+    return { ...baseStyle, ...placedStyle };
+  }
+  
+  if ((orderedTableNo === "A" || orderedTableNo.startsWith("A-")) && (label === "AI" || label === "AO")) {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  if ((orderedTableNo === "B" || orderedTableNo.startsWith("B-")) && (label === "BI" || label === "BO")) {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  if (orderParts.length >= 3) {
+    return { ...baseStyle, ...disabledStyle };
+  }
+  
+  return { ...baseStyle, ...disabledStyle };
+};
 
   // Base styles for main group buttons.
   const baseStyleMain = {
@@ -374,6 +382,8 @@ function SideSection({
     borderRadius: 10,
     fontSize: 32,
     border: "2px solid transparent",
+    // transition: "transform 0.3s ease",
+    // transform: isOpen ? "translateX(0)" : "translateX(-360px)",
   };
   const fullStyle = {
     ...baseStyleMain,
@@ -401,93 +411,120 @@ function SideSection({
   console.log("Selected Main:", selectedMain || selectedMulti);
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 300,
-        backgroundColor: "#F8F8FA",
-        height: 900,
-        width: 400,
-        display: "flex",           // Use flex layout
-        flexDirection: "column",   // Stack items vertically
-        justifyContent: "center",  // Center items vertically
-        alignItems: "center",
-        borderRadius: 10
-      }}
-    >
+    <div>
+      {/* Toggle Arrow Button */}
+      <button
+        onClick={toggleSideSection}
+        style={{
+          position: "fixed",
+          top: 220,
+          left: isOpen ? "370px" : "0px",
+          zIndex: 1000,
+          borderRadius: isOpen ? "40px 0px 0px 40px" : "0px 40px 40px 0px",
+          background: "#fff",
+          border: "1px solid #ccc",
+          width: "30px",
+          height: "40px",
+          cursor: "pointer",
+          transition: "transform 0.3s ease",
+          // transform: isOpen ? "translateX(0)" : "translateX(-360px)",
 
-      <div style={{ transform: "translateY(-80px)" }}>
-        {/* Full Button */}
-        <div style={{ marginBottom: "20px" }}>
-          <button
-            onClick={() => handleMainClick("Full")}
-            style={getMainButtonStyle(fullStyle, "Full")}
-          >
-            Full
-          </button>
-        </div>
+        }}
+      >
+        {isOpen ? "<" : ">"}
+      </button>
 
-        {/* A and B Buttons */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 150px)",
-            marginBottom: "20px",
-            gap: "10px",
-          }}
-        >
-          <button
-            onClick={() => handleMainClick("A")}
-            style={getMainButtonStyle(abStyle, "A")}
-          >
-            A
-          </button>
-          <button
-            onClick={() => handleMainClick("B")}
-            style={getMainButtonStyle(abStyle, "B")}
-          >
-            B
-          </button>
-        </div>
+      <div
+        style={{
+          position: "fixed",
+          top: 200,
+          backgroundColor: "#F8F8FA",
+          height: 900,
+          width: 400,
+          display: "flex",           // Use flex layout
+          flexDirection: "column",   // Stack items vertically
+          justifyContent: "center",  // Center items vertically
+          alignItems: "center",
+          borderRadius: 10,
+          transform: isOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease",
+        }}
+      >
 
-        {/* AI, BI, AO, BO Buttons (Multi-select) */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 150px)",
-            columnGap: "5px",
-            rowGap: "10px",
-          }}
-        >
-          <button
-            onClick={() => handleMultiClick("AI")}
-            style={getMultiButtonStyle(aiStyle, "AI")}
+
+        <div style={{ transform: "translateY(-80px)" }}>
+          {/* Full Button */}
+          <div style={{ marginBottom: "20px" }}>
+            <button
+              onClick={() => handleMainClick("Full")}
+              style={getMainButtonStyle(fullStyle, "Full")}
+            >
+              Full
+            </button>
+          </div>
+
+          {/* A and B Buttons */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 150px)",
+              marginBottom: "20px",
+              gap: "10px",
+            }}
           >
-            AI
-          </button>
-          <button
-            onClick={() => handleMultiClick("BI")}
-            style={getMultiButtonStyle(aiStyle, "BI")}
+            <button
+              onClick={() => handleMainClick("A")}
+              style={getMainButtonStyle(abStyle, "A")}
+            >
+              A
+            </button>
+            <button
+              onClick={() => handleMainClick("B")}
+              style={getMainButtonStyle(abStyle, "B")}
+            >
+              B
+            </button>
+          </div>
+
+          {/* AI, BI, AO, BO Buttons (Multi-select) */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 150px)",
+              columnGap: "5px",
+              rowGap: "10px",
+            }}
           >
-            BI
-          </button>
-          <button
-            onClick={() => handleMultiClick("AO")}
-            style={getMultiButtonStyle(aiStyle, "AO")}
-          >
-            AO
-          </button>
-          <button
-            onClick={() => handleMultiClick("BO")}
-            style={getMultiButtonStyle(aiStyle, "BO")}
-          >
-            BO
-          </button>
+            <button
+              onClick={() => handleMultiClick("AI")}
+              style={getMultiButtonStyle(aiStyle, "AI")}
+            >
+              AI
+            </button>
+            <button
+              onClick={() => handleMultiClick("BI")}
+              style={getMultiButtonStyle(aiStyle, "BI")}
+            >
+              BI
+            </button>
+            <button
+              onClick={() => handleMultiClick("AO")}
+              style={getMultiButtonStyle(aiStyle, "AO")}
+            >
+              AO
+            </button>
+            <button
+              onClick={() => handleMultiClick("BO")}
+              style={getMultiButtonStyle(aiStyle, "BO")}
+            >
+              BO
+            </button>
+          </div>
+
         </div>
+        <User block={selectedMain} />
 
       </div>
-      <User block={selectedMain} />
-
     </div>
   );
 }

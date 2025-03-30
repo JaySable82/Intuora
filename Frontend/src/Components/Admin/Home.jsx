@@ -11,7 +11,7 @@ import NavBar from '../MenuManagement/Navbar';
 import { OrderContext } from './OrdersContext';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_AWS;
+const url = import.meta.env.VITE_LOCAL;
 
 const Home = () => {
   const tableCount = 12;
@@ -21,8 +21,7 @@ const Home = () => {
   const [selectedTable, setSelectedTable] = useState(null);
   const [selectedBlock, setSelectedBlock] = useState(null);
 
-  const { tableNo_c, setTableNo_c } = useContext(OrderContext);
-  const { blockNo_c, setBlockNo_c } = useContext(OrderContext);
+  const currentTableBlock = selectedTable && selectedBlock ? `${selectedTable}-${selectedBlock}` : null;
 
   const [orders, setOrders] = useState([]);
   const [blockStatus, setBlockStatus] = useState({});
@@ -32,6 +31,9 @@ const Home = () => {
 
   const [selectedMain, setSelectedMain] = useState("");
   const [bills,setbills] = useState({}); 
+
+  const [placedorder,setPlacedOrder] = useState(false);
+  const [orderedTableNo, setOrderedTableNo] = useState(null);
 
   // Build a unique key for the current table-block
   const key = selectedTable && selectedBlock ? `${selectedTable}-${selectedBlock}` : null;
@@ -256,6 +258,7 @@ const Home = () => {
   const handleTableSelect = (tableNo) => {
     setSelectedTable(tableNo);
     setSelectedBlock(null);
+    setIsOpen(true); // Pop out SideSection
   };
 
   //BLOCK SELECTION CALLBACK
@@ -277,6 +280,7 @@ const Home = () => {
   const currentCart = getCurrentBill();
   const handleUpdateCart = (item, change) => updateBillItems(item, change);
 
+  const [isOpen, setIsOpen] = useState(true);
   return (
     <div style={{ position: "relative", height: 200 }}>
       <NavBar />
@@ -289,10 +293,16 @@ const Home = () => {
         cart={cart}
         updateCart={updateCart}
         tableno={selectedTable}
+        blockNo={selectedBlock}
+        placedorder={placedorder}
         selectedMain={selectedMain}               // Pass current seat selection
         onSelectedMainChange={setSelectedMain}
         selectedMulti={selectedMulti}             // Pass current block selection
         onSelectedMultiChange={setSelectedMulti}
+        isOpen={isOpen}               // Pass the state of the side section
+        setIsOpen={setIsOpen}         // Pass the function to toggle the side section
+        orderedTableNo={orderedTableNo}
+        setOrderedTableNo={setOrderedTableNo}
       />
 
       {/* TableBar below NavBar */}
@@ -304,6 +314,7 @@ const Home = () => {
         currentSelectedBlock={selectedBlock}
         cart={cart}
         updateCart={updateCart}
+        setIsOpen={setIsOpen}
       />
       {/* </div> */}
 
@@ -315,7 +326,7 @@ const Home = () => {
       <div style={{
 
       }}>
-        <YourComponent cart={currentCart} updateCart={handleUpdateCart} tableno={selectedTable} blockNo={selectedBlock} />
+        <YourComponent cart={currentCart} updateCart={handleUpdateCart} tableno={selectedTable} blockNo={selectedBlock} isOpen={isOpen} setIsOpen={setIsOpen} />
 
       </div>
       {/* </div>
@@ -333,6 +344,9 @@ const Home = () => {
         fetchBillData={fetchBillData}
         selectedMain={selectedMain}
         selectedMulti={selectedMulti}
+        placedorder={placedorder}
+        setPlacedOrder={setPlacedOrder}
+        setOrderedTableNo={setOrderedTableNo}
       />
 
 

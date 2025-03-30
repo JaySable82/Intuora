@@ -10,7 +10,7 @@ import peshwai from '../../../assets/pizza.png'
 import sadashiv from '../../../assets/pizza.png'
 import bombay from '../../../assets/pizza.png'
 
-const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo }) => {
+const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo,isOpen,setIsOpen }) => {
     const handleBestsellerClick = (item, quantity) => {
         updateCart(item, quantity);
     };
@@ -28,7 +28,9 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo }) => {
     const Bestseller = [
         { id: 1, name: 'Misal Slice',marathi:"मिसळ स्लाइस", price: 100, img:peshwai },
         { id: 3, name: 'Extra Slice',marathi:"एक्स्ट्रा स्लाइस", price: 5, img:sadashiv },
-        { id: 10, name: 'Bhaji',marathi:"भजी", price:50, img:bombay }
+        { id: 10, name: 'Bhaji',marathi:"भजी", price:50, img:bombay },
+        // { id: 36, name: 'Kokam',marathi:"कोकम", price:30, img:bombay },
+
     ];
 
     // const NewArrivals=[
@@ -38,9 +40,12 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo }) => {
     // ];
 
     const sectionRefs = {
-        Grilled: useRef(null),
-        NonGrilled: useRef(null),
-        Chocolate: useRef(null),
+        Misal: useRef(null),
+        Extras: useRef(null),
+        Snacks: useRef(null),
+        Beverages: useRef(null),
+        Desserts: useRef(null),
+        RTE: useRef(null),
     };
 
     return (
@@ -57,10 +62,10 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo }) => {
         //     {/* <Cartx size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} /> */}
         // </div>
 
-        <div style={{top:300,left:420,height:1000,width:630,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto" }}> 
+        <div style={isOpen ? {top:200,left:420,height:1000,width:630,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto", transition:"0.5s ease"} : {top:200,left:40,height:1000,width:1000,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto",transition:"0.5s ease"}}> 
             <Categories sectionRefs={sectionRefs}/>
-            <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} tableno={tableno} blockNo={blockNo} />
-            <Menu handleClick={handleMenuClick} cart={cart} sectionRefs={sectionRefs} selectedTable={selectedTable} tableno={tableno} blockNo={blockNo} />
+            <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} tableno={tableno} blockNo={blockNo} isOpen={isOpen} />
+            <Menu handleClick={handleMenuClick} cart={cart} sectionRefs={sectionRefs} selectedTable={selectedTable} tableno={tableno} blockNo={blockNo} isOpen={isOpen}/>
             {/* <Cart size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} /> */}
 
         </div>

@@ -27,41 +27,41 @@ const list = [
     },
     {
       id: 2,
-      marathi: "हाफ मिसळ १ स्लाईस",
-      name: "Half Misal 1 Slice",
+      marathi: "१ हाफ मिसळ स्लाईस",
+      name: "1 Half Misal Slice",
       price: 80,
       img: foodImage,
       amount: 1
     },
     {
       id: 3,
-      marathi: "एक्स्ट्रा मिसळ स्लाइस",
-      name: "Extra Slice",
-      price: 5,
+      marathi: "मिसळ पार्सल",
+      name: "Misal Parcel",
+      price: 110,
       img: foodImage,
       amount: 1
     },
     {
       id: 4,
-      marathi: "एक्स्ट्रा संपल",
-      name: "Extra Sample",
-      price: 30,
+      marathi: "स्लाइस रस्सा",
+      name: "Slice Rassa",
+      price: 70,
       img: foodImage,
       amount: 1
     },
     {
       id: 5,
-      marathi: "एक्स्ट्रा कांदा",
-      name: "Extra Onion",
-      price: 5,
+      marathi: "मिसळ ब्रेडशिवाय",
+      name: "Misal w/o bread",
+      price: 90,
       img: foodImage,
       amount: 1
     },
     {
       id: 6,
-      marathi: "स्लाइस संपल",
-      name: "Slice Sample",
-      price: 70,
+      marathi: "१/२ मिसळ ब्रेडशिवाय",
+      name: "1/2 Misal w/o bread",
+      price: 75,
       img: foodImage,
       amount: 1
     },
@@ -75,238 +75,6 @@ const list = [
     },
     {
       id: 8,
-      marathi: "उपवास मिसळ",
-      name: "Upwas Misal",
-      price: 110,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 9,
-      marathi: "शेअरिंग मिसळ",
-      name: "Sharing Misal",
-      price: 140,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 10,
-      marathi: "भजी",
-      name: "Bhaji",
-      price: 50,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 11,
-      marathi: "भाजी हाफ",
-      name: "Bhaji Half",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 12,
-      marathi: "बटाटा वाडा",
-      name: "Batata Wada",
-      price: 50,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 13,
-      marathi: "भाजी हाफबटाटा वाडा सिंगल",
-      name: "Batata Wada Single",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 14,
-      marathi: "शेव चिवडा",
-      name: "Shev Chivda",
-      price: 70,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 15,
-      marathi: "सेव चिवडा हाफ",
-      name: "Shev Chivda Half",
-      price: 35,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 16,
-      marathi: "बटाटा चिवडा",
-      name: "Batata Chivda",
-      price: 70,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 17,
-      marathi: "बटाटा चिवडा हाफ",
-      name: "Batata Chivda Half",
-      price: 35,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 18,
-      marathi: "बटाटा संपल स्लाइस",
-      name: "Wada Sample Slice",
-      price: 80,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 19,
-      marathi: "दही",
-      name: "Dahi",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 20,
-      marathi: "गुलकंद लाडू",
-      name: "Gulkand Laddu",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 21,
-      marathi: "शेंगदाना लाडू",
-      name: "Shengdana Laddu",
-      price: 15,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 22,
-      marathi: "हडीव लाडू",
-      name: "Hadiv Laddu",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 23,
-      marathi: "खरवस",
-      name: "Kharwas",
-      price: 55,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 24,
-      marathi: "चिरोटा",
-      name: "Chirota",
-      price: 65,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 25,
-      marathi: "चॉकलेट फज",
-      name: "Chocolate Fudge",
-      price: 50,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 26,
-      marathi: "टाक",
-      name: "Taak",
-      price: 30,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 27,
-      marathi: "कोकम",
-      name: "Kokam",
-      price: 30,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 28,
-      marathi: "फ्लेवर्ड दूध",
-      name: "Flavoured Milk",
-      price: 35,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 29,
-      marathi: "लिंबू सरबत",
-      name: "Limbu Sarbat",
-      price: 20,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 30,
-      marathi: "सोलकडी",
-      name: "Solkadi",
-      price: 30,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 31,
-      marathi: "कैरी पान्हा",
-      name: "Kairi Panha",
-      price: 30,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 32,
-      marathi: "करवंद सरबत",
-      name: "Karwand Sarbat",
-      price: 30,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 33,
-      marathi: "चाय",
-      name: "Chai",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 34,
-      marathi: "कॉफी",
-      name: "Coffee",
-      price: 25,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 35,
-      marathi: "मिसळ पार्सल",
-      name: "Misal Parcel",
-      price: 110,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 36,
-      marathi: "एक्स्ट्रा रस्सा हाफ",
-      name: "Extra Rassa Half",
-      price: 15,
-      img: foodImage,
-      amount: 1
-    },
-    {
-      id: 37,
       marathi: "जैन मिसळ पार्सल",
       name: "Jain Misal Parcel",
       price: 120,
@@ -314,7 +82,15 @@ const list = [
       amount: 1
     },
     {
-      id: 38,
+      id: 9,
+      marathi: "उपवास मिसळ",
+      name: "Upwas Misal",
+      price: 110,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 10,
       marathi: "उपवास मिसळ पार्सल",
       name: "Upwas Misal Parcel",
       price: 120,
@@ -322,47 +98,47 @@ const list = [
       amount: 1
     },
     {
-      id: 39,
-      marathi: "खाण्यासाठी तयार - २ चा पॅक",
-      name: "Ready To Eat - Pack Of 2",
-      price: 300,
+      id: 11,
+      marathi: "शेअरिंग मिसळ",
+      name: "Sharing Misal",
+      price: 140,
       img: foodImage,
       amount: 1
     },
     {
-      id: 40,
-      marathi: "खाण्यासाठी तयार - ४ चा पॅक",
-      name: "Ready To Eat - Pack Of 4",
-      price: 500,
+      id: 12,
+      marathi: "जादा स्लाइस",
+      name: "Extra Slice",
+      price: 5,
       img: foodImage,
       amount: 1
     },
     {
-      id: 41,
-      marathi: "तयार रस्सा - २ सर्विंग्ज",
-      name: "Ready To Eat Rassa 2 Srv",
-      price: 150,
+      id: 13,
+      marathi: "जादा रस्सा",
+      name: "Extra Rassa",
+      price: 30,
       img: foodImage,
       amount: 1
     },
     {
-      id: 42,
-      marathi: "मिसळ ब्रेडशिवाय",
-      name: "Misal without bread",
-      price: 90,
+      id: 14,
+      marathi: "हाफ जादा रस्सा",
+      name: "Half Extra Rassa",
+      price: 15,
       img: foodImage,
       amount: 1
     },
     {
-      id: 43,
-      marathi: "१/२ मिसळ ब्रेडशिवाय",
-      name: "1/2 Misal without bread",
-      price: 75,
+      id: 15,
+      marathi: "जादा कांदा",
+      name: "Extra Onion",
+      price: 5,
       img: foodImage,
       amount: 1
     },
     {
-      id: 44,
+      id: 16,
       marathi: "पान",
       name: "Paan",
       price: 5,
@@ -370,18 +146,250 @@ const list = [
       amount: 1
     },
     {
-      id: 45,
-      marathi: "श्रीखंड वाडी",
+      id: 17,
+      marathi: "श्रीखंड वडी",
       name: "Shrikhand Wadi",
       price: 5,
       img: foodImage,
       amount: 1
     },
     {
-      id: 46,
-      marathi: "काजूकांडा",
+      id: 18,
+      marathi: "काजूकंद",
       name: "KaajuKanda",
       price: 120,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 19,
+      marathi: "भजी",
+      name: "Bhaji",
+      price: 50,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 20,
+      marathi: "हाफ भजी",
+      name: "Half Bhaji",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 21,
+      marathi: "बटाटा वडा",
+      name: "Batata Wada",
+      price: 50,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 22,
+      marathi: "सिंगल वडा",
+      name: "Batata Wada (Single)",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 23,
+      marathi: "शेव चिवडा",
+      name: "Shev Chivda",
+      price: 70,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 24,
+      marathi: "हाफ शॆव चिवडा",
+      name: "Half Shev Chivda",
+      price: 35,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 25,
+      marathi: "बटाटा चिवडा",
+      name: "Batata Chivda",
+      price: 70,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 26,
+      marathi: "हाफ बटाटा चिवडा",
+      name: "Half Batata Chivda",
+      price: 35,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 27,
+      marathi: "वडा रस्सा स्लाइस",
+      name: "Wada Sample Slice",
+      price: 80,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 28,
+      marathi: "दही",
+      name: "Dahi",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 29,
+      marathi: "गुलकंद लाडू",
+      name: "Gulkand Laadu",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 30,
+      marathi: "शेंगदाणा लाडू",
+      name: "Shengdana Laadu",
+      price: 15,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 31,
+      marathi: "हळीव लाडू",
+      name: "Haliv Laadu",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 32,
+      marathi: "खरवस",
+      name: "Kharwas",
+      price: 55,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 33,
+      marathi: "खरवस",
+      name: "Mango Kharwas",
+      price: 65,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 34,
+      marathi: "चिरोटा",
+      name: "Chirota",
+      price: 65,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 35,
+      marathi: "चॉकलेट फज",
+      name: "Chocolate Fudge",
+      price: 50,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 36,
+      marathi: "ताक",
+      name: "Taak",
+      price: 30,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 37,
+      marathi: "कोकम",
+      name: "Kokam",
+      price: 30,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 38,
+      marathi: "फ्लेवर्ड दूध",
+      name: "Flavoured Milk",
+      price: 35,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 39,
+      marathi: "लिंबू सरबत",
+      name: "Limbu Sarbat",
+      price: 20,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 40,
+      marathi: "सोलकडी",
+      name: "Solkadi",
+      price: 30,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 41,
+      marathi: "कैरी पन्हे",
+      name: "Kairi Panhe",
+      price: 30,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 42,
+      marathi: "करवंद सरबत",
+      name: "Karwand Sarbat",
+      price: 30,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 43,
+      marathi: "चाय",
+      name: "Tea",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 44,
+      marathi: "कॉफी",
+      name: "Coffee",
+      price: 25,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 45,
+      marathi: "२ चा पॅक",
+      name: "RTE - Pack Of 2",
+      price: 300,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 46,
+      marathi: "४ चा पॅक",
+      name: "RTE - Pack Of 4",
+      price: 500,
+      img: foodImage,
+      amount: 1
+    },
+    {
+      id: 47,
+      marathi: "२ चा तयार रस्सा",
+      name: "RTE Rassa 2 Srv",
+      price: 150,
       img: foodImage,
       amount: 1
     }

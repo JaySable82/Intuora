@@ -3,14 +3,21 @@ import "./CommonFonts.css";
 
 function Categories({ sectionRefs }) {
   const scrollHandler = (refKey) => {
-    if (sectionRefs[refKey]?.current) {
-      sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth" });
+    // if (sectionRefs[refKey]?.current) {
+    //   sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth" });
+    // } else {
+    //   console.error(`Ref for ${refKey} is not defined.`);
+    // }
+
+    if (sectionRefs[refKey] && sectionRefs[refKey].current) {
+      sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
       console.error(`Ref for ${refKey} is not defined.`);
     }
+  
   };
 
-  const categories = ["Misal", "Bhaji","Sweet", "Beverage", "Parcel", "Extras"];
+  const categories = ["Misal", "Extras","Snacks", "Beverages","Desserts","RTE"];
 
   return (
     <div style={{ marginTop: 20  }}>
@@ -40,7 +47,8 @@ function Categories({ sectionRefs }) {
           <button
             key={index}
             onClick={() =>
-              scrollHandler(category.toLowerCase().replace(" ", ""))
+              // scrollHandler(category.toLowerCase().replace(" ", ""))
+              scrollHandler(category)
             }
             style={{
               padding: "8px 20px",
