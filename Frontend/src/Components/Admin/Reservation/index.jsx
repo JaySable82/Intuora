@@ -391,16 +391,16 @@ const getMultiButtonStyle = (baseStyle, label) => {
     position:"relative",
     bottom:130,
     left: 5,
-    height: 150,
-    width: 250,
+    height: 120,
+    width: 200,
   };
   const abStyle = {
     ...baseStyleMain,
     position:"relative",
     bottom:130,
     left: 1,
-    height: 120,
-    width: 100,
+    height: 100,
+    width: 80,
   };
 
   // Base styles for multi-select buttons.
@@ -417,7 +417,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
     bottom:130,
     left: 1,
     height: 50,
-    width: 100,
+    width: 80,
   };
   console.log("Selected Main:", selectedMain || selectedMulti);
 
@@ -429,7 +429,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
         style={{
           position: "fixed",
           top: 210,
-          left: isOpen ? "290px" : "0px",
+          left: isOpen ? "220px" : "0px",
           zIndex: 1000,
           borderRadius: isOpen ? "40px 0px 0px 40px" : "0px 40px 40px 0px",
           background: "#fff",
@@ -451,7 +451,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
           top: 200,
           backgroundColor: "#F8F8FA",
           height: 900,
-          width: 320,
+          width: 250,
           display: "flex",           // Use flex layout
           flexDirection: "column",   // Stack items vertically
           justifyContent: "center",  // Center items vertically
@@ -478,7 +478,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(2, 150px)",
+              gridTemplateColumns: "repeat(2, 110px)",
               marginBottom: "20px",
               gap: "10px",
             }}
@@ -501,7 +501,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(2, 150px)",
+              gridTemplateColumns: "repeat(2, 110px)",
               columnGap: "5px",
               rowGap: "10px",
             }}
