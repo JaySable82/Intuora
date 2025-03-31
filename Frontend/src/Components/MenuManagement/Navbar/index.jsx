@@ -34,7 +34,7 @@ function NavBar() {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="more-logo" style={{ height: "2rem", width: "2rem", backgroundColor: "black", marginTop: "0rem", marginLeft: "1rem" }} onClick={handleOpen}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
-                        <img src={logo} alt="DineIn" style={{ marginTop: "0rem", marginLeft: "2rem", marginBottom: "0.5rem", height: 50, width: 110 }} />
+                        {/* <img src={logo} alt="DineIn" style={{ marginTop: "0rem", marginLeft: "2rem", marginBottom: "0.5rem", height: 50, width: 110 }} /> */}
                     </div>
                     <button className="kitchen-control-btn ml-auto" style={{backgroundColor:"black",width:"10%",height:"100%",border:"none",cursor:"pointer"}} onClick={handleLogout}>
                         <img src={kitchenActive?open:close} style={{height:"3.5rem"}} />

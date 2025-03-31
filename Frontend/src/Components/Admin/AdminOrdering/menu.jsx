@@ -38,7 +38,7 @@ function Menu({ handleClick, cart, sectionRefs, selectedTable,tableno ,blockNo,i
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: isOpen ? "repeat(2, auto)" : "repeat(4, auto)", // 3 columns
+              gridTemplateColumns: isOpen ? "repeat(3, auto)" : "repeat(4, auto)", // 3 columns
               // gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", // Responsive grid
               gap: "20px",
               paddingTop: 20,

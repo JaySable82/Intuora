@@ -378,6 +378,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
 
   // Base styles for main group buttons.
   const baseStyleMain = {
+
     background: "white",
     borderRadius: 10,
     fontSize: 32,
@@ -387,17 +388,24 @@ const getMultiButtonStyle = (baseStyle, label) => {
   };
   const fullStyle = {
     ...baseStyleMain,
-    height: 200,
-    width: 300,
+    position:"relative",
+    bottom:130,
+    left: 5,
+    height: 150,
+    width: 250,
   };
   const abStyle = {
     ...baseStyleMain,
-    height: 200,
-    width: 140,
+    position:"relative",
+    bottom:130,
+    left: 1,
+    height: 120,
+    width: 100,
   };
 
   // Base styles for multi-select buttons.
   const baseStyleMulti = {
+
     background: "white",
     borderRadius: 10,
     fontSize: 32,
@@ -405,8 +413,11 @@ const getMultiButtonStyle = (baseStyle, label) => {
   };
   const aiStyle = {
     ...baseStyleMulti,
-    height: 100,
-    width: 145,
+    position:"relative",
+    bottom:130,
+    left: 1,
+    height: 50,
+    width: 100,
   };
   console.log("Selected Main:", selectedMain || selectedMulti);
 
@@ -417,8 +428,8 @@ const getMultiButtonStyle = (baseStyle, label) => {
         onClick={toggleSideSection}
         style={{
           position: "fixed",
-          top: 220,
-          left: isOpen ? "370px" : "0px",
+          top: 210,
+          left: isOpen ? "290px" : "0px",
           zIndex: 1000,
           borderRadius: isOpen ? "40px 0px 0px 40px" : "0px 40px 40px 0px",
           background: "#fff",
@@ -440,7 +451,7 @@ const getMultiButtonStyle = (baseStyle, label) => {
           top: 200,
           backgroundColor: "#F8F8FA",
           height: 900,
-          width: 400,
+          width: 320,
           display: "flex",           // Use flex layout
           flexDirection: "column",   // Stack items vertically
           justifyContent: "center",  // Center items vertically

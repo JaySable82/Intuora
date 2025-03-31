@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-const url = import.meta.env.VITE_AWS;
+const url = import.meta.env.VITE_LOCAL;
 
 const Bill = ({
   cart,
@@ -88,6 +88,7 @@ const Bill = ({
       }
     } catch (err) {
       console.error("Error in placing the order:", err);
+      console.log("error response:", err.response);
       alert("Failed to place order. Please try again.");
     }
   };
@@ -180,7 +181,7 @@ const totalAmount = Math.max(totalFromDb, totalFromLocal);
   return (
     <div
       style={{
-        width: "22%",
+        width: "20%",
         top: 0,
         padding: "10px",
         background: "#F8F8FA",
