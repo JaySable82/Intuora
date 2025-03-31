@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-const url = import.meta.env.VITE_LOCAL;
+const url = import.meta.env.VITE_AWS;
 
 const Bill = ({
   cart,
@@ -71,7 +71,7 @@ const Bill = ({
         blockNo,
       };
       // 3. Send order to DB
-      const response = await axios.post(`${url}/admin/cart', orderData);
+      const response = await axios.post('https://dinein.live/admin/cart', orderData);
       if (response.data) {
         console.log("Order placed successfully:", response.data);
 
