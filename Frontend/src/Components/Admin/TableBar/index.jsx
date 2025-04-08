@@ -1,98 +1,116 @@
 import React, { useState, useEffect } from "react";
-import SideSection from "../Reservation";
 
-function TableBar({ onTableSelect, onBlockSelect, blockStatus, currentSelectedBlock,cart, updateCart,setIsOpen }) {
+function TableBar({ onTableSelect, blockStatus, selectedMain, selectedMulti,blockNo }) {
   const tableCount = 12;
-  const [newselectedTable, setnewselectedTable] = useState(null);
+  const [newselectedTable, setNewSelectedTable] = useState(null);
   const [tableOccupancy, setTableOccupancy] = useState({});
 
-  // Calculate table occupancy based on blockStatus
+  // Define occupancy mappings
+  const occupancyMappingMain = {
+    Full: 4,
+    A: 2,
+    B: 2,
+  };
+  const occupancyMappingMulti = {
+    AI: 1,
+    BI: 1,
+    AO: 1,
+    BO: 1,
+  };
+  console.log("blockNo in table bar: ", blockNo);
+  // Calculate table occupancy from the blockStatus and selected blocks
   useEffect(() => {
     const occupancy = {};
-    for (const tableBlock in blockStatus) {
-      if (blockStatus[tableBlock] === "ordered" || blockStatus[tableBlock] === "editing") {
+  
+    Object.keys(blockStatus).forEach((tableBlock) => {
+      if (
+        blockNo[tableBlock] === "ordered" ||
+        blockNo[tableBlock] === "editing"
+      ) {
         const tableNo = tableBlock.replace(/[^0-9]/g, '');
         const block = tableBlock.replace(/[0-9]/g, '');
-        occupancy[tableNo] = (occupancy[tableNo] || 0) + (
-          block === "Full" ? 4 :
-          (block === "A" || block === "B") ? 2 :
-          (block === "AI" || block === "BI" || block === "AO" || block === "BO") ? 1 : 0
-        );
+        let value = 0;
+        if (occupancyMappingMain[block] !== undefined) {
+          value = occupancyMappingMain[block];
+        } else if (occupancyMappingMulti[block] !== undefined) {
+          value = occupancyMappingMulti[block];
+        }
+        occupancy[tableNo] = (occupancy[tableNo] || 0) + value;
       }
+    });
+  
+    // ✅ If a block is currently selected, include that in the occupancy
+    if (blockNo && newselectedTable) {
+      let value = 0;
+      if (occupancyMappingMain[blockNo] !== undefined) {
+        value = occupancyMappingMain[blockNo];
+      } else if (occupancyMappingMulti[blockNo] !== undefined) {
+        value = occupancyMappingMulti[blockNo];
+      }
+      const tableStr = String(newselectedTable);
+      occupancy[tableStr] = (occupancy[tableStr] || 0) + value;
     }
+  
     setTableOccupancy(occupancy);
-  }, [blockStatus]);
+  }, [blockStatus, blockNo, newselectedTable]);
   
 
-  const handleTableClick = (tableNo) => {
-    setnewselectedTable(tableNo);
-    if (onTableSelect) onTableSelect(tableNo);
-    if (setIsOpen) setIsOpen(true); // Open the side section when a table is selected
-  };
-
-  const containerStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    top:"80px",
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-    // backgroundColor:"#FAFAFA"
-  };
-
-  const tableRowStyle = {
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-    margin: "10px 0",
-  };
-
+  // Function to determine the style of each table button based on occupancy
   const getTableButtonStyle = (tableNo) => {
     const isSelected = newselectedTable === tableNo;
     const occupancy = tableOccupancy[tableNo] || 0;
-    
+
+    // Define a base style for the button
     let style = {
       padding: "10px",
       cursor: "pointer",
       borderRadius: "8px",
-      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
       width: "70px",
       height: "70px",
-      justifyContent: "center",
+      fontSize: "20px",
+      fontWeight: "bold",
+      transition: "background-color 0.3s ease",
     };
 
+    // Update the style based on occupancy
     if (isSelected) {
-      style.backgroundColor = "#31B254"; // Green for selected
-      style.color = "#ffffff";
+      style.backgroundColor = "#31B254"; // Selected: Green
+      style.color = "#fff";
       style.border = "none";
-    } else if (occupancy > 0 && occupancy <= 2) {
-      style.backgroundColor = "#FFD580"; // Light orange for 1-2 persons
-      style.color = "#000000";
-      style.border = "1px solid #ccc";
-    } else if (occupancy > 2) {
-      style.backgroundColor = "#D3D3D3"; // Light grey for more than 2 persons
-      style.color = "#000000";
-      style.border = "1px solid #ccc";
     } else {
-      style.backgroundColor = "#ffffff"; // White for unoccupied
-      style.color = "#31B254"; // Green number
-      style.border = "2px solid #31B254"; // Green border
+      if (occupancy === 4) {
+        // Fully occupied
+        style.backgroundColor = "#D3D3D3"; // Grey
+        style.color = "#000";
+        style.border = "1px solid #ccc";
+      } else if (occupancy >= 1) {
+        // Partially occupied (1-3 seats)
+        style.backgroundColor = "#FFD580"; // Light yellow
+        style.color = "#000";
+        style.border = "1px solid #ccc";
+      } else {
+        // Free
+        style.backgroundColor = "#fff";
+        style.color = "#31B254";
+        style.border = "2px solid #31B254";
+      }
     }
-    
+
     return style;
   };
 
-  const tableNumberStyle = {
-    fontSize: "20px",
-    fontWeight: "bold",
-    margin: 0,
+  const handleTableClick = (tableNo) => {
+    setNewSelectedTable(tableNo);
+    if (onTableSelect) onTableSelect(tableNo);
   };
+
   return (
-    <div style={containerStyle}>
-      <div style={tableRowStyle}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
         {[...Array(tableCount)].map((_, index) => {
           const tableNo = index + 1;
           return (
@@ -101,25 +119,13 @@ function TableBar({ onTableSelect, onBlockSelect, blockStatus, currentSelectedBl
               onClick={() => handleTableClick(tableNo)}
               style={getTableButtonStyle(tableNo)}
             >
-              <p style={tableNumberStyle}>
-                {tableNo < 10 ? `0${tableNo}` : tableNo}
-              </p>
+              {tableNo < 10 ? `0${tableNo}` : tableNo}
             </button>
           );
         })}
       </div>
-
-      {/* Always display the SideSection for block selection */}
-      {/* <SideSection
-        newselectedTable={newselectedTable}
-        onBlockSelect={onBlockSelect}
-        blockStatus={blockStatus}
-        cart={cart}
-        updateCart={updateCart}
-      /> */}
     </div>
   );
-
 }
 
 export default TableBar;

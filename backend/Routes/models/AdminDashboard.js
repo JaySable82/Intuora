@@ -14,7 +14,6 @@ const AdminDashboardOrderSchema=new mongoose.Schema({
                 bottle: { type: Number, default: 0 }
             }],
             total: { type: Number, required: true },
-            token: { type: Number, required: true },
         }
 });
 

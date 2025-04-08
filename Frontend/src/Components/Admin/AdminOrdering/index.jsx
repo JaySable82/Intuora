@@ -27,8 +27,8 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo,isOpen,s
 
     const Bestseller = [
         { id: 1, name: 'Misal Slice',marathi:"मिसळ स्लाइस", price: 100, img:peshwai },
-        { id: 3, name: 'Extra Slice',marathi:"एक्स्ट्रा स्लाइस", price: 5, img:sadashiv },
-        { id: 10, name: 'Bhaji',marathi:"भजी", price:50, img:bombay },
+        { id: 12, name: 'Extra Slice',marathi:"एक्स्ट्रा स्लाइस", price: 5, img:sadashiv },
+        { id: 19, name: 'Bhaji',marathi:"भजी", price:50, img:bombay },
         // { id: 36, name: 'Kokam',marathi:"कोकम", price:30, img:bombay },
 
     ];

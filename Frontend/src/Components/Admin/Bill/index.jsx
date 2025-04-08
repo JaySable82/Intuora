@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect,useRef } from 'react';
 import axios from 'axios';
-import { useEffect } from 'react';
 
-const url = import.meta.env.VITE_AWS;
+const url = import.meta.env.VITE_LOCAL;
 
 const Bill = ({
   cart,
@@ -13,44 +12,130 @@ const Bill = ({
   onClearLocalCart,
   placedorder,
   setPlacedOrder,
-  setOrderedTableNo
+  setOrderedTableNo,
+  bills,
+  setbills,
+  setBillData
 }) => {
-  // Function to update item quantity in the cart
-  const updateCartItemQuantity = (item, newQuantity) => {
-    // Implementation will be handled in parent component
-    if (item.updateQuantity) {
-      item.updateQuantity(newQuantity);
-    }
+  // Build a unique key for the current table-block
+  const key = tableNo && blockNo ? `${tableNo}-${blockNo}` : null;
+  const hasInitializedRef = useRef({});
+
+  // 1. Retrieve the current bill array for the selected table-block
+  const getCurrentBill = () => {
+    if (!key) return [];
+    return bills[key] || [];
   };
 
-  function buildBlockString(selectedMain, selectedMulti) {
-    // Convert the selectedMulti object into an array of active keys
-    const multiKeys = Object.entries(selectedMulti)
-      .filter(([_, isActive]) => isActive)
-      .map(([key]) => key);
-  
-    if (selectedMain && multiKeys.length > 0) {
-      // e.g. "A-AI" or "B-BO"
-      return `${selectedMain}-${multiKeys.join("-")}`;
-    } else if (selectedMain) {
-      // e.g. "A" or "Full"
-      return selectedMain;
-    } else if (multiKeys.length > 0) {
-      // e.g. "AI-AO" if no main seat is selected
-      return multiKeys.join("-");
+  // 2. Overwrite the current bill array in the dictionary
+  const updateCurrentBill = (newItems) => {
+    if (!key) return;
+    setbills((prev) => ({
+      ...prev,
+      [key]: newItems,
+    }));
+  };
+
+  // Initialize local bill from billData if it doesn't exist yet
+  // useEffect(() => {
+  //   if (key && billData.length > 0 && (!bills[key] || bills[key].length === 0)) {
+  //     // Convert billData to the format expected in the bills dictionary
+  //     const dbItems = billData.flatMap(order => 
+  //       order.orders.items.map(item => ({
+  //         ...item,
+  //         fromBill: true,
+  //         orderId: item.orderId,
+  //         updateQuantity: (finalQty) => {
+  //           const diff = finalQty - item.quantity;
+  //           updateBillItems(item, diff);
+  //         },
+  //       }))
+  //     );
+  //     setBillData([]);
+  //     // Initialize the local bill with fetched data
+  //     updateCurrentBill(dbItems);
+  //     // Clear billData to prevent future merges
+
+  //   }
+  // }, [key, billData, bills]);
+
+  useEffect(() => {
+    if (
+      key &&
+      billData.length > 0 &&
+      !hasInitializedRef.current[key] &&
+      (!bills[key] || bills[key].length === 0)
+    ) {
+      const dbItems = billData.flatMap(order =>
+        order.orders.items.map(item => ({
+          ...item,
+          fromBill: true,
+          orderId: item.orderId,
+          updateQuantity: (finalQty) => {
+            const diff = finalQty - item.quantity;
+            updateBillItems(item, diff);
+          },
+        }))
+      );
+
+      updateCurrentBill(dbItems);
+      hasInitializedRef.current[key] = true; // mark as initialized
+      setBillData([]);
     }
-    // If nothing is selected, return empty string
-    return "";
-  }
+  }, [key, billData, bills]);
 
 
-  
+  // Function to update bill items (for editing quantity)
+  const updateBillItems = (item, change) => {
+    if (!blockNo || !tableNo) {
+      alert("Please select table and seat first!");
+      return;
+    }
+    
+    const currentBill = getCurrentBill();
+    const existingItem = currentBill.find((it) => it.id === item.id);
+    let newBill;
+    
+    if (!existingItem && change > 0) {
+      newBill = [
+        ...currentBill,
+        {
+          ...item,
+          quantity: change,
+          updateQuantity: (finalQty) => {
+            const diff = finalQty - change;
+            updateBillItems(item, diff);
+          },
+        },
+      ];
+    } else if (existingItem) {
+      const newQuantity = existingItem.quantity + change;
+      if (newQuantity <= 0) {
+        newBill = currentBill.filter((it) => it.id !== item.id);
+      } else {
+        newBill = currentBill.map((it) =>
+          it.id === item.id
+            ? {
+                ...it,
+                quantity: newQuantity,
+                updateQuantity: (finalQty) => {
+                  const diff = finalQty - newQuantity;
+                  updateBillItems(item, diff);
+                },
+              }
+            : it
+        );
+      }
+    } else {
+      return;
+    }
+    
+    updateCurrentBill(newBill);
+  };
 
-  // Function to handle place order
   const handlePlaceOrder = async () => {
     try {
-      // 1. Ensure we have items in cart
-      if (cart.length === 0) {
+      if (getCurrentBill().length === 0) {
         alert("Please add items to the cart before placing an order");
         return;
       }
@@ -58,33 +143,25 @@ const Bill = ({
         alert("Please select a table/block first!");
         return;
       }
-
-      // 2. Build order data
+      
+      const currentBill = getCurrentBill();
       const orderData = {
-        cart: cart.map((item) => ({
+        cart: currentBill.map((item) => ({
           ...item,
           marathi: item.marathi || "",
           parcel: item.parcel || false,
         })),
-        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        total: currentBill.reduce((sum, item) => sum + item.price * item.quantity, 0),
         tableNo,
         blockNo,
       };
-      // 3. Send order to DB
-      const response = await axios.post('https://dinein.live/admin/cart', orderData);
+      
+      const response = await axios.post(`${url}/admin/cart`, orderData);
       if (response.data) {
         console.log("Order placed successfully:", response.data);
-
-        // 4. DO NOT clear the local cart here
-        // (So the items remain in the bill)
-
-        // 5. Optionally refresh the bill data from DB
-        // fetchBillData && fetchBillData();
-
-        alert("Order placed successfully!");
-        setPlacedOrder(true); // Set placed order to true
+        setPlacedOrder(true);
         const tableBlock = `${tableNo}${blockNo}`;
-        setOrderedTableNo(tableBlock); // Set the ordered table number
+        setOrderedTableNo(tableBlock);
       }
     } catch (err) {
       console.error("Error in placing the order:", err);
@@ -97,86 +174,72 @@ const Bill = ({
     console.log("placedorder has updated:", placedorder);
   }, [placedorder]);
 
-  // Function to clear all items LOCALLY ONLY
+  // const handleClear = async () => {
+  //   const currentBill = getCurrentBill();
+  //   if (!currentBill.length) {
+  //     alert("No items to clear!");
+  //     return;
+  //   }
+  //   if (!tableNo || !blockNo) {
+  //     alert("No table/block selected!");
+  //     return;
+  //   }
+  //   if (window.confirm("Are you sure you want to CLEAR these orders")) {
+  //     try {
+  //       await axios.post(`${url}/bedekar/dashboard`, {
+  //         tableNo,
+  //         blockNo
+  //       });
+  //       // Clear the local bill immediately
+  //       updateCurrentBill([]);
+  //       setBillData([]); // Clear fetched data as well
+  //       onClearLocalCart && onClearLocalCart();
+  //     } catch (err) {
+  //       console.error("Error clearing/archiving from DB:", err);
+  //       alert("Order cleared successfully! Try refreshing the page.");
+  //     }
+  //   }
+  // };
+
+
+
+  // Use only the local bill data for this table-block
+  
   const handleClear = async () => {
-    // If combinedItems is empty, stop
-    if (!combinedItems.length) {
+    const currentBill = getCurrentBill();
+    if (!currentBill.length) {
       alert("No items to clear!");
       return;
     }
-  
-    // If no table or block, stop
     if (!tableNo || !blockNo) {
       alert("No table/block selected!");
       return;
     }
-  
-    if (window.confirm("Are you sure you want to CLEAR this orders")) {
+    if (window.confirm("Are you sure you want to CLEAR these orders")) {
       try {
-        // 1) Call your new backend route
-        await axios.post(`${url}/bedekar/dashboard`, {
-          tableNo,
-          blockNo
-        });
-  
-        // 2) Also clear from local dictionary
+        await axios.post(`${url}/bedekar/dashboard`, { tableNo, blockNo });
+        // Clear the local bill immediately if the request succeeds
+        updateCurrentBill([]);
+        setBillData([]);
         onClearLocalCart && onClearLocalCart();
       } catch (err) {
-        console.error("Error clearing/archiving from DB:", err);
-        alert("Order is cleard successfully! Try to refresh the page.");
+        // If the error is a 404 (Not Found), we treat it as successful clear 
+        if (err.response && err.response.status === 404) {
+          console.warn("No matching orders in DB, but clearing locally.");
+          updateCurrentBill([]);
+          setBillData([]);
+          onClearLocalCart && onClearLocalCart();
+        } else {
+          console.error("Error clearing/archiving from DB:", err);
+          alert("Failed to clear order. Please try again.");
+        }
       }
     }
   };
-
-  const getAllItems = () => {
-    const dbItems = billData.flatMap(order => order.orders.items);
-    // Convert DB items to a dictionary keyed by `id`
-    const dbMap = {};
-    dbItems.forEach((dbItem) => {
-      dbMap[dbItem.id] = {
-        ...dbItem,
-        fromBill: true,
-        orderId: dbItem.orderId, // or something
-      };
-    });
   
-    // Merge local cart items
-    const merged = [];
-    cart.forEach((localItem) => {
-      if (dbMap[localItem.id]) {
-        // If same ID is in DB, decide how to unify quantity
-        const totalQty = Math.max(dbMap[localItem.id].quantity, localItem.quantity);
-
-        merged.push({
-          ...localItem,
-          quantity: totalQty,
-          fromBill: true, // or combine flags
-        });
-        // remove from dbMap so we don’t add it again
-        delete dbMap[localItem.id];
-      } else {
-        // Not in DB, push local item
-        merged.push(localItem);
-      }
-    });
   
-    // Now push remaining DB items that didn't match local
-    Object.keys(dbMap).forEach((id) => {
-      merged.push(dbMap[id]);
-    });
-  
-    return merged;
-  };
-
-  const combinedItems = getAllItems();
-  const totalFromDb = billTotal;
-const totalFromLocal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-const totalAmount = Math.max(totalFromDb, totalFromLocal);
-  // const totalAmount =
-  //   billTotal + cart.reduce((sum, item) => (sum + item.price * item.quantity), 0);
-
-  console.log
-    
+  const combinedItems = getCurrentBill();
+  const totalAmount = combinedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div
@@ -190,6 +253,7 @@ const totalAmount = Math.max(totalFromDb, totalFromLocal);
         fontFamily: "Arial, sans-serif",
         fontSize: 16,
         marginLeft: "auto",
+        marginBottom: 20,
         position: "relative",
       }}
     >
@@ -207,64 +271,26 @@ const totalAmount = Math.max(totalFromDb, totalFromLocal);
         <>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr
-                style={{
-                  borderTop: "1px solid #ccc",
-                  borderBottom: "1px solid #ccc",
-                }}
-              >
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "5px",
-                    background: "#F8F8FA",
-                  }}
-                >
+              <tr style={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}>
+                <th style={{ textAlign: "left", padding: "5px", background: "#F8F8FA" }}>
                   Item
                 </th>
-                <th
-                  style={{
-                    textAlign: "center",
-                    padding: "5px",
-                    background: "#F8F8FA",
-                  }}
-                >
+                <th style={{ textAlign: "center", padding: "5px", background: "#F8F8FA" }}>
                   Qty
                 </th>
-                <th
-                  style={{
-                    textAlign: "right",
-                    padding: "5px",
-                    background: "#F8F8FA",
-                  }}
-                >
+                <th style={{ textAlign: "right", padding: "5px", background: "#F8F8FA" }}>
                   Price
                 </th>
               </tr>
             </thead>
-
             <tbody>
               {combinedItems.map((item, index) => (
                 <tr key={`item-${index}`}>
                   <td style={{ padding: "5px", color: "#000" }}>{item.name}</td>
-                  <td
-                    style={{
-                      padding: "5px",
-                      textAlign: "center",
-                      color: "#000",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
+                  <td style={{ padding: "5px", textAlign: "center", color: "#000" }}>
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                       {/* <button
-                        onClick={() =>
-                          updateCartItemQuantity(item, item.quantity - 1)
-                        }
+                        onClick={() => updateBillItems(item, -1)}
                         style={{
                           width: "25px",
                           height: "25px",
@@ -278,9 +304,7 @@ const totalAmount = Math.max(totalFromDb, totalFromLocal);
                       </button> */}
                       {item.quantity}
                       {/* <button
-                        onClick={() =>
-                          updateCartItemQuantity(item, item.quantity + 1)
-                        }
+                        onClick={() => updateBillItems(item, 1)}
                         style={{
                           width: "25px",
                           height: "25px",

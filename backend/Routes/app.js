@@ -29,7 +29,7 @@ const io = new SocketIOServer(server);
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:process.env.FE_A,
+    origin:process.env.FE_L,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -625,6 +625,81 @@ app.post('/bedekar/cart', async (req, res) => {
     }
 });
 
+
+// New API route: update order for a table-block (delete old, insert new)
+app.post('/admin/cart', async (req, res) => {
+    try {
+      const { cart, total, tableNo, blockNo } = req.body;
+  
+      // Validate request
+      if (!cart || cart.length === 0) {
+        return res.status(400).json({ message: 'Cart is empty or undefined' });
+      }
+      if (!tableNo || !blockNo) {
+        return res.status(400).json({ message: 'Missing tableNo or blockNo' });
+      }
+  
+      // Check if an order already exists for this table/block
+      const existingOrder = await AdminDashboardOrdersModel.findOne({ tableNo, blockNo });
+      if (existingOrder) {
+        // Delete the old order (you could also consider archiving it first)
+        await AdminDashboardOrdersModel.deleteOne({ _id: existingOrder._id });
+        console.log(`Deleted old order for table: ${tableNo} block: ${blockNo}`);
+      }
+  
+      // Update the order counter (token) using the Counter model
+      const counter = await Counter.findByIdAndUpdate(
+        'orderCounter',
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+      );
+      const tokenNum = counter.seq;
+  
+      // Map the cart items according to your schema
+      const items = cart.map((item) => ({
+        id: item.id,
+        marathi: item.marathi,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        parcel: item.parcel || false,
+        bottle: item.bottle || 0
+      }));
+  
+      // Create a new order document
+      const newOrder = new AdminDashboardOrdersModel({
+        tableNo,
+        blockNo,
+        orders: {
+          items,
+          total,
+          token: tokenNum
+        }
+      });
+  
+      await newOrder.save();
+  
+      // Optionally, you can emit an update via socket.io if needed.
+      io.emit('orderUpdate', { ...newOrder.toObject(), status: 'current' });
+  
+      res.status(200).json({
+        message: 'Order updated successfully',
+        token: tokenNum
+      });
+    } catch (error) {
+      console.error('Error updating order:', error);
+      res.status(500).json({
+        message: 'Error updating order',
+        error: error.message
+      });
+    }
+  });
+  
+
+
+
+
+
 app.get('/bedekar/bill', async (req, res) => {
     const { tableNo, blockNo } = req.query;
 
@@ -668,17 +743,61 @@ app.delete('/bedekar/bill', async (req, res) => {
 //     }
 // })
 
+// app.post('/bedekar/dashboard', async (req, res) => {
+//     const { tableNo, blockNo } = req.body;
+  
+//     try {
+//       // 1) Find the existing orders in AdminDashboard
+//       const existingOrders = await AdminDashboardOrdersModel.find({ tableNo, blockNo });
+//       if (!existingOrders.length) {
+//         return res.status(404).json({ message: "No orders found to clear" });
+//       }
+  
+//       // 2) For each found order, store them in AllOrders
+//       for (const order of existingOrders) {
+//         await AllOrdersModel.create({
+//           tableNo: order.tableNo,
+//           blockNo: order.blockNo,
+//           orders: order.orders,
+//           clearedAt: new Date()
+//         });
+//       }
+  
+//       // 3) Delete them from AdminDashboard
+//       await AdminDashboardOrdersModel.deleteMany({ tableNo, blockNo });
+  
+//       res.status(200).json({ message: "Orders archived & cleared from DB" });
+//     } catch (err) {
+//       console.error("Error clearing/archiving orders:", err);
+//       res.status(500).json({ error: "Failed to clear & archive" });
+//     }
+//   });
+
 app.post('/bedekar/dashboard', async (req, res) => {
     const { tableNo, blockNo } = req.body;
-  
+    
+    // Validate input
+    if (!tableNo || !blockNo) {
+        return res.status(400).json({ message: "Missing tableNo or blockNo" });
+    }
+    
     try {
-      // 1) Find the existing orders in AdminDashboard
+      // Find the existing orders in AdminDashboardOrdersModel for this table and block.
       const existingOrders = await AdminDashboardOrdersModel.find({ tableNo, blockNo });
+    
+      // If no orders exist, create a new empty order and return it.
       if (!existingOrders.length) {
-        return res.status(404).json({ message: "No orders found to clear" });
+        const newOrder = new AdminDashboardOrdersModel({
+          tableNo,
+          blockNo,
+          orders: { items: [], total: 0, token: 0 } // or assign a default token as needed
+        });
+        await newOrder.save();
+        console.log(`No existing orders found for Table: ${tableNo}, Block: ${blockNo}. New empty order created.`);
+        return res.status(201).json({ message: "No orders to clear. New empty order created.", order: newOrder });
       }
-  
-      // 2) For each found order, store them in AllOrders
+    
+      // If orders are found, archive each one in AllOrdersModel.
       for (const order of existingOrders) {
         await AllOrdersModel.create({
           tableNo: order.tableNo,
@@ -687,16 +806,56 @@ app.post('/bedekar/dashboard', async (req, res) => {
           clearedAt: new Date()
         });
       }
-  
-      // 3) Delete them from AdminDashboard
+    
+      // Delete them from AdminDashboardOrdersModel.
       await AdminDashboardOrdersModel.deleteMany({ tableNo, blockNo });
-  
+    
+      console.log(`Orders for Table: ${tableNo}, Block: ${blockNo} archived and cleared.`);
       res.status(200).json({ message: "Orders archived & cleared from DB" });
     } catch (err) {
       console.error("Error clearing/archiving orders:", err);
-      res.status(500).json({ error: "Failed to clear & archive" });
+      res.status(500).json({ error: "Failed to clear & archive orders", details: err.message });
     }
   });
+  
+
+  app.get('/bedekar/dashboard', async (req, res) => {
+    try {
+      // Retrieve all orders and sort by tableNo in ascending order
+      const orders = await AdminDashboardOrdersModel.find().sort({ tableNo: 1 });
+      console.log("Sorted orders fetched successfully");
+      res.status(200).json(orders);
+    } catch (error) {
+      console.error("Error fetching sorted orders for bedekar dashboard", error);
+      res.status(500).json({ message: "Error fetching orders", error: error.message });
+    }
+  });
+
+  // GET all orders (bills) for a table across any block
+app.get('/admin/bills', async (req, res) => {
+
+    console.log('GET /admin/bills → tableNo=', req.query.tableNo);
+    const { tableNo } = req.query;
+  
+    if (!tableNo) {
+      return res.status(400).json({ message: 'Missing tableNo parameter' });
+    }
+  
+    try {
+      // Find all orders for this table, across any block
+      const bills = await AdminDashboardOrdersModel.find({ tableNo });
+  
+      // Optionally sort by blockNo or createdAt:
+      // .sort({ blockNo: 1, 'orders.token': 1 })
+  
+      res.status(200).json(bills);
+    } catch (err) {
+      console.error('Error fetching bills for table', tableNo, err);
+      res.status(500).json({ message: 'Server error fetching bills' });
+    }
+  });
+  
+  
 
 
 const PORT = process.env.PORT || 3001;

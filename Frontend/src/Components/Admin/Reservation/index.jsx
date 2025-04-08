@@ -39,10 +39,10 @@ const blockGroupStyle = {
 
 
 function SideSection({
-  selectedTable,
   onBlockSelect,
   blockStatus,
   cart,
+  setOccupancy,
   updateCart,
   tableno,
   selectedMain,
@@ -75,18 +75,20 @@ function SideSection({
   const disabledStyle = { background: "#FFFFFF", color: "#DEE1E4", pointerEvents: "none" };
 
   const toggleSideSection = () => setIsOpen((prev) => !prev);
+  console.log("blockstatus",blockNo);
+  console.log("tableno",tableno);
 
   const calculateCurrentOccupancy = () => {
-    if (!selectedTable || !blockStatus) return 0;
+    if (!tableno || !selectedMain) return 0;
 
     let occupancy = 0;
-    const tableBlocks = Object.keys(blockStatus).filter(key =>
-      key.startsWith(selectedTable)
+    const tableBlocks = Object.keys(selectedMain).filter(key =>
+      key.startsWith(tableno)
     );
 
     for (const blockKey of tableBlocks) {
       if (blockStatus[blockKey] === "ordered" || blockStatus[blockKey] === "editing") {
-        const blockLetter = blockKey.substring(selectedTable.toString().length);
+        const blockLetter = blockKey.substring(tableno.toString().length);
         occupancy += blockCapacities[blockLetter] || 0;
       }
     }
@@ -94,11 +96,15 @@ function SideSection({
     return occupancy;
   };
 
+  const currentOccupancy = calculateCurrentOccupancy();
+console.log("Current occupancy:", currentOccupancy);
+
+
   const isBlockAvailable = (block) => {
-    if (!selectedTable || !blockStatus) return true;
+    if (!tableno || !selectedMain) return true;
 
     const currentOccupancy = calculateCurrentOccupancy();
-    const blockKey = `${selectedTable}${block}`;
+    const blockKey = `${tableno}${block}`;
 
     if (blockStatus[blockKey] === "ordered" || blockStatus[blockKey] === "editing") {
       return true;
@@ -106,41 +112,41 @@ function SideSection({
 
     if (block === "Full") {
       return currentOccupancy === 0 &&
-        !blockStatus[`${selectedTable}A`] &&
-        !blockStatus[`${selectedTable}B`] &&
-        !blockStatus[`${selectedTable}AI`] &&
-        !blockStatus[`${selectedTable}BI`] &&
-        !blockStatus[`${selectedTable}AO`] &&
-        !blockStatus[`${selectedTable}BO`];
+        !blockStatus[`${tableno}A`] &&
+        !blockStatus[`${tableno}B`] &&
+        !blockStatus[`${tableno}AI`] &&
+        !blockStatus[`${tableno}BI`] &&
+        !blockStatus[`${tableno}AO`] &&
+        !blockStatus[`${tableno}BO`];
     }
 
     if (block === "A") {
-      return !blockStatus[`${selectedTable}Full`] &&
-        !blockStatus[`${selectedTable}AI`] &&
-        !blockStatus[`${selectedTable}AO`];
+      return !blockStatus[`${tableno}Full`] &&
+        !blockStatus[`${tableno}AI`] &&
+        !blockStatus[`${tableno}AO`];
     }
 
     if (block === "B") {
-      return !blockStatus[`${selectedTable}Full`] &&
-        !blockStatus[`${selectedTable}BI`] &&
-        !blockStatus[`${selectedTable}BO`];
+      return !blockStatus[`${tableno}Full`] &&
+        !blockStatus[`${tableno}BI`] &&
+        !blockStatus[`${tableno}BO`];
     }
 
     if (block === "AI" || block === "AO") {
-      return !blockStatus[`${selectedTable}Full`] &&
-        !blockStatus[`${selectedTable}A`];
+      return !blockStatus[`${tableno}Full`] &&
+        !blockStatus[`${tableno}A`];
     }
 
     if (block === "BI" || block === "BO") {
-      return !blockStatus[`${selectedTable}Full`] &&
-        !blockStatus[`${selectedTable}B`];
+      return !blockStatus[`${tableno}Full`] &&
+        !blockStatus[`${tableno}B`];
     }
 
     return true;
   };
 
   // Occupancy state
-  const [occupancy, setOccupancy] = useState(0);
+  // const [occupancy, setOccupancy] = useState(0);
 
   // Occupancy mappings
   const occupancyMappingMain = {
@@ -533,7 +539,6 @@ const getMultiButtonStyle = (baseStyle, label) => {
           </div>
 
         </div>
-        <User block={selectedMain} />
 
       </div>
     </div>
