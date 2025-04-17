@@ -818,6 +818,36 @@ app.post('/bedekar/dashboard', async (req, res) => {
     }
   });
   
+  app.delete('/admin/bill', async (req, res) => {
+    const { tableNo, blockNo } = req.body;
+  
+    if (!tableNo || !blockNo) {
+      return res.status(400).json({ message: "Missing tableNo or blockNo" });
+    }
+  
+    try {
+      // Find existing orders
+      const existingOrders = await AdminDashboardOrdersModel.find({ tableNo, blockNo });
+  
+      if (!existingOrders.length) {
+        return res.status(404).json({ message: "No active orders found for this table and block" });
+      }
+  
+      // Archive each order to AllOrdersModel
+      await AllOrdersModel.insertMany(existingOrders);
+  
+      // Delete from AdminDashboardOrdersModel
+      await AdminDashboardOrdersModel.deleteMany({ tableNo, blockNo });
+  
+      console.log(`Orders for Table: ${tableNo}, Block: ${blockNo} archived and cleared.`);
+      return res.status(200).json({ message: "Orders archived and cleared successfully" });
+  
+    } catch (err) {
+      console.error("Error clearing/archiving orders:", err);
+      return res.status(500).json({ error: "Failed to clear & archive orders", details: err.message });
+    }
+  });
+  
 
   app.get('/bedekar/dashboard', async (req, res) => {
     try {

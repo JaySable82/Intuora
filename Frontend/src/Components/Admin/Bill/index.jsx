@@ -1,7 +1,7 @@
 import React, { useEffect,useRef } from 'react';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_AWS;
+const url = import.meta.env.VITE_LOCAL;
 
 const Bill = ({
   cart,
@@ -15,7 +15,9 @@ const Bill = ({
   setOrderedTableNo,
   bills,
   setbills,
-  setBillData
+  setBillData,
+  clearOrder, 
+  setClearOrder
 }) => {
   // Build a unique key for the current table-block
   const key = tableNo && blockNo ? `${tableNo}-${blockNo}` : null;
@@ -217,18 +219,28 @@ const Bill = ({
     }
     if (window.confirm("Are you sure you want to CLEAR these orders")) {
       try {
-        await axios.post(`${url}/bedekar/dashboard`, { tableNo, blockNo });
-        // Clear the local bill immediately if the request succeeds
+        await axios.delete(`${url}/admin/bill`, {
+          data: { tableNo, blockNo }  // ✅ Correct way to send body in DELETE
+        });
+  
+        // ✅ Clear local bill after successful response
         updateCurrentBill([]);
         setBillData([]);
-        onClearLocalCart && onClearLocalCart();
+        setClearOrder(true);
+        if (onClearLocalCart) onClearLocalCart();
+        updateCurrentBill([]);
+        setBillData([]);
+        if (onClearLocalCart) onClearLocalCart();
+        alert("Orders cleared locally!");
+        alert("Orders cleared successfully!");
+  
       } catch (err) {
-        // If the error is a 404 (Not Found), we treat it as successful clear 
         if (err.response && err.response.status === 404) {
           console.warn("No matching orders in DB, but clearing locally.");
           updateCurrentBill([]);
           setBillData([]);
-          onClearLocalCart && onClearLocalCart();
+          if (onClearLocalCart) onClearLocalCart();
+          alert("Orders cleared locally!");
         } else {
           console.error("Error clearing/archiving from DB:", err);
           alert("Failed to clear order. Please try again.");
@@ -284,12 +296,12 @@ const Bill = ({
               </tr>
             </thead>
             <tbody>
-              {combinedItems.map((item, index) => (
+            {combinedItems.map((item, index) => (
                 <tr key={`item-${index}`}>
                   <td style={{ padding: "5px", color: "#000" }}>{item.name}</td>
                   <td style={{ padding: "5px", textAlign: "center", color: "#000" }}>
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      {/* <button
+                      <button
                         onClick={() => updateBillItems(item, -1)}
                         style={{
                           width: "25px",
@@ -301,9 +313,9 @@ const Bill = ({
                         }}
                       >
                         -
-                      </button> */}
+                      </button>
                       {item.quantity}
-                      {/* <button
+                      <button
                         onClick={() => updateBillItems(item, 1)}
                         style={{
                           width: "25px",
@@ -315,7 +327,7 @@ const Bill = ({
                         }}
                       >
                         +
-                      </button> */}
+                      </button>
                     </div>
                   </td>
                   <td style={{ padding: "5px", textAlign: "right" }}>

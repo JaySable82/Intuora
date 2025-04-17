@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_AWS;
+const url = import.meta.env.VITE_LOCAL;
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);

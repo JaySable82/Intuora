@@ -7,7 +7,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { ControlContext } from '../../ControlContext';
 import { OrderContext } from '../OrdersContext';
 
-const AWS_URl=import.meta.env.VITE_AWS;
+const AWS_URl=import.meta.env.VITE_LOCAL;
 
 const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [orderPlaced, setOrderPlaced] = useState(false);

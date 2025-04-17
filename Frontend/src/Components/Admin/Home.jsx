@@ -31,7 +31,7 @@ const Home = () => {
   const [orderedTableNo, setOrderedTableNo] = useState(null);
   const [billsByTable, setBillsByTable] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
-
+  const [clearOrder, setClearOrder] = useState(false);
   // Build a unique key for the current table-block (for when table and block are both selected)
   const key = selectedTable && selectedBlock ? `${selectedTable}-${selectedBlock}` : null;
 
@@ -253,7 +253,15 @@ const Home = () => {
     });
     return Object.values(billsMap);
   };
-
+  const fetchBillsForTableOnly = async () => {
+    try {
+      const res = await axios.get(`${url}/bedekar/bills?tableNo=${selectedTable}`);
+      setbills(res.data); // or setBills, based on your state
+    } catch (err) {
+      console.error("Failed to fetch bills:", err);
+    }
+  };
+  
   return (
     <div style={{ position: "relative", height: 200 }}>
       <NavBar />
@@ -284,6 +292,11 @@ const Home = () => {
         cart={cart}
         updateCart={updateCart}
         setIsOpen={setIsOpen}
+        placedorder={placedorder}
+        setPlacedOrder={setPlacedOrder}
+        orderedTableNo={orderedTableNo}
+        clearOrder={clearOrder}
+        setClearOrder={setClearOrder}
       />
       <div>
         <YourComponent
@@ -309,7 +322,7 @@ const Home = () => {
                 billTotal={bill.orders.total}
                 tableNo={selectedTable}
                 blockNo={bill.blockNo}
-                onClearLocalCart={null}
+                onClearLocalCart={() => fetchTableBills(selectedTable)}
                 placedorder={false}
                 setPlacedOrder={() => {}}
                 setOrderedTableNo={() => {}}
@@ -317,6 +330,8 @@ const Home = () => {
                 setbills={setbills}
                 setBillData={setBillData}
                 setBillTotal={setBillTotal}
+                clearOrder={clearOrder}
+                setClearOrder={setClearOrder}
               />
             ))
           )}
@@ -343,6 +358,8 @@ const Home = () => {
             setbills={setbills}
             setBillData={setBillData}
             setBillTotal={setBillTotal}
+            clearOrder={clearOrder}
+            setClearOrder={setClearOrder}
           />
         </div>
       )}
