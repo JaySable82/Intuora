@@ -2,7 +2,7 @@ import { WebSocketServer } from 'ws';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
-const server = new WebSocketServer({ port: 3002 });
+const server = new WebSocketServer({ port: 3001 });
  // Your Express app
 
 const io = new SocketIOServer(server, {
@@ -34,4 +34,4 @@ server.on('connection', (socket) => {
     });
 });
 
-console.log('WebSocket server is running on ws://localhost:3002');
+console.log('WebSocket server is running on ws://localhost:3001');

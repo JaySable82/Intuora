@@ -61,11 +61,41 @@ const Bill = ({
   //   }
   // }, [key, billData, bills]);
 
+  // useEffect(() => {
+  //   if (
+  //     key &&
+  //     billData.length > 0 &&
+  //     !hasInitializedRef.current[key] &&
+  //     (!bills[key] || bills[key].length === 0)
+  //   ) {
+  //     const dbItems = billData.flatMap(order =>
+  //       order.orders.items.map(item => ({
+  //         ...item,
+  //         fromBill: true,
+  //         orderId: item.orderId,
+  //         updateQuantity: (finalQty) => {
+  //           const diff = finalQty - item.quantity;
+  //           updateBillItems(item, diff);
+  //         },
+  //       }))
+  //     );
+
+  //     updateCurrentBill(dbItems);
+  //     hasInitializedRef.current[key] = true; // mark as initialized
+  //     setBillData([]);
+  //   }
+  // }, [key, billData, bills]);
+
   useEffect(() => {
+    console.log("useEffect triggered");
+  console.log("Current Bills:", bills);
+  console.log("Current Bill Data:", billData);
+  console.log("Has Initialized Ref:", hasInitializedRef.current[key]);
+    // Check if the key is valid, billData is available, and the current table's bill is not initialized
     if (
       key &&
       billData.length > 0 &&
-      !hasInitializedRef.current[key] &&
+      !hasInitializedRef.current[key] && // Ensure initialization only once
       (!bills[key] || bills[key].length === 0)
     ) {
       const dbItems = billData.flatMap(order =>
@@ -79,14 +109,16 @@ const Bill = ({
           },
         }))
       );
-
+      
+      // Update the local state with the fetched data
       updateCurrentBill(dbItems);
-      hasInitializedRef.current[key] = true; // mark as initialized
+      hasInitializedRef.current[key] = true; // Mark this table's bill as initialized
+      
+      // Clear the bill data to prevent future merges
       setBillData([]);
     }
   }, [key, billData, bills]);
-
-
+  
   // Function to update bill items (for editing quantity)
   const updateBillItems = (item, change) => {
     if (!blockNo || !tableNo) {

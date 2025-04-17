@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,clearOrder, setClearOrder }) {
+function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,clearOrder, setClearOrder,selectedTable }) {
   const tableCount = 12;
   const [newselectedTable, setNewSelectedTable] = useState(null);
   const [tableOccupancy, setTableOccupancy] = useState({});
@@ -41,9 +41,25 @@ function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,cl
     }
   }, [placedorder]);
   useEffect(() => {
-    // This code runs ONLY once when component mounts
     fetchAllTableBills();
-  }, []);
+    if(selectedTable!=null)
+    {
+      if(onTableSelect)
+      {
+        onTableSelect(selectedTable);
+      }
+      
+    }
+  }, [selectedTable]);
+  
+  const fetchOrdersForTable = async (tableNo) => {
+    try {
+      const res = await axios.get(`${url}/admin/bills`, { params: { tableNo } });
+      setTableOrders(res.data);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    }
+  };
   useEffect(() => {
     if (clearOrder) {
       fetchAllTableBills();

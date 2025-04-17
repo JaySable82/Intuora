@@ -285,6 +285,7 @@ const Home = () => {
         setOccupancy={setOccupancy}
       />
       <TableBar
+        selectedTable={selectedTable}
         onTableSelect={handleTableSelect}
         onBlockSelect={handleBlockSelect}
         blockStatus={blockStatus}
