@@ -12,7 +12,7 @@ import NavBar from '../MenuManagement/Navbar';
 import { OrderContext } from './OrdersContext';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_LOCAL;
+const url = import.meta.env.VITE_AWS;
 const socketEndpoint = 'http://localhost:5173'; // Replace with your socket server URL
 
 const Home = () => {

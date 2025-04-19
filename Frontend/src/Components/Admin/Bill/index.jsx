@@ -1,7 +1,7 @@
 import React, { useEffect,useRef } from 'react';
 import axios from 'axios';
 
-const url = import.meta.env.VITE_LOCAL;
+const url = import.meta.env.VITE_AWS;
 
 const Bill = ({
   cart,
@@ -263,8 +263,6 @@ const Bill = ({
         updateCurrentBill([]);
         setBillData([]);
         if (onClearLocalCart) onClearLocalCart();
-        alert("Orders cleared locally!");
-        alert("Orders cleared successfully!");
   
       } catch (err) {
         if (err.response && err.response.status === 404) {

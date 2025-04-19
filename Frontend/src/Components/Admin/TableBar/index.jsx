@@ -6,7 +6,7 @@ function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,cl
   const [tableOccupancy, setTableOccupancy] = useState({});
   const [allTableBills, setAllTableBills] = useState([]);
 
-  const url = import.meta.env.VITE_LOCAL;
+  const url = import.meta.env.VITE_AWS;
   // Define occupancy mappings for Main and Multi blocks
   const occupancyMappingMain = {
     Full: 4,
