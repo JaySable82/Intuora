@@ -43,6 +43,7 @@ function Login() {
 
     // If all validations pass, clear error and navigate.
     setErrorMessage('');
+    localStorage.setItem('isLoggedIn', 'true');
     navigate('/bedekar/dashboard');
   };
 

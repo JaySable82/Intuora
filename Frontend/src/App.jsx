@@ -1,19 +1,10 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Components/login";
-import Otpform from "./Components/otp";
-import YourComponent from "./Components/userinterface";
-import Kart from "./Components/orders";
-import Menu from "./Components/menu";
-import Admin from "./Components/Admininterface";
-import Adminlogin from "./Components/Admin";
-import Finalorder from "./Components/placeorder";
 import { ControlContextProvider } from "./Components/ControlContext";
-import MenuManagement from "./Components/MenuManagement/MenuMangement";
-import NavBar from "./Components/MenuManagement/Navbar";
-import Inventory from "./Components/Inventory/Inventory";
 import Home from "./Components/Admin/Home";
 import { OrderContextProvider } from "./Components/Admin/OrdersContext";
+import PrivateRoute from "./Components/PrivateRoute";
 
 function App() {
     const [cart, setCart] = useState([]);
@@ -42,19 +33,7 @@ function App() {
                 <OrderContextProvider>
                     <Routes>
                         <Route path="/bedekar" element={<Login />} />
-                        {/* <Route path="/otp" element={<Otpform />} />
-                        <Route path="/ambika/user" element={<YourComponent cart={cart} updateCart={updateCart} />} />
-                        <Route path="/ambika/user/cart" element={<Kart cart={cart} updateCart={updateCart} />} /> */}
-                        
-                        {/* <Route path="/admin/user/cart" element={<Kart cart={cart} updateCart={updateCart} />} /> */}
-
-                        {/* <Route path="/menu" element={<Menu cart={cart} updateCart={updateCart} />} /> */}
-                        <Route path="/bedekar/dashboard" element={<Home />} />
-                        {/* <Route path="/bedekar" element={<Adminlogin />} /> */}
-                        {/* <Route path="/ambika/user/cart/placedorder" element={<Finalorder />} />
-                        <Route path="/ambika-admin/menu" element={<MenuManagement />} />
-                        <Route path="/ambika-admin/inventory" element={<Inventory />} />
-                        <Route path="/nav" element={<NavBar />} /> */}
+                        <Route path="/bedekar/dashboard" element={ <PrivateRoute><Home /></PrivateRoute> } />
                     </Routes>
                 </OrderContextProvider>
             </ControlContextProvider>
