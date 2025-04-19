@@ -270,7 +270,6 @@ const Bill = ({
           updateCurrentBill([]);
           setBillData([]);
           if (onClearLocalCart) onClearLocalCart();
-          alert("Orders cleared locally!");
         } else {
           console.error("Error clearing/archiving from DB:", err);
           alert("Failed to clear order. Please try again.");
