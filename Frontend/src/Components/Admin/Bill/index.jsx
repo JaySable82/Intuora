@@ -38,54 +38,6 @@ const Bill = ({
     }));
   };
 
-  // Initialize local bill from billData if it doesn't exist yet
-  // useEffect(() => {
-  //   if (key && billData.length > 0 && (!bills[key] || bills[key].length === 0)) {
-  //     // Convert billData to the format expected in the bills dictionary
-  //     const dbItems = billData.flatMap(order => 
-  //       order.orders.items.map(item => ({
-  //         ...item,
-  //         fromBill: true,
-  //         orderId: item.orderId,
-  //         updateQuantity: (finalQty) => {
-  //           const diff = finalQty - item.quantity;
-  //           updateBillItems(item, diff);
-  //         },
-  //       }))
-  //     );
-  //     setBillData([]);
-  //     // Initialize the local bill with fetched data
-  //     updateCurrentBill(dbItems);
-  //     // Clear billData to prevent future merges
-
-  //   }
-  // }, [key, billData, bills]);
-
-  // useEffect(() => {
-  //   if (
-  //     key &&
-  //     billData.length > 0 &&
-  //     !hasInitializedRef.current[key] &&
-  //     (!bills[key] || bills[key].length === 0)
-  //   ) {
-  //     const dbItems = billData.flatMap(order =>
-  //       order.orders.items.map(item => ({
-  //         ...item,
-  //         fromBill: true,
-  //         orderId: item.orderId,
-  //         updateQuantity: (finalQty) => {
-  //           const diff = finalQty - item.quantity;
-  //           updateBillItems(item, diff);
-  //         },
-  //       }))
-  //     );
-
-  //     updateCurrentBill(dbItems);
-  //     hasInitializedRef.current[key] = true; // mark as initialized
-  //     setBillData([]);
-  //   }
-  // }, [key, billData, bills]);
-
   useEffect(() => {
     console.log("useEffect triggered");
   console.log("Current Bills:", bills);

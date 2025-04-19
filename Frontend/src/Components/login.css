@@ -5,6 +5,8 @@ body {
 }
 
 .outer-container {
+    top:0;
+    left: 0;
     background: #000000;
     position: fixed;
     width: 100%;

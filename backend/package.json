@@ -1,7 +1,7 @@
 {
   "main": "app.js",
   "scripts": {
-    "start": "node Routes/app.js"
+    "start": "nodemon Routes/app.js"
   },
   "type": "module",
   "dependencies": {

@@ -22,7 +22,7 @@ function App() {
                 );
             } else if (change > 0) {
                 return [...prevCart, { ...item, quantity: change, marathi: item.marathi }];
-            }x
+            }
             return prevCart;
         });
     };
@@ -34,6 +34,7 @@ function App() {
                     <Routes>
                         <Route path="/bedekar" element={<Login />} />
                         <Route path="/bedekar/dashboard" element={ <PrivateRoute><Home /></PrivateRoute> } />
+                        {/* <Route path="/bedekar/dashboard" element={ <Home /> } /> */}
                     </Routes>
                 </OrderContextProvider>
             </ControlContextProvider>

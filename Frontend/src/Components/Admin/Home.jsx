@@ -263,7 +263,7 @@ const Home = () => {
   };
   
   return (
-    <div style={{ position: "relative", height: 200 }}>
+    <div style={{position: "relative", height: 200,margin:"0px"}}>
       <NavBar />
       <SideSection
         newselectedTable={newselectedTable}
