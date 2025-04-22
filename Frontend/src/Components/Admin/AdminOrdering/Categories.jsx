@@ -17,7 +17,7 @@ function Categories({ sectionRefs }) {
   
   };
 
-  const categories = ["Misal", "Extras","Snacks", "Beverages","Desserts","RTE"];
+  const categories = ["Veg Unlimited", "Veg Limited", "Non-Veg Unlimited","Non-Veg Limited","Limited","Rice","Paratha"];
 
   return (
     <div style={{ marginTop: 20  }}>
@@ -39,8 +39,8 @@ function Categories({ sectionRefs }) {
           position:"relative",
           display: "flex",
           justifyContent: "flex-start",
-          gap: 10,
-          left:10
+          gap: 5,
+          left:5
         }}
       >
         {categories.map((category, index) => (
@@ -52,7 +52,7 @@ function Categories({ sectionRefs }) {
             }
             style={{
               padding: "8px 20px",
-              borderRadius: 8,
+              borderRadius: 10,
               backgroundColor: "#ffffff",
               border: "1px solid lightgrey",
               cursor: "pointer",

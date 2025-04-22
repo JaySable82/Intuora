@@ -26,9 +26,9 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo,isOpen,s
     const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const Bestseller = [
-        { id: 1, name: 'Misal Slice',marathi:"मिसळ स्लाइस", price: 100, img:peshwai },
-        { id: 12, name: 'Extra Slice',marathi:"एक्स्ट्रा स्लाइस", price: 5, img:sadashiv },
-        { id: 19, name: 'Bhaji',marathi:"भजी", price:50, img:bombay },
+        { id: 100,marathi:"चपाती", price: 10, img:peshwai },
+        { id: 105,marathi:"सादा राईस हॉफ", price: 30, img:sadashiv },
+        { id: 107,marathi:"जीरा राईस हॉफ", price:50, img:bombay },
         // { id: 36, name: 'Kokam',marathi:"कोकम", price:30, img:bombay },
 
     ];
@@ -40,27 +40,15 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo,isOpen,s
     // ];
 
     const sectionRefs = {
-        Misal: useRef(null),
-        Extras: useRef(null),
-        Snacks: useRef(null),
-        Beverages: useRef(null),
-        Desserts: useRef(null),
-        RTE: useRef(null),
+        VegUnlimited: useRef(null),
+        VegLimited: useRef(null),
+        NonVeg_Unlimited: useRef(null),
+        Limited: useRef(null),
+        Rice: useRef(null),
+        Paratha: useRef(null),
     };
 
     return (
-        // <div style={{left:310, width: '32%',overflow:'hidden',display:'flex',flexDirection:'column', position: 'relative', background: 'white' }}>
-        //     {/* <Nav size={cartSize} /> */}
-        //     <div style={{ marginBottom: 10 }}>
-        //         <Categories sectionRefs={sectionRefs}/>
-        //     </div>
-        //     {/* <Bestsellers title={"New Arrivals"} onBestsellerClick={handleNewarrivalClick} cart={cart} updateCart={updateCart} Bestseller={NewArrivals}/> */}
-        //     <div style={{ marginTop: 20 }}>
-        //     <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} />
-        //     </div>
-        //     <Menu handleClick={handleMenuClick} cart={cart} sectionRefs={sectionRefs} selectedTable={selectedTable} block={block} />
-        //     {/* <Cartx size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} /> */}
-        // </div>
 
         <div style={isOpen ? {top:200,left:260,height:1000,width:750,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto", transition:"0.5s ease"} : {top:200,left:40,height:1000,width:1000,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto",transition:"0.5s ease"}}> 
             <Categories sectionRefs={sectionRefs}/>

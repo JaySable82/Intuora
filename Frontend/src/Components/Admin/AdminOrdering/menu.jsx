@@ -8,12 +8,12 @@ function Menu({ handleClick, cart, sectionRefs, selectedTable,tableno ,blockNo,i
   const filterItems = (minId, maxId) => list.filter((item) => item.id >= minId && item.id <= maxId);
 
   const sections = [
-    { ref: "Misal", minId: 1, maxId: 11, title: "Non-Grilled Sandwich" },
-    { ref: "Extras", minId: 12, maxId: 18, title: "Grilled Sandwich" },
-    { ref: "Snacks", minId: 19, maxId: 27, title: "Chocolate Sandwich" },
-    { ref: "Beverages", minId: 36, maxId: 44, title: "Chocolate Sandwich" },
-    { ref: "Desserts", minId: 28, maxId: 35, title: "Chocolate Sandwich" },
-    { ref: "RTE", minId: 45, maxId: 47, title: "Chocolate Sandwich" },
+    { ref: "veg unlimited", minId: 1, maxId: 23, title: "Non-Grilled Sandwich" },
+    { ref: "veg limited", minId: 24, maxId: 79, title: "Grilled Sandwich" },
+    { ref: "nonveg unlimited", minId: 80, maxId: 85, title: "Chocolate Sandwich" },
+    { ref: "nonveg limited", minId: 86, maxId: 92, title: "Chocolate Sandwich" },
+    { ref: "limited", minId: 93, maxId: 104, title: "Chocolate Sandwich" },
+    { ref: "paratha", minId: 105, maxId: 123, title: "Chocolate Sandwich" },
   ];
 
   return (

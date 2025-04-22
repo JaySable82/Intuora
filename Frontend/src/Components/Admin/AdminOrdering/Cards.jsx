@@ -28,7 +28,7 @@ function Cards({ item, handleClick, cart, selectedTable,tableno, blockNo }) {
       }}
     >
       <div style={{ textAlign: "left" }}> {/* Changed from center to left */}
-        <div style={{ fontSize: 18, color: "black" }}>{item.name}</div>
+        {/* <div style={{ fontSize: 18, color: "black" }}>{item.name}</div>y */}
         <div style={{ fontSize: 18, color: "black", marginTop: 10 }}>
           {item.marathi}
         </div>
