@@ -32,6 +32,7 @@ const Home = () => {
   const [billsByTable, setBillsByTable] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [clearOrder, setClearOrder] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);//save order disable
   // Build a unique key for the current table-block (for when table and block are both selected)
   const key = selectedTable && selectedBlock ? `${selectedTable}-${selectedBlock}` : null;
 
@@ -213,10 +214,30 @@ const Home = () => {
       });
   };
 
-  const handleTableSelect = (tableNo) => {
+  const handleTableSelect = async (tableNo) => {
     setSelectedTable(tableNo);
     setSelectedBlock(null);
-    setIsOpen(true);
+    try {
+      const response = await fetch(`${url}/admin/bills?tableNo=${tableNo}`);
+      const data = await response.json();
+  
+      // Assuming API returns an array of bills
+      const bills = data.map(bill => {
+        const isDet = bill.blockNo !== "FULL";
+        return {
+          ...bill,
+          isDet
+        };
+      });
+      const hasFullBlock = bills.some(
+        bill => bill.blockNo?.replace(/"/g, '').trim().toUpperCase() === "FULL"
+      );
+    // Open only if any bill is FULL
+    setIsOpen(!hasFullBlock);
+    } catch (error) {
+      console.error("Error fetching table bills:", error);
+    }
+    
     fetchTableBills(tableNo);
   };
 
@@ -298,6 +319,8 @@ const Home = () => {
         orderedTableNo={orderedTableNo}
         clearOrder={clearOrder}
         setClearOrder={setClearOrder}
+        setIsDisabled={setIsDisabled}
+        isDisabled={isDisabled}
       />
       <div>
         <YourComponent
@@ -333,6 +356,8 @@ const Home = () => {
                 setBillTotal={setBillTotal}
                 clearOrder={clearOrder}
                 setClearOrder={setClearOrder}
+                setIsDisabled={setIsDisabled}
+                isDisabled={isDisabled}
               />
             ))
           )}
@@ -361,6 +386,8 @@ const Home = () => {
             setBillTotal={setBillTotal}
             clearOrder={clearOrder}
             setClearOrder={setClearOrder}
+            setIsDisabled={setIsDisabled}
+            isDisabled={isDisabled}
           />
         </div>
       )}

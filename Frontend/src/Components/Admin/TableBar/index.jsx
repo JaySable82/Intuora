@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,clearOrder, setClearOrder,selectedTable }) {
+function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,clearOrder, setClearOrder,selectedTable,setIsDisabled,isDisabled }) {
   const tableCount = 12;
   const [newselectedTable, setNewSelectedTable] = useState(null);
   const [tableOccupancy, setTableOccupancy] = useState({});
@@ -41,6 +41,7 @@ function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,cl
     }
   }, [placedorder]);
   useEffect(() => {
+    setIsDisabled(false);
     fetchAllTableBills();
     if(selectedTable!=null)
     {

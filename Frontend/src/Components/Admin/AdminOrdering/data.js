@@ -157,7 +157,7 @@ const list = [
       id: 18,
       marathi: "काजूकंद",
       name: "KaajuKanda",
-      price: 120,
+      price: 5,
       img: foodImage,
       amount: 1
     },

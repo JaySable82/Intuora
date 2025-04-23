@@ -17,7 +17,9 @@ const Bill = ({
   setbills,
   setBillData,
   clearOrder, 
-  setClearOrder
+  setClearOrder,
+  setIsDisabled,
+  isDisabled
 }) => {
   // Build a unique key for the current table-block
   const key = tableNo && blockNo ? `${tableNo}-${blockNo}` : null;
@@ -39,6 +41,7 @@ const Bill = ({
   };
 
   useEffect(() => {
+    
     console.log("useEffect triggered");
   console.log("Current Bills:", bills);
   console.log("Current Bill Data:", billData);
@@ -148,6 +151,7 @@ const Bill = ({
         setPlacedOrder(true);
         const tableBlock = `${tableNo}${blockNo}`;
         setOrderedTableNo(tableBlock);
+        setIsDisabled(true);
       }
     } catch (err) {
       console.error("Error in placing the order:", err);
@@ -351,18 +355,20 @@ const Bill = ({
             </button>
 
             <button
-              onClick={handlePlaceOrder}
+              onClick={isDisabled ? () => {} : handlePlaceOrder} // Prevent click when disabled
+              disabled={isDisabled}
               style={{
                 padding: "10px 15px",
-                background: "#31B254",
+                background: isDisabled ? "#999" : "#31B254", // Gray out the button when disabled
                 color: "white",
                 border: "none",
-                cursor: "pointer",
+                cursor: isDisabled ? "not-allowed" : "pointer", // Change cursor when disabled
                 borderRadius: "5px",
                 flex: "1",
+                opacity: isDisabled ? 0.7 : 1, // Optional: Add opacity change for visual feedback
               }}
             >
-              Save Order
+              {isDisabled ? "Order saved" : "Save Order"} {/* Update text while disabled */}
             </button>
           </div>
         </>
