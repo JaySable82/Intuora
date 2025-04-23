@@ -53,7 +53,8 @@ const Home = () => {
 
   // Update bill items locally
   const updateBillItems = (item, change) => {
-    if (!selectedTable || !selectedBlock) {
+    
+    if (!selectedTable || (!selectedBlock && !isDisabled) ) {
       alert("Please select table and seat first!");
       return;
     }
@@ -233,6 +234,10 @@ const Home = () => {
         bill => bill.blockNo?.replace(/"/g, '').trim().toUpperCase() === "FULL"
       );
     // Open only if any bill is FULL
+    if(hasFullBlock)
+    {
+      setSelectedBlock("Full");
+    }  
     setIsOpen(!hasFullBlock);
     } catch (error) {
       console.error("Error fetching table bills:", error);

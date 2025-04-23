@@ -76,6 +76,7 @@ const Bill = ({
   
   // Function to update bill items (for editing quantity)
   const updateBillItems = (item, change) => {
+    
     if (!blockNo || !tableNo) {
       alert("Please select table and seat first!");
       return;
