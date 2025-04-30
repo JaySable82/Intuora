@@ -3,24 +3,26 @@ import "./CommonFonts.css";
 
 function Categories({ sectionRefs }) {
   const scrollHandler = (refKey) => {
-    // if (sectionRefs[refKey]?.current) {
-    //   sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth" });
-    // } else {
-    //   console.error(`Ref for ${refKey} is not defined.`);
-    // }
-
     if (sectionRefs[refKey] && sectionRefs[refKey].current) {
-      sectionRefs[refKey].current.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Get the current scroll position and adjust the offset
+      const targetElement = sectionRefs[refKey].current;
+      const offset = 190; // Adjust this value to tweak the scroll position (in pixels)
+
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+
+      // Scroll with an offset to prevent going too far
+      window.scrollTo({
+        top: targetPosition - offset,
+        behavior: "smooth",
+      });
     } else {
       console.error(`Ref for ${refKey} is not defined.`);
     }
-  
   };
-
   const categories = ["Misal", "Extras","Snacks", "Beverages","Desserts","RTE"];
 
   return (
-    <div style={{ marginTop: 20  }}>
+    <div style={{ marginTop: 20,position:"sticky"  }}>
       <h2
         className="categories"
         style={{
@@ -32,7 +34,7 @@ function Categories({ sectionRefs }) {
           
         }}
       >
-        Categories
+        {/* Categories */}
       </h2>
       <div
         style={{

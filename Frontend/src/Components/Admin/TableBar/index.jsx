@@ -139,7 +139,7 @@ tableBills.forEach(bill => {
       top: "0rem",
       left: 0,
       width: "100%",
-      zIndex: 1000,
+      zIndex: 9,
       background: "#fff", // optional: white background to cover content behind
       display: "flex",
       flexDirection: "column",

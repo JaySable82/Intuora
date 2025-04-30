@@ -20,7 +20,7 @@ const list = [
     id: 1,
     marathi: "मिसळ स्लाईस",
     name: "Misal Slice",
-    price: 100,
+    price: 110,
     img: foodImage,
     amount: 1
   },
@@ -28,7 +28,7 @@ const list = [
     id: 2,
     marathi: "१ हाफ मिसळ स्लाईस",
     name: "1 Half Misal Slice",
-    price: 80,
+    price: 90,
     img: foodImage,
     amount: 1
   },
@@ -36,7 +36,7 @@ const list = [
     id: 3,
     marathi: "जैन मिसळ",
     name: "Jain Misal",
-    price: 110,
+    price: 120,
     img: foodImage,
     amount: 1
   },
@@ -44,7 +44,7 @@ const list = [
     id: 4,
     marathi: "उपवास मिसळ",
     name: "Upwas Misal",
-    price: 110,
+    price: 130,
     img: foodImage,
     amount: 1
   },
@@ -52,7 +52,7 @@ const list = [
     id: 5,
     marathi: "मिसळ ब्रेडशिवाय",
     name: "Misal w/o bread",
-    price: 90,
+    price: 100,
     img: foodImage,
     amount: 1
   },
@@ -60,7 +60,7 @@ const list = [
     id: 6,
     marathi: "१/२ मिसळ ब्रेडशिवाय",
     name: "1/2 Misal w/o bread",
-    price: 75,
+    price: 85,
     img: foodImage,
     amount: 1
   },
@@ -68,7 +68,7 @@ const list = [
     id: 7,
     marathi: "जैन मिसळ ब्रेडशिवाय",
     name: "Jain Misal w/o bread",
-    price: 100,
+    price: 110,
     img: foodImage,
     amount: 1
   },
@@ -76,7 +76,7 @@ const list = [
     id: 8,
     marathi: "उपवास मिसळ पार्सल",
     name: "Upwas Misal Parcel",
-    price: 120,
+    price: 140,
     img: foodImage,
     amount: 1
   },
@@ -84,7 +84,7 @@ const list = [
     id: 9,
     marathi: "मिसळ पार्सल",
     name: "Misal Parcel",
-    price: 110,
+    price: 120,
     img: foodImage,
     amount: 1
   },
@@ -92,7 +92,7 @@ const list = [
     id: 10,
     marathi: "स्लाईस रस्सा",
     name: "Slice Rassa",
-    price: 70,
+    price: 80,
     img: foodImage,
     amount: 1
   },
@@ -100,7 +100,7 @@ const list = [
     id: 11,
     marathi: "जैन मिसळ पार्सल",
     name: "Jain Misal Parcel",
-    price: 120,
+    price: 130,
     img: foodImage,
     amount: 1
   },
@@ -108,7 +108,7 @@ const list = [
     id: 12,
     marathi: "शेअरिंग मिसळ",
     name: "Sharing Misal",
-    price: 140,
+    price: 160,
     img: foodImage,
     amount: 1
   },
@@ -130,9 +130,9 @@ const list = [
   },
   {
     id: 15,
-    marathi: "पान",
-    name: "Paan",
-    price: 5,
+    marathi: "दही",
+    name: "Dahi",
+    price: 30,
     img: foodImage,
     amount: 1
   },
@@ -148,7 +148,7 @@ const list = [
     id: 17,
     marathi: "जादा रस्सा",
     name: "Extra Rassa",
-    price: 30,
+    price: 40,
     img: foodImage,
     amount: 1
   },
@@ -156,7 +156,7 @@ const list = [
     id: 18,
     marathi: "हाफ जादा रस्सा",
     name: "Half Extra Rassa",
-    price: 15,
+    price: 20,
     img: foodImage,
     amount: 1
   },
@@ -170,9 +170,9 @@ const list = [
   },
   {
     id: 20,
-    marathi: "दही",
-    name: "Dahi",
-    price: 25,
+    marathi: "पान",
+    name: "Paan",
+    price: 5,
     img: foodImage,
     amount: 1
   },
@@ -180,7 +180,7 @@ const list = [
     id: 21,
     marathi: "शेव चिवडा",
     name: "Shev Chivda",
-    price: 70,
+    price: 80,
     img: foodImage,
     amount: 1
   },
@@ -188,7 +188,7 @@ const list = [
     id: 22,
     marathi: "भजी",
     name: "Bhaji",
-    price: 50,
+    price: 60,
     img: foodImage,
     amount: 1
   },
@@ -196,7 +196,7 @@ const list = [
     id: 23,
     marathi: "बटाटा वडा",
     name: "Batata Wada",
-    price: 50,
+    price: 60,
     img: foodImage,
     amount: 1
   },
@@ -204,7 +204,7 @@ const list = [
     id: 24,
     marathi: "बटाटा चिवडा",
     name: "Batata Chivda",
-    price: 70,
+    price: 80,
     img: foodImage,
     amount: 1
   },
@@ -212,7 +212,7 @@ const list = [
     id: 25,
     marathi: "हाफ शॆव चिवडा",
     name: "Half Shev Chivda",
-    price: 35,
+    price: 40,
     img: foodImage,
     amount: 1
   },
@@ -220,7 +220,7 @@ const list = [
     id: 26,
     marathi: "हाफ भजी",
     name: "Half Bhaji",
-    price: 25,
+    price: 30,
     img: foodImage,
     amount: 1
   },
@@ -228,7 +228,7 @@ const list = [
     id: 27,
     marathi: "सिंगल वडा",
     name: "Single Wada",
-    price: 25,
+    price: 30,
     img: foodImage,
     amount: 1
   },
@@ -236,7 +236,7 @@ const list = [
     id: 28,
     marathi: "हाफ बटाटा चिवडा",
     name: "Half Batata Chivda",
-    price: 35,
+    price: 40,
     img: foodImage,
     amount: 1
   },
@@ -244,7 +244,7 @@ const list = [
     id: 29,
     marathi:"मटकी प्लेट",
     name: "Matki Plate",
-    price: 70,
+    price: 80,
     img: foodImage,
     amount: 1
     
@@ -253,7 +253,7 @@ const list = [
     id: 30,
     marathi: "बटाटा प्लेट",
     name: "Batata Plate",
-    price: 70,
+    price: 80,
     img: foodImage,
     amount: 1
   },
@@ -261,7 +261,7 @@ const list = [
     id: 31,
     marathi: "1/2 बटाटा प्लेट",
     name: "1/2 Batata Plate",
-    price: 35,
+    price: 40,
     img: foodImage,
     amount: 1
   },
@@ -269,7 +269,7 @@ const list = [
     id: 32,
     marathi: "वडा रस्सा स्लाईस",
     name: "Wada Sample Slice",
-    price: 80,
+    price: 90,
     img: foodImage,
     amount: 1
   },
@@ -277,7 +277,7 @@ const list = [
     id: 33,
     marathi: "1/2 मटकी प्लेट",
     name: "1/2 Matki Plate",
-    price: 35,
+    price: 40,
     img: foodImage,
     amount: 1
   },
@@ -285,7 +285,7 @@ const list = [
     id: 34,
     marathi: "गुलकंद लाडू",
     name: "Gulkand Laadu",
-    price: 25,
+    price: 30,
     img: foodImage,
     amount: 1
   },
@@ -293,7 +293,7 @@ const list = [
     id: 35,
     marathi: "शेंगदाणा लाडू",
     name: "Shengdana Laadu",
-    price: 15,
+    price: 20,
     img: foodImage,
     amount: 1
   },
@@ -301,7 +301,7 @@ const list = [
     id: 36,
     marathi: "खरवस",
     name: "Kharwas",
-    price: 55,
+    price: 60,
     img: foodImage,
     amount: 1
   },
@@ -309,7 +309,7 @@ const list = [
     id: 37,
     marathi: "चॉकलेट फज",
     name: "Chocolate Fudge",
-    price: 50,
+    price: 55,
     img: foodImage,
     amount: 1
   },
@@ -317,7 +317,7 @@ const list = [
     id: 38,
     marathi: "हळीव लाडू",
     name: "Haliv Laadu",
-    price: 25,
+    price: 30,
     img: foodImage,
     amount: 1
   },
@@ -325,7 +325,7 @@ const list = [
     id: 39,
     marathi: "चिरोटा",
     name: "Chirota",
-    price: 65,
+    price: 70,
     img: foodImage,
     amount: 1
   },
@@ -333,7 +333,7 @@ const list = [
     id: 40,
     marathi: "आंबा खरवस",
     name: "Mango Kharwas",
-    price: 65,
+    price: 70,
     img: foodImage,
     amount: 1
   },
@@ -341,7 +341,7 @@ const list = [
     id: 41,
     marathi: "ताक",
     name: "Taak",
-    price: 30,
+    price: 35,
     img: foodImage,
     amount: 1
   },
@@ -349,7 +349,7 @@ const list = [
     id: 42,
     marathi: "कोकम",
     name: "Kokam",
-    price: 30,
+    price: 35,
     img: foodImage,
     amount: 1
   },
@@ -357,7 +357,7 @@ const list = [
     id: 43,
     marathi: "फ्लेवर्ड दूध",
     name: "Flavoured Milk",
-    price: 35,
+    price: 40,
     img: foodImage,
     amount: 1
   },
@@ -365,7 +365,7 @@ const list = [
     id: 44,
     marathi: "लिंबू सरबत",
     name: "Limbu Sarbat",
-    price: 20,
+    price: 25,
     img: foodImage,
     amount: 1
   },
@@ -373,7 +373,7 @@ const list = [
     id: 45,
     marathi: "सोलकढी",
     name: "Solkadi",
-    price: 30,
+    price: 35,
     img: foodImage,
     amount: 1
   },
@@ -381,7 +381,7 @@ const list = [
     id: 46,
     marathi: "कैरी पन्हे",
     name: "Kairi Panhe",
-    price: 30,
+    price: 35,
     img: foodImage,
     amount: 1
   },
@@ -389,7 +389,7 @@ const list = [
     id: 47,
     marathi: "करवंद सरबत",
     name: "Karwand Sarbat",
-    price: 30,
+    price: 35,
     img: foodImage,
     amount: 1
   },
@@ -397,7 +397,7 @@ const list = [
     id: 48,
     marathi: "चहा",
     name: "Tea",
-    price: 25,
+    price: 30,
     img: foodImage,
     amount: 1
   },
@@ -405,7 +405,7 @@ const list = [
     id: 49,
     marathi: "कॉफी",
     name: "Coffee",
-    price: 25,
+    price: 30,
     img: foodImage,
     amount: 1
   },

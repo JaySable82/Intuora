@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const url = import.meta.env.VITE_AWS;
 
-const Bill = ({
+const Bill1 = ({
   cart,
   billData,
   billTotal,
@@ -249,7 +249,6 @@ const Bill = ({
     <div
       style={{
         width: "20%",
-        top: 0,
         padding: "10px",
         background: "#F8F8FA",
         borderRadius: "10px",
@@ -258,7 +257,9 @@ const Bill = ({
         fontSize: 16,
         marginLeft: "auto",
         marginBottom: 20,
-        position: "relative",
+        right:10,
+        top:"12rem",
+        position: "fixed",
       }}
     >
       <h2 style={{ fontSize: 20, marginBottom: 16, color: "#333" }}>Bill</h2>
@@ -384,4 +385,4 @@ const Bill = ({
   );
 };
 
-export default Bill;
+export default Bill1;

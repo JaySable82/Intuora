@@ -883,7 +883,29 @@ app.get('/admin/bills', async (req, res) => {
       res.status(500).json({ message: 'Server error fetching bills' });
     }
   });
+  app.get('/admin/tbbills', async (req, res) => {
+    const { tableNo, blockNo } = req.query;
   
+    console.log('GET /admin/bills → tableNo =', tableNo, ', blockNo =', blockNo);
+  
+    // Check if either tableNo or blockNo is missing
+    if (!tableNo || !blockNo) {
+      return res.status(400).json({ message: 'Missing tableNo or blockNo parameter' });
+    }
+  
+    try {
+      // Find all orders matching both tableNo and blockNo
+      const bills = await AdminDashboardOrdersModel.find({ tableNo, blockNo });
+  
+      // Optional: sort by token or createdAt
+      // .sort({ 'orders.token': 1 })
+  
+      res.status(200).json(bills);
+    } catch (err) {
+      console.error('Error fetching bills for table', tableNo, 'block', blockNo, err);
+      res.status(500).json({ message: 'Server error fetching bills' });
+    }
+  });
   app.get('/admin/bills/all', async (req, res) => {
     console.log('GET /admin/bills/all');
   

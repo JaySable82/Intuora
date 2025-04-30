@@ -11,7 +11,7 @@ import User from './AdminOrdering/index2';
 import NavBar from '../MenuManagement/Navbar';
 import { OrderContext } from './OrdersContext';
 import axios from 'axios';
-
+import Bill1 from './Bill/index1';
 const url = import.meta.env.VITE_AWS;
 const socketEndpoint = 'http://localhost:5173'; // Replace with your socket server URL
 
@@ -35,7 +35,7 @@ const Home = () => {
   const [isDisabled, setIsDisabled] = useState(false);//save order disable
   // Build a unique key for the current table-block (for when table and block are both selected)
   const key = selectedTable && selectedBlock ? `${selectedTable}-${selectedBlock}` : null;
-
+  
   // 1. Retrieve the current bill array for the selected table-block (local state)
   const getCurrentBill = () => {
     if (!key) return [];
@@ -100,7 +100,7 @@ const Home = () => {
 
   const fetchBillData = async () => {
     try {
-      const response = await axios.get(`${url}/bedekar/bill`, {
+      const response = await axios.get(`${url}/admin/tbbills`, {
         params: { tableNo: selectedTable, blockNo: selectedBlock },
       });
       const processedBillData = response.data.orders
@@ -266,6 +266,8 @@ const Home = () => {
   const currentCart = getCurrentBill();
   const handleUpdateCart = (item, change) => updateBillItems(item, change);
 
+  
+
   useEffect(() => {
     if (selectedBlock != null) {
       setBillsByTable([]);
@@ -283,14 +285,14 @@ const Home = () => {
     });
     return Object.values(billsMap);
   };
-  const fetchBillsForTableOnly = async () => {
-    try {
-      const res = await axios.get(`${url}/bedekar/bills?tableNo=${selectedTable}`);
-      setbills(res.data); // or setBills, based on your state
-    } catch (err) {
-      console.error("Failed to fetch bills:", err);
-    }
-  };
+  // const fetchBillsForTableOnly = async () => {
+  //   try {
+  //     const res = await axios.get(`${url}/bedekar/bills?tableNo=${selectedTable}`);
+  //     setbills(res.data); // or setBills, based on your state
+  //   } catch (err) {
+  //     console.error("Failed to fetch bills:", err);
+  //   }
+  // };
   
   return (
     <div style={{position: "relative", height: "450vh",margin:"0px"}}>
@@ -374,7 +376,7 @@ const Home = () => {
       )}
       {selectedTable != null && selectedBlock != null && (
         <div style={{ padding: 16 }}>
-          <Bill
+          <Bill1
             cart={currentCart}
             onClearLocalCart={() => updateCurrentBill([])}
             setcart={setCart}

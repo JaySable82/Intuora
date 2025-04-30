@@ -10,8 +10,8 @@ function Menu({ handleClick, cart, sectionRefs, selectedTable, tableno, blockNo,
     { ref: "Misal", minId: 1, maxId: 12, title: "Misal" },
     { ref: "Extras", minId: 13, maxId: 20, title: "Extras" },
     { ref: "Snacks", minId: 21, maxId: 33, title: "Snacks" },
-    { ref: "Desserts", minId: 34, maxId: 40, title: "Desserts" },
     { ref: "Beverages", minId: 41, maxId: 50, title: "Beverages" },
+    { ref: "Desserts", minId: 34, maxId: 40, title: "Desserts" },
     { ref: "RTE", minId: 51, maxId: 53, title: "Ready to Eat (RTE)" },
   ];
 
