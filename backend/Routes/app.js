@@ -884,6 +884,19 @@ app.get('/admin/bills', async (req, res) => {
     }
   });
   
+  app.get('/admin/bills/all', async (req, res) => {
+    console.log('GET /admin/bills/all');
+  
+    try {
+      // Get all bills, regardless of table number
+      const allBills = await AdminDashboardOrdersModel.find();
+  
+      res.status(200).json(allBills);
+    } catch (err) {
+      console.error('Error fetching all bills:', err);
+      res.status(500).json({ message: 'Server error fetching all bills' });
+    }
+  });
   
 
 

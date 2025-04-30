@@ -94,6 +94,7 @@ const Home = () => {
     } else {
       return;
     }
+    setIsDisabled(false);
     updateCurrentBill(newBill);
   };
 
@@ -142,6 +143,7 @@ const Home = () => {
   };
 
   const updateCart = (item, change) => {
+    setIsDisabled(false);
     console.log("Update cart called!");
     setCart((prevCart) => {
       const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
@@ -177,6 +179,7 @@ const Home = () => {
   };
 
   const updateCartItemQuantity = (itemId, newQuantity) => {
+    setIsDisabled(true);
     setCart((prevCart) => {
       if (newQuantity <= 0) {
         return prevCart.filter((item) => item.id !== itemId);
@@ -247,6 +250,7 @@ const Home = () => {
   };
 
   const handleBlockSelect = (block) => {
+    setIsDisabled(false);
     setSelectedBlock(block);
   };
 
@@ -289,7 +293,7 @@ const Home = () => {
   };
   
   return (
-    <div style={{position: "relative", height: 200,margin:"0px"}}>
+    <div style={{position: "relative", height: "450vh",margin:"0px"}}>
       <NavBar />
       <SideSection
         newselectedTable={newselectedTable}

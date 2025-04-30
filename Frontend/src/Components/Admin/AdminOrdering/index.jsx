@@ -62,7 +62,7 @@ const YourComponent = ({ cart, updateCart,selectedTable,tableno,blockNo,isOpen,s
         //     {/* <Cartx size={cartSize} total={cartTotal} cart={cart} updateCart={updateCart} /> */}
         // </div>
 
-        <div style={isOpen ? {top:200,left:260,height:1000,width:750,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto", transition:"0.5s ease"} : {top:200,left:40,height:1000,width:1000,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"auto",transition:"0.5s ease"}}> 
+        <div style={isOpen ? {top:200,left:260,height:'450vh',width:750,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10, transition:"0.5s ease"} : {top:200,left:40,height:'450vh',width:1000,position:"absolute",backgroundColor:"#F8F8FA",borderRadius:10,overflowY:"hidden",transition:"0.5s ease"}}> 
             <Categories sectionRefs={sectionRefs}/>
             <Bestsellers title={"Bestseller"} onBestsellerClick={handleBestsellerClick} cart={cart} updateCart={updateCart} Bestseller={Bestseller} tableno={tableno} blockNo={blockNo} isOpen={isOpen} />
             <Menu handleClick={handleMenuClick} cart={cart} sectionRefs={sectionRefs} selectedTable={selectedTable} tableno={tableno} blockNo={blockNo} isOpen={isOpen}/>

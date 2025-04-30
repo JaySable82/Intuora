@@ -21,16 +21,15 @@ function TableBar({ onTableSelect, placedorder, orderedTableNo,setPlacedOrder,cl
   };
   const fetchAllTableBills = async () => {
     const allBills = [];
-    for (let tableNo = 1; tableNo <= tableCount; tableNo++) {
       try {
-        const res = await axios.get(`${url}/admin/bills`, { params: { tableNo } });
+        const res = await axios.get(`${url}/admin/bills/all`);
         if (res.data.length > 0) {
           allBills.push(...res.data);
         }
       } catch (err) {
         console.error(`Error fetching bills for table ${tableNo}:`, err);
       }
-    }
+    
     setAllTableBills(allBills);
   };
   // Update occupancy whenever orderedTableNo changes
@@ -135,7 +134,19 @@ tableBills.forEach(bill => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px" }}>
+    <div style={{
+      position: "sticky",
+      top: "0rem",
+      left: 0,
+      width: "100%",
+      zIndex: 1000,
+      background: "#fff", // optional: white background to cover content behind
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "20px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" // optional: subtle shadow
+    }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
         {[...Array(tableCount)].map((_, index) => {
           const tableNo = index + 1;
