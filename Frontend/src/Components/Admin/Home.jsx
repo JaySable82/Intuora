@@ -376,7 +376,7 @@ const Home = () => {
       )}
       {selectedTable != null && selectedBlock != null && (
         <div style={{ padding: 16 }}>
-          <Bill1
+          <Bill
             cart={currentCart}
             onClearLocalCart={() => updateCurrentBill([])}
             setcart={setCart}

@@ -141,6 +141,7 @@ const Bill = ({
       }
       
       const currentBill = getCurrentBill();
+      console.log("Before update ",currentBill);
       const orderData = {
         cart: currentBill.map((item) => ({
           ...item,
@@ -151,14 +152,45 @@ const Bill = ({
         tableNo,
         blockNo,
       };
-      
+      console.log("After update",orderData);
+      try {
+        await axios.delete(`${url}/admin/bill`, {
+          data: { tableNo, blockNo }  // ✅ Correct way to send body in DELETE
+        });
+  
+        // ✅ Clear local bill after successful response
+        updateCurrentBill([]);
+        setBillData([]);
+        setClearOrder(true);
+        if (onClearLocalCart) onClearLocalCart();
+        updateCurrentBill([]);
+        setBillData([]);
+        if (onClearLocalCart) onClearLocalCart();
+  
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          console.warn("No matching orders in DB, but clearing locally.");
+          updateCurrentBill([]);
+          setBillData([]);
+          if (onClearLocalCart) onClearLocalCart();
+        } else {
+          console.error("Error clearing/archiving from DB:", err);
+          alert("Failed to clear order. Please try again.");
+        }
+      }
       const response = await axios.post(`${url}/admin/cart`, orderData);
       if (response.data) {
         console.log("Order placed successfully:", response.data);
-        setPlacedOrder(true);
-        const tableBlock = `${tableNo}${blockNo}`;
-        setOrderedTableNo(tableBlock);
-        setIsDisabled(true);
+        // setPlacedOrder(true);
+        // const tableBlock = `${tableNo}${blockNo}`;
+        // setOrderedTableNo(tableBlock);
+        // setIsDisabled(true);
+        updateCurrentBill(orderData.cart); // or use response.data.cart if returned
+      setBillData(orderData.cart);
+      setPlacedOrder(true);
+      const tableBlock = `${tableNo}${blockNo}`;
+      setOrderedTableNo(tableBlock);
+      setIsDisabled(true);
       }
     } catch (err) {
       console.error("Error in placing the order:", err);
