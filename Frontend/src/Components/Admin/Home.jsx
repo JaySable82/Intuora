@@ -346,7 +346,7 @@ const Home = () => {
       {selectedTable != null && selectedBlock == null && (
         <div style={{ padding: 16 }}>
           {billsByTable.length === 0 ? (
-            <p style={{ color: "#666" }}>No orders yet.</p>
+            <p style={{ color: "#666" }}></p>
           ) : (
             // Render unique bills only
             getUniqueBills().map((bill) => (
@@ -376,7 +376,7 @@ const Home = () => {
       )}
       {selectedTable != null && selectedBlock != null && (
         <div style={{ padding: 16 }}>
-          <Bill
+          <Bill1
             cart={currentCart}
             onClearLocalCart={() => updateCurrentBill([])}
             setcart={setCart}

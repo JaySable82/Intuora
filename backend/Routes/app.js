@@ -14,10 +14,10 @@ import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
 import rawMaterialModel from './models/rawMaterial.js';
 import AdminModel from './models/adminmodel.js';
-import AdminDashboardOrdersModel from './models/AdminDashboard.js';
+import {AdminDashboardOrdersModel} from './models/AdminDashboard.js';
 import AllOrdersModel from './models/allorders.js';
 import Counter from './models/counter.js';
-
+import {FinalOrdersModel} from'./models/AdminDashboard.js';
 
 
 
@@ -694,7 +694,73 @@ app.post('/admin/cart', async (req, res) => {
     }
   });
   
-
+  app.post('/admin/final/cart', async (req, res) => {
+    try {
+      const { cart, total, tableNo, blockNo } = req.body;
+  
+      // Validate request
+      if (!cart || cart.length === 0) {
+        return res.status(400).json({ message: 'Cart is empty or undefined' });
+      }
+      if (!tableNo || !blockNo) {
+        return res.status(400).json({ message: 'Missing tableNo or blockNo' });
+      }
+  
+      // Check if an order already exists for this table/block
+      const existingOrder = await FinalOrdersModel.findOne({ tableNo, blockNo });
+      if (existingOrder) {
+        // Delete the old order (you could also consider archiving it first)
+        await FinalOrdersModel.deleteOne({ _id: existingOrder._id });
+        console.log(`Deleted old order for table: ${tableNo} block: ${blockNo}`);
+      }
+  
+      // Update the order counter (token) using the Counter model
+      const counter = await Counter.findByIdAndUpdate(
+        'orderCounter',
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+      );
+      const tokenNum = counter.seq;
+  
+      // Map the cart items according to your schema
+      const items = cart.map((item) => ({
+        id: item.id,
+        marathi: item.marathi,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        parcel: item.parcel || false,
+        bottle: item.bottle || 0
+      }));
+  
+      // Create a new order document
+      const newOrder = new FinalOrdersModel({
+        tableNo,
+        blockNo,
+        orders: {
+          items,
+          total,
+          token: tokenNum
+        }
+      });
+  
+      await newOrder.save();
+  
+      // Optionally, you can emit an update via socket.io if needed.
+      io.emit('orderUpdate', { ...newOrder.toObject(), status: 'current' });
+  
+      res.status(200).json({
+        message: 'Order updated successfully',
+        token: tokenNum
+      });
+    } catch (error) {
+      console.error('Error updating order:', error);
+      res.status(500).json({
+        message: 'Error updating order',
+        error: error.message
+      });
+    }
+  });
 
 
 

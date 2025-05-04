@@ -43,7 +43,7 @@ const YourComponent = ({ cart, updateCart, selectedTable, tableno, blockNo, isOp
   };
 
   return (
-    <div style={isOpen ? { top: 200, left: 260, height: '450vh', width: 750, position: "absolute", backgroundColor: "#F8F8FA", borderRadius: 10, transition: "0.5s ease" } : { top: 200, left: 40, height: '450vh', width: 1000, position: "absolute", backgroundColor: "#F8F8FA", borderRadius: 10, transition: "0.5s ease" }}>
+    <div style={isOpen ? { top: 200, left: 260, height: '450vh', width: 750, position: "absolute", backgroundColor: "#F8F8FA", borderRadius: 10, transition: "0.5s ease" } : { top: 200, left: 40, height: '350vh', width: 1000, position: "absolute", backgroundColor: "#F8F8FA", borderRadius: 10, transition: "0.5s ease" }}>
       
       {/* Categories Fixed Position */}
       <div style={{ position: 'sticky', top: '130px', left: '270px', zIndex: 10 }}>

@@ -20,5 +20,10 @@ const AdminDashboardOrderSchema=new mongoose.Schema({
 
 
 const AdminDashboardOrdersModel=mongoose.model('AdminDashboardOrders',AdminDashboardOrderSchema);
+const FinalOrdersModel = mongoose.model(
+    'AdminDashboardFinalOrders',
+    AdminDashboardOrderSchema
+);
 
-export default AdminDashboardOrdersModel;
+
+export {AdminDashboardOrdersModel,FinalOrdersModel};

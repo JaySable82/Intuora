@@ -130,42 +130,79 @@ const Bill1 = ({
   };
 
   const handlePlaceOrder = async () => {
-    try {
-      if (getCurrentBill().length === 0) {
-        alert("Please add items to the cart before placing an order");
-        return;
-      }
-      if (!tableNo || !blockNo) {
-        alert("Please select a table/block first!");
-        return;
-      }
-      
-      const currentBill = getCurrentBill();
-      const orderData = {
-        cart: currentBill.map((item) => ({
-          ...item,
-          marathi: item.marathi || "",
-          parcel: item.parcel || false,
-        })),
-        total: currentBill.reduce((sum, item) => sum + item.price * item.quantity, 0),
-        tableNo,
-        blockNo,
-      };
-      
-      const response = await axios.post(`${url}/admin/cart`, orderData);
-      if (response.data) {
-        console.log("Order placed successfully:", response.data);
+      try {
+        if (getCurrentBill().length === 0) {
+          alert("Please add items to the cart before placing an order");
+          return;
+        }
+        if (!tableNo || !blockNo) {
+          alert("Please select a table/block first!");
+          return;
+        }
+        
+        const currentBill = getCurrentBill();
+        console.log("Before update ",currentBill);
+        const orderData = {
+          cart: currentBill.map((item) => ({
+            ...item,
+            marathi: item.marathi || "",
+            parcel: item.parcel || false,
+          })),
+          total: currentBill.reduce((sum, item) => sum + item.price * item.quantity, 0),
+          tableNo,
+          blockNo,
+        };
+        console.log("After update",orderData);
+        try {
+          await axios.delete(`${url}/admin/bill`, {
+            data: { tableNo, blockNo }  // ✅ Correct way to send body in DELETE
+          });
+    
+          // ✅ Clear local bill after successful response
+          updateCurrentBill([]);
+          setBillData([]);
+          setClearOrder(true);
+          if (onClearLocalCart) onClearLocalCart();
+          updateCurrentBill([]);
+          setBillData([]);
+          if (onClearLocalCart) onClearLocalCart();
+    
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.warn("No matching orders in DB, but clearing locally.");
+            updateCurrentBill([]);
+            setBillData([]);
+            if (onClearLocalCart) onClearLocalCart();
+          } else {
+            console.error("Error clearing/archiving from DB:", err);
+            alert("Failed to clear order. Please try again.");
+          }
+        }
+        const response1 = await axios.post(`${url}/admin/final/cart`, orderData);
+        if(response1.data)
+        {
+          console.log("Fianl order data ",response1.data);
+        }
+        const response = await axios.post(`${url}/admin/cart`, orderData);
+        if (response.data) {
+          console.log("Order placed successfully:", response.data);
+          // setPlacedOrder(true);
+          // const tableBlock = `${tableNo}${blockNo}`;
+          // setOrderedTableNo(tableBlock);
+          // setIsDisabled(true);
+          updateCurrentBill(orderData.cart); // or use response.data.cart if returned
+        setBillData(orderData.cart);
         setPlacedOrder(true);
         const tableBlock = `${tableNo}${blockNo}`;
         setOrderedTableNo(tableBlock);
         setIsDisabled(true);
+        }
+      } catch (err) {
+        console.error("Error in placing the order:", err);
+        console.log("error response:", err.response);
+        alert("Failed to place order. Please try again.");
       }
-    } catch (err) {
-      console.error("Error in placing the order:", err);
-      console.log("error response:", err.response);
-      alert("Failed to place order. Please try again.");
-    }
-  };
+    };
 
   useEffect(() => {
     console.log("placedorder has updated:", placedorder);
@@ -274,7 +311,7 @@ const Bill1 = ({
         <p style={{ color: "#666" }}>No items in cart.</p>
       ) : (
         <>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}> 
             <thead>
               <tr style={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}>
                 <th style={{ textAlign: "left", padding: "5px", background: "#F8F8FA" }}>
@@ -288,7 +325,8 @@ const Bill1 = ({
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <div style={{ width:"145%" , maxHeight: "240px", overflowY: "auto" }}>
+            <tbody>              
             {combinedItems.map((item, index) => (
                 <tr key={`item-${index}`}>
                   <td style={{ padding: "5px", color: "#000" }}>{item.name}</td>
@@ -328,7 +366,9 @@ const Bill1 = ({
                   </td>
                 </tr>
               ))}
+              
             </tbody>
+            </div> 
             <tfoot>
               <tr style={{ borderTop: "1px solid #ccc" }}>
                 <td style={{ padding: "5px", textAlign: "left" }}>Total</td>

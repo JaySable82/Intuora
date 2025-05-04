@@ -178,6 +178,11 @@ const Bill = ({
           alert("Failed to clear order. Please try again.");
         }
       }
+      const response1 = await axios.post(`${url}/admin/final/cart`, orderData);
+      if(response1.data)
+      {
+        console.log("Fianl order data ",response1.data);
+      }
       const response = await axios.post(`${url}/admin/cart`, orderData);
       if (response.data) {
         console.log("Order placed successfully:", response.data);

@@ -28,7 +28,7 @@ function NavBar() {
 
     return (
         <>
-            <nav className="navbar">
+            <nav className="navbar" style={{ position: 'relative', zIndex: 100000 }}>
                 <div className="navbar-div" style={{ display: "flex", justifyContent: "space-between",width:"100%"}}>
                     <div className="logo-div" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="more-logo" style={{ height: "2rem", width: "2rem", backgroundColor: "black", marginTop: "0rem", marginLeft: "1rem" }} onClick={handleOpen}>
