@@ -311,54 +311,39 @@ const Bill1 = ({
         <p style={{ color: "#666" }}>No items in cart.</p>
       ) : (
         <>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}> 
-            <thead>
-              <tr style={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}>
-                <th style={{ textAlign: "left", padding: "5px", background: "#F8F8FA" }}>
-                  Item
-                </th>
-                <th style={{ textAlign: "center", padding: "5px", background: "#F8F8FA" }}>
-                  Qty
-                </th>
-                <th style={{ textAlign: "right", padding: "5px", background: "#F8F8FA" }}>
-                  Price
-                </th>
-              </tr>
-            </thead>
-            <div style={{ width:"145%" , maxHeight: "240px", overflowY: "auto" }}>
-            <tbody>              
-            {combinedItems.map((item, index) => (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+  <thead>
+    <tr style={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}>
+      <th style={{ textAlign: "left", padding: "5px", background: "#F8F8FA" }}>Item</th>
+      <th style={{ textAlign: "center", padding: "5px", background: "#F8F8FA" }}>Qty</th>
+      <th style={{ textAlign: "right", padding: "5px", background: "#F8F8FA" }}>Price</th>
+    </tr>
+  </thead>
+
+  {/* tbody wrapped in scrollable container */}
+  <tbody>
+    <tr>
+      <td colSpan="3" style={{ padding: 0 }}>
+        <div style={{
+          maxHeight: "170px", // approx. 5 rows of ~34px each
+          overflowY: "auto"
+        }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <tbody>
+              {combinedItems.map((item, index) => (
                 <tr key={`item-${index}`}>
                   <td style={{ padding: "5px", color: "#000" }}>{item.name}</td>
                   <td style={{ padding: "5px", textAlign: "center", color: "#000" }}>
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <button
-                        onClick={() => updateBillItems(item, -1)}
-                        style={{
-                          width: "25px",
-                          height: "25px",
-                          border: "1px solid #ccc",
-                          cursor: "pointer",
-                          borderRadius: "3px",
-                          marginRight: "8px",
-                        }}
-                      >
-                        -
-                      </button>
+                      <button onClick={() => updateBillItems(item, -1)} style={{
+                        width: "25px", height: "25px", border: "1px solid #ccc", cursor: "pointer",
+                        borderRadius: "3px", marginRight: "8px"
+                      }}>-</button>
                       {item.quantity}
-                      <button
-                        onClick={() => updateBillItems(item, 1)}
-                        style={{
-                          width: "25px",
-                          height: "25px",
-                          border: "1px solid #ccc",
-                          cursor: "pointer",
-                          borderRadius: "3px",
-                          marginLeft: "8px",
-                        }}
-                      >
-                        +
-                      </button>
+                      <button onClick={() => updateBillItems(item, 1)} style={{
+                        width: "25px", height: "25px", border: "1px solid #ccc", cursor: "pointer",
+                        borderRadius: "3px", marginLeft: "8px"
+                      }}>+</button>
                     </div>
                   </td>
                   <td style={{ padding: "5px", textAlign: "right" }}>
@@ -366,19 +351,22 @@ const Bill1 = ({
                   </td>
                 </tr>
               ))}
-              
             </tbody>
-            </div> 
-            <tfoot>
-              <tr style={{ borderTop: "1px solid #ccc" }}>
-                <td style={{ padding: "5px", textAlign: "left" }}>Total</td>
-                <td colSpan="2" style={{ padding: "5px", textAlign: "right" }}>
-                  ₹{totalAmount}
-                </td>
-              </tr>
-            </tfoot>
           </table>
+        </div>
+      </td>
+    </tr>
+  </tbody>
 
+  <tfoot>
+    <tr style={{ borderTop: "1px solid #ccc" }}>
+      <td style={{ padding: "5px", textAlign: "left" }}>Total</td>
+      <td colSpan="2" style={{ padding: "5px", textAlign: "right" }}>
+        ₹{totalAmount}
+      </td>
+    </tr>
+  </tfoot>
+</table>
           <div
             style={{
               display: "flex",
