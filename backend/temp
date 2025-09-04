@@ -1,0 +1,5 @@
+
+> start
+> vi Routes/app.js
+
+[?1049h[999;999H[6n[H[J[1;1Himport dotenv from 'dotenv';^M[2;1Hdotenv.config();^M[3;1H^M[4;1Himport express from 'express';^M[5;1H^M[6;1Himport cors from 'cors';^M[7;1Himport http from 'http';^M[8;1Himport { Server as SocketIOServer } from 'socket.io';^M[9;1Himport mongoose from 'mongoose';^M[10;1H// import escpos from 'escpos';^M[11;1H// import EscposUSB from 'escpos-usb';^M[12;1H// import Sequence from './models/sequence.js';^M[13;1Himport KitchenStatusModel from './models/kitchenStatus.js';^M[14;1Himport purchaseOrderModel from './models/purchaseOrder.js';^M[15;1Himport rawMaterialModel from './models/rawMaterial.js';^M[16;1Himport AdminModel from './models/adminmodel.js';^M[17;1Himport {AdminDashboardOrdersModel} from './models/AdminDashboard.js';^M[18;1Himport AllOrdersModel from './models/allorders.js';^M[19;1Himport Counter from './models/counter.js';^M[20;1Himport {FinalOrdersModel} from'./models/AdminDashboard.js';^M[21;1H^M[22;1H^M[23;1H^M[1;1H[24;1H[K- Routes/app.js 1/994 0%[1;1H[24;1H[K
