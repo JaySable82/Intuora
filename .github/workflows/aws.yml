@@ -2,12 +2,14 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: frontend_test
-
+    branches: [ frontend_test ]
 
 env:
   IMAGE_NAME: frontend
   IMAGE_TAG: ${{ github.sha }}
+  # Replace these with your actual values
+  EC2_HOST: "your-ec2-ip-here"     # e.g., "54.123.45.67"
+  EC2_USER: "ubuntu"               # e.g., "ubuntu", "ec2-user", or "admin"
 
 jobs:
   build-and-deploy:
@@ -31,18 +33,18 @@ jobs:
 
     - name: Setup SSH key
       run: |
-        echo "${{ secrets.EC2_PRIVATE_KEY }}" > private_key.pem
+        cp .github/intuora_key.pem private_key.pem
         chmod 600 private_key.pem
 
     - name: Copy image to EC2
       run: |
         scp -i private_key.pem -o StrictHostKeyChecking=no \
-          image.tar.gz ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/tmp/
+          image.tar.gz ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:/tmp/
 
     - name: Deploy to EC2
       run: |
         ssh -i private_key.pem -o StrictHostKeyChecking=no \
-          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ${{ env.EC2_USER }}@${{ env.EC2_HOST }} << 'EOF'
           
           # Load the Docker image
           gunzip -c /tmp/image.tar.gz | docker load
@@ -55,7 +57,7 @@ jobs:
           docker run -d \
             --name ${{ env.IMAGE_NAME }} \
             --restart unless-stopped \
-            -p 80:3000 \
+            -p 5173:5173 \
             ${{ env.IMAGE_NAME }}:latest
           
           # Clean up
@@ -82,5 +84,5 @@ jobs:
       
     - name: Health check
       run: |
-        curl -f http://${{ secrets.EC2_HOST }} || exit 1
-        echo "Application is healthy!"
+        curl -f http://${{ env.EC2_HOST }}:5173 || exit 1
+        echo "✅ Application is healthy!"
