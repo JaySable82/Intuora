@@ -24,7 +24,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker buildx build --network host -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        docker buildx build --network host -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} . --load
         docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.IMAGE_NAME }}:latest
 
     - name: Save Docker image to tar
