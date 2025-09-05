@@ -33,8 +33,8 @@ jobs:
 
     - name: Setup SSH key
       run: |
-        cp .github/ec2-key.pem private_key.pem
-        chmod 600 private_key.pem
+        cp .github/intuora_key.pem intuora_key.pem 
+        chmod 600 intuora_key.pem 
 
     - name: Copy image to EC2
       run: |
