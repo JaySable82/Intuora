@@ -12,6 +12,8 @@ import { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
 import escpos from 'escpos';
 import EscposUSB from 'escpos-usb';
+import escpos from 'escpos';
+import EscposUSB from 'escpos-usb';
 import Sequence from './models/sequence.js';
 import KitchenStatusModel from './models/kitchenStatus.js';
 import purchaseOrderModel from './models/purchaseOrder.js';
@@ -26,11 +28,16 @@ const io = new SocketIOServer(server);
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:process.env.FE_A,
+    origin:process.env.FE_L,
     methods: ["GET", "POST", "DELETE", "OPTION", "PATCH","PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
+
+//USB Printer
+// escpos.USB=EscposUSB;
+// const device =new escpos.USB(0x04b8,0x0202);
+// const printer =new escpos.Printer(device);
 
 //USB Printer
 // escpos.USB=EscposUSB;
@@ -217,6 +224,18 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
             // res.status(200).send({message:'printed'});
             // });
 
+            // device.open(()=>{
+            //     printer
+            //     .text("Order No: "+acceptedOrder.token)
+            //     .text("-----------------------")
+            //     .text("Items")
+            //     .text("-----------------------")
+            //     .cut()
+            //     .close();
+
+            // res.status(200).send({message:'printed'});
+            // });
+
             io.emit('orderUpdate', { ...acceptedOrder.toObject(), status: 'accepted' });
 
             return res.status(200).json({ message: 'Order moved to acceptedOrders', acceptedOrder });
@@ -285,7 +304,7 @@ app.post('/kitchen-status/update', async (req, res) => {
 
 app.post("/purchase-orders/upload", async (req, res) => {
     try {
-        const {newItem} = req.body;  // No need to destructure { newItem }
+        const newItem = req.body.newOrder;  // No need to destructure { newItem }
         console.log("newItem: ", newItem);
 
         const sanitizednewItem = {
@@ -294,7 +313,7 @@ app.post("/purchase-orders/upload", async (req, res) => {
             invoice_no: newItem.invoice_no || "",
             quantity: newItem.quantity ? Number(newItem.quantity) : 0,
             unit_price: newItem.unit_price ? Number(newItem.unit_price) : 0,
-            total_price: newItem.total_price ? Number(newItem.total_price) : 0,
+            total_price: newItem.total_price,
         };
 
         await purchaseOrderModel.create(sanitizednewItem);

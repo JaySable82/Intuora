@@ -39,27 +39,34 @@ function PurchaseOrders() {
   }, []);
 
   async function handleSave() {
-        // console.log("temporary: ", temporary);
-        setPurchaseOrdersList(prevList => [...prevList, temporary]);
+      const finalTotalPrice = temporary.total_price || (temporary.quantity * temporary.unit_price);
+      
+      const newOrder = {
+          ...temporary,
+          total_price: finalTotalPrice
+      };
 
-        try {
-        const response = await axios.post(`${url}/purchase-orders/upload`, { temporary });  // Wrap in an object
-        console.log("Data sent successfully: ", response);
-        } catch (err) {
-        console.log("Error in sending the temporary row", err);
-        }
+      setPurchaseOrdersList(prevList => [...prevList, newOrder]);
 
-        setTemporary({
-        item: "",
-        quantity: 0,
-        unit_price: 0,   
-        total_price: 0,
-        vendor: "",
-        invoice_no: "",
-        });
+      try {
+          const response = await axios.post(`${url}/purchase-orders/upload`, { newOrder });  
+          console.log("Data sent successfully: ", response);
+      } catch (err) {
+          console.log("Error in sending the temporary row", err);
+      }
 
-        setAddItems(false);
-    }
+      setTemporary({
+          item: "",
+          quantity: 0,
+          unit_price: 0,   
+          total_price: 0,
+          vendor: "",
+          invoice_no: "",
+      });
+
+      setAddItems(false);
+  }
+
 
   
 
@@ -183,17 +190,17 @@ function PurchaseOrders() {
                                         setPurchaseOrdersList(newOrdersList);
                                         }} /></td>
                 <td style={{ padding: "0.5rem", textAlign: "center", verticalAlign: "middle" }}>
-                <input type="number" value={row.quantity} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
+                <input className="no-spinner" type="number" value={row.quantity} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto", appearance: "textfield",MozAppearance: "textfield", WebkitAppearance: "textfield"}} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
                                         newOrdersList[index]={...newOrdersList[index],quantity:e.target.value};
                                         setPurchaseOrdersList(newOrdersList);
                                         }} /></td>
                 <td style={{ padding: "0.5rem", textAlign: "center", verticalAlign: "middle" }}> 
-                <input type="number" value={row.unit_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
+                <input className="no-spinner" type="number" value={row.unit_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto",appearance:"checkbox" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
                                         newOrdersList[index]={...newOrdersList[index],unit_price:e.target.value};
                                         setPurchaseOrdersList(newOrdersList);
                                         }} /></td>
                 <td style={{ padding: "0.5rem", textAlign: "center", verticalAlign: "middle" }}>
-                <input type="number" value={row.total_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
+                <input className="no-spinner" type="number" value={row.total_price} style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto", appearance:"none" }} onChange={(e)=>{const newOrdersList=[...purchaseOrdersList];
                                     newOrdersList[index]={...newOrdersList[index],total_price:e.target.value};
                                     setPurchaseOrdersList(newOrdersList);
                                     }} /></td>
@@ -249,14 +256,15 @@ function PurchaseOrders() {
                 <td>
                 <input
                     type="number"
-                    value={temporary.total_price===0?"":temporary.total_price}
+                    value={temporary.total_price === 0 ? "" : temporary.total_price}
                     style={{ width: "5rem", height: "3rem", padding: "0.5rem", textAlign: "center", margin: "0 auto" }}
                     placeholder={temporary.quantity && temporary.unit_price ? temporary.quantity * temporary.unit_price : ""}
                     onChange={(e) => {
-                    const value = e.target.value === "" ? 0 : Number(e.target.value);
-                    setTemporary({ ...temporary, total_price: value });
+                        let value = e.target.value.trim() === "" ? temporary.quantity * temporary.unit_price : Number(e.target.value);
+                        setTemporary({ ...temporary, total_price: value });
                     }}
                 />
+
                 </td>
 
               </tr>
