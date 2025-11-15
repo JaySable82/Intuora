@@ -9,6 +9,7 @@ import Admin from "./Components/Admininterface";
 import Adminlogin from "./Components/Admin";
 import Otplogin from "./Components/adminotp";
 import Finalorder from "./Components/placeorder";
+import Sales from "./Components/Sales";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -40,6 +41,7 @@ function App() {
      <Route path="/user/cart/placedorder" element={<Finalorder />}/>
      <Route path="ambika-admin">
      <Route path="dashboard" element={<Admin />}/>
+     <Route path="Sales" element={<Sales />}/>
      </Route>
     </Routes>
   );

@@ -6,12 +6,14 @@ import AdminCard from "./admincard";
 import logo from '../assets/dinein.png';
 import io from "socket.io-client";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const localserver = import.meta.env.VITE_LOCAL;
-const socketurl = import.meta.env.NODE_ENV === 'production' ? "/" : "http://127.0.0.1:5173";
-const awsurl = import.meta.env.VITE_AWS_MAIN;
 
-const socket = io(awsurl, {
+// const localserver = import.meta.env.VITE_LOCAL;
+const localserver = import.meta.env.VITE_LOCAL || 'http://localhost:3001';
+console.log('VITE_LOCAL:', import.meta.env.VITE_LOCAL, 'using localserver:', localserver);
+
+const socket = io(localserver, {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });
@@ -25,11 +27,12 @@ function Admin() {
     const [acceptedOrders, setAcceptedOrders] = useState([]);
     const [doneOrders, setDoneOrders] = useState([]);
     const [showWarning, setShowWarning] = useState(false);
+    const Navigate = useNavigate();
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${awsurl}/ambika-admin/dashboard`);
+                const response = await axios.get(`${localserver}/ambika-admin/dashboard`);
                 console.log(response.data);
                 const data = response.data;
 
@@ -80,7 +83,7 @@ function Admin() {
     const handleDone = async (Id, currentStatus) => {
         try {
             const nextStatus = currentStatus === 'current' ? 'accepted' : 'done';
-            const response = await axios.post(`${awsurl}/ambika-admin/dashboard`, {
+            const response = await axios.post(`${localserver}/ambika-admin/dashboard`, {
                 status: nextStatus,
                 id: Id,
             });
@@ -107,7 +110,7 @@ function Admin() {
 
     const handleDecline = async (id) => {
         try {
-            await axios.delete(`${awsurl}/ambika-admin/dashboard`, {
+            await axios.delete(`${localserver}/ambika-admin/dashboard`, {
                 data: { id }
             });
 
@@ -120,7 +123,7 @@ function Admin() {
 
     const acceptDecline = async (id) => {
         try {
-            await axios.delete(`${awsurl}/ambika-admin/dashboard`, {
+            await axios.delete(`${localserver}/ambika-admin/dashboard`, {
                 data: { id }
             });
 
@@ -133,7 +136,7 @@ function Admin() {
 
     const handleIndex = async (index) => {
         try {
-            await axios.post(`${awsurl}/ambika-admin/dashboard`, { status: 'accepted' });
+            await axios.post(`${localserver}/ambika-admin/dashboard`, { status: 'accepted' });
 
             const data = currentOrders.filter((_, i) => i !== index);
             setCurrentOrders(data);
@@ -147,7 +150,7 @@ function Admin() {
 
     const handleNewOrder = async () => {
         try {
-            const response = await axios.post(`${awsurl}/ambika-admin/dashboard`, {
+            const response = await axios.post(`${localserver}/ambika-admin/dashboard`, {
                 createNewOrder: true
             });
 
@@ -168,7 +171,8 @@ function Admin() {
                 {showWarning && <Navwarning />}
                 <div className="ViewOrders" style={{ left: '46%', top: 24, position: 'absolute', textAlign: 'center', color: 'white', fontSize: 26, fontFamily: 'Inter', fontWeight: '600' }}>View Orders</div>
                 <button style={{ right: 30, top: 24, position: 'absolute', color: 'white', fontSize: 26, backgroundColor: 'black', border: 'none' }} onClick={handleLogout}>Log Out</button>
-                <img src={logo} alt="DineIn" style={{ marginTop: 10, marginLeft: 10, height: 50, width: 110 }} />
+                {/* <img src={logo} alt="DineIn" style={{ marginTop: 10, marginLeft: 10, height: 50, width: 110 }} /> */}
+                <button onClick={() => Navigate('/ambika-admin/Sales')} style={{marginTop: 10, marginLeft: 10, height: 50, width: 110, backgroundColor:'#0D0F11',color:'white',border:'none',fontSize:26}}>Sales</button>
             </div>
 
             <div className="Current_order">

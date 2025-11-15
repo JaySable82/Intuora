@@ -14,8 +14,8 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [kitchenClosed, setKitchenClosed] = useState(false);
     const navigate = useNavigate();
 
-    const localurl=import.meta.env.VITE_LOCALSERVER
-    const awsurl=import.meta.env.VITE_AWS
+    const localurl = import.meta.env.VITE_LOCALSERVER;
+    const awsurl = import.meta.env.VITE_AWS || localurl || 'http://localhost:3001';
     const handlePlaceOrder = async () => {
         
        if(disableOrder) return;
@@ -24,7 +24,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch(`${awsurl}`, {
+            const response = await fetch(`${awsurl.replace(/\/$/,'')}/user/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +41,8 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to place order');
+                const text = await response.text().catch(()=>null);
+                throw new Error(`Failed to place order: ${response.status} ${text || ''}`);
             }
 
             const result = await response.json();

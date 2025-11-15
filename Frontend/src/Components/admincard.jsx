@@ -32,7 +32,7 @@ function AdminCard({ token, id, onIndex, index, items, onDone, onDecline, showDo
         <Card className="admin-card" style={{ width: 366, height: calculatedHeight, background: 'white', borderRadius: 16, position: 'relative', top: 100, left: 20, marginBottom: 10 }}>
             <Card.Body style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 30 }}>
-                    <Card.Title style={{ fontWeight: 'bolder', fontSize: 20 }}>Token No.{token}</Card.Title>
+                    <Card.Title style={{ fontWeight: 'bolder', fontSize: 30 }}>Token No.{token}</Card.Title>
                     <Card.Title style={{ fontWeight: 'bolder', fontSize: 20 }}>Total: {totalQuantity}</Card.Title>
                 </div>
     

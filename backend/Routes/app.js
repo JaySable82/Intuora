@@ -5,6 +5,7 @@ import express from 'express';
 import { Order, sequence } from './models/Order_model.js';
 import { AcceptedOrder } from './models/Order_model.js';
 import { DoneOrder } from './models/Order_model.js';
+import SalesSummary from './models/TotalSales.js';
 import Counter from './models/Counter.js';
 import cors from 'cors';
 import http from 'http';
@@ -18,15 +19,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-const localhost = process.env.VITE_LOCALHOST
 const localmongo = process.env.MONGO_URL
-const awsurl=process.env.AWS_MAIN
+const awsurl = process.env.AWS_MAIN
 
 // Create a Socket.IO server instance with CORS options
 app.use(cors({
     // origin:process.env.REACT_APP_LOCALHOST, // The origin of your client application
-    origin:`${awsurl}`,
-    methods: ["GET", "POST", "DELETE", "OPTION", "PATCH"],
+    origin: `${awsurl}`,
+    methods: ["GET", "POST", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
@@ -37,7 +37,6 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
 });
-
 mongoose.connect(`${localmongo}`)
     .then(() => console.log("DB Connected"))
     .catch(err => console.log('MongoDB Connection Error:', err));
@@ -214,7 +213,20 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
             await doneOrder.save();
             await AcceptedOrder.findByIdAndDelete(_id);
 
+            const orderTotal = typeof order.total === 'number' ? order.total : parseFloat(order.total) || 0;
+
+            const summaryUpdate = await SalesSummary.findByIdAndUpdate(
+                'salesSummary',
+                {
+                    $inc: { totalReceived: orderTotal },
+                    $set: { lastUpdatedAt: new Date() }
+                },
+                { upsert: true, new: true }
+            );
+
+
             io.emit('orderUpdate', { ...doneOrder.toObject(), status: 'done' });
+            io.emit('salesUpdated', { totalReceived: summaryUpdate.totalReceived, lastUpdatedAt: summaryUpdate.lastUpdatedAt });
 
             return res.status(200).json({ message: 'Order moved to doneOrders', doneOrder });
 
@@ -223,6 +235,19 @@ app.post('/ambika-admin/dashboard', async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({ error: 'Error updating order status', details: error.message });
+    }
+});
+
+app.get('/ambika-admin/Sales', async (req, res) => {
+    try {
+        const summary = await SalesSummary.findById('salesSummary').lean();
+        const totalReceived = summary ? summary.totalReceived : 0;
+        const lastUpdatedAt = summary ? summary.lastUpdatedAt : null;
+        console.log('Total Sales Summary:', { totalReceived, lastUpdatedAt });
+        res.status(200).json({ totalReceived, lastUpdatedAt });
+    } catch (err) {
+        console.error('Error fetching total sales summary:', err);
+        res.status(500).json({ error: err.message });
     }
 });
 
