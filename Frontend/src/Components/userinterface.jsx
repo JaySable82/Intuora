@@ -26,9 +26,9 @@ const YourComponent = ({ cart, updateCart }) => {
     const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const Bestseller = [
-        { id: 19, name: 'Pashwaii',marathi:"पेशवाई", price: 100, img:peshwai },
-        { id: 22, name: 'Sadashiv Grill',marathi:"सदाशिव ग्रिल", price: 100, img:sadashiv },
-        { id: 3, name: 'Puneri Veg',marathi:"पुणेरी व्हेज", price:90, img:bombay }
+        { id: 6, name: 'Pashwaii Veg Chesse Grill',marathi:"पेशवाई व्हेज चीज ग्रिल", price: 100, img:peshwai },
+        { id: 5, name: 'Sadashiv Veg Cheese Grill',marathi:"सदाशिव व्हेज चीज ग्रिल", price: 100, img:sadashiv },
+        { id: 7, name: 'Veg Grill',marathi:"व्हेज ग्रिल", price:100, img:bombay }
     ];
 
     const sectionRefs = {

@@ -50,7 +50,7 @@ function Categories({ sectionRefs }) {
                 >
                     <img src={Grill} alt="grilled" style={{ height: 90, width: 90 }} />
                     <h3 style={{ fontWeight: "normal", fontFamily: "Inter" }}>
-                        Non Grill
+                        Grilled
                     </h3>
                 </button>
                 <button
@@ -65,7 +65,7 @@ function Categories({ sectionRefs }) {
                 >
                     <img src={NonGrill} alt="non-grilled" style={{ height: 90, width: 90 }} />
                     <h3 style={{ fontWeight: "normal", fontFamily: "Inter" }}>
-                        Grilled
+                        Non Grill
                     </h3>
                 </button>
                 <button
