@@ -4,6 +4,7 @@ import vegIcon from '../assets/food.jpg';
 import nonVegIcon from '../assets/food.jpg';
 import "../Components/Kart.css";
 import ClipLoader from 'react-spinners/ClipLoader';
+import { CART_ENDPOINT,BASE_URL } from '../../config';``
 
 const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [orderPlaced, setOrderPlaced] = useState(false);
@@ -14,8 +15,9 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
     const [kitchenClosed, setKitchenClosed] = useState(false);
     const navigate = useNavigate();
 
-    const localurl = import.meta.env.VITE_LOCALSERVER;
-    const awsurl = import.meta.env.VITE_AWS || localurl || 'http://localhost:3001';
+    // const localurl = import.meta.env.VITE_LOCALSERVER;
+    // const awsurl = import.meta.env.VITE_AWS || localurl || 'http://localhost:3001';
+       const awsurl = CART_ENDPOINT;
     const handlePlaceOrder = async () => {
         
        if(disableOrder) return;
@@ -24,7 +26,7 @@ const Kart = ({ cart=[], updateCart, disableOrder,setDisableOrder }) => {
             // Log cart data to ensure marathi field is included
             console.log('Cart data before sending:', cart);
 
-            const response = await fetch(`${awsurl.replace(/\/$/,'')}/user/cart`, {
+            const response = await fetch(awsurl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

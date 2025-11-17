@@ -7,13 +7,13 @@ import logo from '../assets/dinein.png';
 import io from "socket.io-client";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL,SOCKET_URL } from "../../config";
 
 
 // const localserver = import.meta.env.VITE_LOCAL;
-const localserver = import.meta.env.VITE_LOCAL || 'http://localhost:3001';
-console.log('VITE_LOCAL:', import.meta.env.VITE_LOCAL, 'using localserver:', localserver);
 
-const socket = io(localserver, {
+
+const socket = io(SOCKET_URL, {
     transports: ['websocket', 'polling'],
     withCredentials: true
 });
@@ -32,7 +32,7 @@ function Admin() {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${localserver}/ambika-admin/dashboard`);
+                const response = await axios.get(`${BASE_URL}/ambika-admin/dashboard`);
                 console.log(response.data);
                 const data = response.data;
 
@@ -83,7 +83,7 @@ function Admin() {
     const handleDone = async (Id, currentStatus) => {
         try {
             const nextStatus = currentStatus === 'current' ? 'accepted' : 'done';
-            const response = await axios.post(`${localserver}/ambika-admin/dashboard`, {
+            const response = await axios.post(`${BASE_URL}/ambika-admin/dashboard`, {
                 status: nextStatus,
                 id: Id,
             });
@@ -110,7 +110,7 @@ function Admin() {
 
     const handleDecline = async (id) => {
         try {
-            await axios.delete(`${localserver}/ambika-admin/dashboard`, {
+            await axios.delete(`${BASE_URL}/ambika-admin/dashboard`, {
                 data: { id }
             });
 
@@ -123,7 +123,7 @@ function Admin() {
 
     const acceptDecline = async (id) => {
         try {
-            await axios.delete(`${localserver}/ambika-admin/dashboard`, {
+            await axios.delete(`${BASE_URL}/ambika-admin/dashboard`, {
                 data: { id }
             });
 
@@ -136,7 +136,7 @@ function Admin() {
 
     const handleIndex = async (index) => {
         try {
-            await axios.post(`${localserver}/ambika-admin/dashboard`, { status: 'accepted' });
+            await axios.post(`${BASE_URL}/ambika-admin/dashboard`, { status: 'accepted' });
 
             const data = currentOrders.filter((_, i) => i !== index);
             setCurrentOrders(data);
@@ -150,7 +150,7 @@ function Admin() {
 
     const handleNewOrder = async () => {
         try {
-            const response = await axios.post(`${localserver}/ambika-admin/dashboard`, {
+            const response = await axios.post(`${BASE_URL}/ambika-admin/dashboard`, {
                 createNewOrder: true
             });
 

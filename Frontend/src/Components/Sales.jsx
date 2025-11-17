@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../config";
 
 
-const localserver = import.meta.env.VITE_LOCAL || 'http://localhost:3001';
+const localserver = BASE_URL;
 
 export default function Sales() {
     const [total, setTotal] = useState(0);
